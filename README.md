@@ -48,6 +48,7 @@ or
 ```bash
 > git checkout -b [branch-name] # Does change your working branch
 ```
+See the following for [branch naming best practices](https://graphite.dev/guides/git-branch-naming-conventions)
 
 ### Commiting Code
 After creating and checking out a branch you can now code in your IDE of choice as normal. For Git to create a "snapshot" of your development, however, you'll have to create a commit.
@@ -66,6 +67,4 @@ You'll want to regularly push your commits to the remote repo (uploading to gith
 ### Merging
 Eventually you'll want your branch to be merged into the main branch so others can see and test based on your input.
 
-
-
-### Check Branches
+The simplest way to do this is in Github itself. Click [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) for the guide.
