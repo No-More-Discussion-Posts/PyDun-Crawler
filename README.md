@@ -6,7 +6,8 @@ PyGame dungeon crawler for UMGC CMSC-495 capstone project.
 2. [Backlog/Todo list](https://github.com/orgs/No-More-Discussion-Posts/projects/1/views/1)
 3. [Roadmap](https://github.com/orgs/No-More-Discussion-Posts/projects/1/views/4)
 
-# Setup
+
+# Git Setup
 The following is the minimum needed to get setup and start contributing with Git. See the [Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf) for a convenient reference of git commands.
 
 ## Installation and GUIs
@@ -85,3 +86,24 @@ You'll want to regularly push your commits to the remote repo (uploading to gith
 Eventually you'll want your branch to be merged into the main branch so others can see and test based on your input.
 
 The simplest way to do this is in Github itself. Click [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) for the guide.
+
+# Game Setup
+From the base directory (pydun-crawler):
+
+1. Install the game in editable mode so that you can test code changes without installing every time.
+```bash
+> pip install --user -e .
+```
+
+2. If you get a PATH error like below:
+```bash
+  WARNING: The script pydun.exe is installed in 'C:\Users\melke\AppData\Roaming\Python\Python310\Scripts' which is not on PATH.
+```
+You'll need to copy that path and [add it to your PATH variable](https://www.java.com/en/download/help/path.html)
+
+3. Run the program
+```bash
+> pydun
+```
+You should see the game load!
+>Note: You do not need to reinstall anything after making edits, just rerun the *pydun* command.
