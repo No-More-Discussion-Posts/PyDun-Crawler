@@ -1,6 +1,10 @@
 # PyDun-Crawler
 PyGame dungeon crawler for UMGC CMSC-495 capstone project.
 
+## Quicklinks
+1. [Project Plan](docs/ProjectPlan.md)
+2. [Backlog/Todo list](https://github.com/orgs/No-More-Discussion-Posts/projects/1/views/1)
+3. [Roadmap](https://github.com/orgs/No-More-Discussion-Posts/projects/1/views/4)
 
 # Setup
 The following is the minimum needed to get setup and start contributing with Git. See the [Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf) for a convenient reference of git commands.
