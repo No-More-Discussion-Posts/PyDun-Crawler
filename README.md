@@ -17,10 +17,11 @@ See [the official Git web site](https://git-scm.com/download/linux)
  If you haven't already, you'll need an account setup at [Github](https://github.com/)
 
 ## Setup
-In the command line of your choice (On Windows OS I prefer Git Bash that comes with Git For Windows) you'll need to setup your username with the username you chose in GitHub:
+In the command line of your choice (On Windows OS I prefer Git Bash that comes with Git For Windows) you'll need to setup your username with the username you chose in GitHub. The push.autoSetupRemote is not necessary but it does simplify pushing code from new branches.
 
 ```bash
 > git config --global user.name 'username'
+> git config --global push.autoSetupRemote true
 ```
 ## Clone the repo
 ```bash
