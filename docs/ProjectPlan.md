@@ -27,3 +27,5 @@ With such a limited amount of personnel to accomplish the project, each team mem
 
 # 6. Schedule
 
+# 7. Testing -Roland was here
+
