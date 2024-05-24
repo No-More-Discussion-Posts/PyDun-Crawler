@@ -36,15 +36,27 @@ There is one main branch, or line of development called *main*.
 > git branch -v
 * main f1c0ef0 Initial commit
 ```
-When developing you should create your own "feature branch" from the main branch, develop your code, and then merge your branch back into the main.
+When developing you should create your own "feature branch" from the dev branch, develop your code, and then merge your branch back into dev. Main will be updated from dev periodically.
 
 For a more information see [Understanding Git Branching](https://medium.com/@jacoblogan98/understanding-git-branching-5d01f3dda541)
 
 ### Creating a Branch
+Ensure your branches are up to date
 ```bash
-> git branch [branch-name] # Does not change your working branch
+> git fetch
 ```
-or
+Checkout the dev branch
+```bash
+> git checkout dev
+```
+
+If you already had dev open and the latest code wasn't merged:
+
+Pull from remote to get the most up to date changes
+```bash
+> git pull
+```
+Create and checkout your new branch.
 ```bash
 > git checkout -b [branch-name] # Does change your working branch
 ```
