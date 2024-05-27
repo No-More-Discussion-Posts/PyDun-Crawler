@@ -3,10 +3,11 @@ from setuptools import setup,find_packages
 setup(
     name='pydun-crawler',
     version='0.0.1',
-    packages=find_packages(),
+    packages=find_packages("src"),
+    package_dir={"":"src"},
     entry_points = {
         'console_scripts': [
-            'pydun = src.game:main',
+            'pydun = game:main',
         ]
     },
     long_description='Simple Dungeon Crawler in Python',

@@ -1,10 +1,11 @@
 '''Game Entry Point'''
 import tcod
+import os
+from entity import Entity
+from input_handlers import EventHandler
+from engine import Engine
 
-from .entity import Entity
-from .input_handlers import EventHandler
-from .engine import Engine
-
+FONT = os.path.join(os.path.dirname(__file__),"assets","dejavu10x10_gs_tc.png")
 def main():
     '''
     Main game loop
@@ -12,7 +13,7 @@ def main():
     screen_width = 80
     screen_height = 50
 
-    tileset = tcod.tileset.load_tilesheet("src/assets/dejavu10x10_gs_tc.png",32, 8, tcod.tileset.CHARMAP_TCOD)
+    tileset = tcod.tileset.load_tilesheet(FONT,32, 8, tcod.tileset.CHARMAP_TCOD)
     
     event_handler = EventHandler()
 
