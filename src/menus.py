@@ -1,19 +1,9 @@
 import pygame
-from typing import Tuple, Dict
 import sys
 from dataclasses import dataclass
 from enum import Enum
+from input_handlers import OPTIONS, Option
 
-class OPTIONS(Enum):
-    CAPTION = 1
-    PRINT = 2
-    HANDLER = 3
-
-
-class Option:
-    def __init__(self,type,data):
-        self.type = type
-        self.data = data
 class Menu:
     def __init__(self,screen,options):
         self.screen=screen
@@ -23,7 +13,7 @@ class Menu:
         self.runnable_opts = []
         self.handlers = []
 
-    def handle_options(self):
+    def handle_options(self) -> None:
         for option in self.options:
             if option.type == OPTIONS.CAPTION:
                 pygame.display.set_caption(option.data)
@@ -41,7 +31,7 @@ class Menu:
                     result = option.data.get("result")
                     self.handlers.append({'type':event_type,'func':lambda x: result() if x.key == key else ...})
 
-    def handle_input(self,input):
+    def handle_input(self,input) -> None:
             for handler in self.handlers:
                 if input.type == handler['type']:
                     handler['func'](input)
@@ -49,14 +39,14 @@ class Menu:
                     pygame.quit()
                     sys.exit()
 
-    def run_opts(self):
+    def run_opts(self) -> None:
         for opt in self.runnable_opts:
             opt()
     
-    def stop(self):
+    def stop(self) -> None:
         self.running = False
 
-    def run(self):
+    def run(self) -> None:
         self.running = True
         while self.running:
             self.screen.fill((0,0,0))
@@ -67,6 +57,7 @@ class Menu:
 
 
     def __del__(self):
+        '''Close operations for Menu class'''
         pygame.display.set_caption(self.previous_caption)
 
 class PauseMenu(Menu):
