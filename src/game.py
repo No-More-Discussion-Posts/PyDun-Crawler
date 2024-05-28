@@ -16,6 +16,5 @@ def main()->None:
         screen.fill((255,255,255))
     pygame.quit()
 
-
 if __name__ == "__main__":
     main()
