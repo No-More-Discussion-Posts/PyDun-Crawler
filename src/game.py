@@ -1,6 +1,6 @@
 """Main Game Loop"""
 import pygame
-from menus import PauseMenu
+from menus import PauseMenu, BattleMenu
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 360
 pygame.init()
@@ -25,8 +25,9 @@ def main()->None:
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
-                    # pause(screen,dict(caption="Paused"))
-                    PauseMenu(screen,dict(caption="Paused"))
+                    PauseMenu(screen)
+                if event.key == pygame.K_b:
+                    BattleMenu(screen)
         pygame.display.update()
     # End game loop
     pygame.quit()
