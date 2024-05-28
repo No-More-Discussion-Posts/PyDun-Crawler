@@ -6,7 +6,8 @@ PyGame dungeon crawler for UMGC CMSC-495 capstone project.
 2. [Backlog/Todo list](https://github.com/orgs/No-More-Discussion-Posts/projects/1/views/1)
 3. [Roadmap](https://github.com/orgs/No-More-Discussion-Posts/projects/1/views/4)
 
-# Setup
+
+# Git Setup
 The following is the minimum needed to get setup and start contributing with Git. See the [Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf) for a convenient reference of git commands.
 
 ## Installation and GUIs
@@ -25,6 +26,7 @@ In the command line of your choice (On Windows OS I prefer Git Bash that comes w
 
 ```bash
 > git config --global user.name 'username'
+> git config --global user.email 'my@email.com'
 > git config --global push.autoSetupRemote true
 ```
 ## Clone the repo
@@ -85,3 +87,6 @@ You'll want to regularly push your commits to the remote repo (uploading to gith
 Eventually you'll want your branch to be merged into the main branch so others can see and test based on your input.
 
 The simplest way to do this is in Github itself. Click [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) for the guide.
+
+# Game Setup
+[TODO]
