@@ -1,8 +1,13 @@
 # PyDun-Crawler
 PyGame dungeon crawler for UMGC CMSC-495 capstone project.
 
+## Quicklinks
+1. [Project Plan](docs/ProjectPlan.md)
+2. [Backlog/Todo list](https://github.com/orgs/No-More-Discussion-Posts/projects/1/views/1)
+3. [Roadmap](https://github.com/orgs/No-More-Discussion-Posts/projects/1/views/4)
 
-# Setup
+
+# Git Setup
 The following is the minimum needed to get setup and start contributing with Git. See the [Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf) for a convenient reference of git commands.
 
 ## Installation and GUIs
@@ -17,10 +22,12 @@ See [the official Git web site](https://git-scm.com/download/linux)
  If you haven't already, you'll need an account setup at [Github](https://github.com/)
 
 ## Setup
-In the command line of your choice (On Windows OS I prefer Git Bash that comes with Git For Windows) you'll need to setup your username with the username you chose in GitHub:
+In the command line of your choice (On Windows OS I prefer Git Bash that comes with Git For Windows) you'll need to setup your username with the username you chose in GitHub. The push.autoSetupRemote is not necessary but it does simplify pushing code from new branches.
 
 ```bash
 > git config --global user.name 'username'
+> git config --global user.email 'my@email.com'
+> git config --global push.autoSetupRemote true
 ```
 ## Clone the repo
 ```bash
@@ -36,15 +43,27 @@ There is one main branch, or line of development called *main*.
 > git branch -v
 * main f1c0ef0 Initial commit
 ```
-When developing you should create your own "feature branch" from the main branch, develop your code, and then merge your branch back into the main.
+When developing you should create your own "feature branch" from the dev branch, develop your code, and then merge your branch back into dev. Main will be updated from dev periodically.
 
 For a more information see [Understanding Git Branching](https://medium.com/@jacoblogan98/understanding-git-branching-5d01f3dda541)
 
 ### Creating a Branch
+Ensure your branches are up to date
 ```bash
-> git branch [branch-name] # Does not change your working branch
+> git fetch
 ```
-or
+Checkout the dev branch
+```bash
+> git checkout dev
+```
+
+If you already had dev open and the latest code wasn't merged:
+
+Pull from remote to get the most up to date changes
+```bash
+> git pull
+```
+Create and checkout your new branch.
 ```bash
 > git checkout -b [branch-name] # Does change your working branch
 ```
@@ -68,3 +87,6 @@ You'll want to regularly push your commits to the remote repo (uploading to gith
 Eventually you'll want your branch to be merged into the main branch so others can see and test based on your input.
 
 The simplest way to do this is in Github itself. Click [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) for the guide.
+
+# Game Setup
+[TODO]
