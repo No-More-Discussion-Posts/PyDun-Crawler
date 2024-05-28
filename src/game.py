@@ -14,18 +14,18 @@ BG_COLOR = BLACK
 def main()->None:
     '''Main game loop'''
     pygame.display.set_caption("Dungeon Crawler")
-    paused = True
-    while paused:
+    running = True
+    while running:
         events = pygame.event.get()
         screen.fill(BG_COLOR)
         pygame.draw.circle(screen,"red",(SCREEN_WIDTH/2,SCREEN_HEIGHT/2),20)
         for event in events:
-            print(event)
+            # print(event)
             if event.type == pygame.QUIT:
-                paused = False
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_p]:
-            pause(screen)
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    pause(screen,dict(caption="Paused"))
         
         pygame.display.update()
     # End game loop
