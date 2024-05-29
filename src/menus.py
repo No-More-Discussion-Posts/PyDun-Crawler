@@ -137,9 +137,13 @@ class BattleMenu():
             defend.button_surface.blit(defend.text, defend.rect)
             self.screen.blit(defend.button_surface, (defend.butt_rect.x, defend.butt_rect.y))
 
-            run = button("Run", 340, 280)
+            run = button("Run", 485, 280)
             run.button_surface.blit(run.text, run.rect)
             self.screen.blit(run.button_surface, (run.butt_rect.x, run.butt_rect.y))
+
+            items = button("Inventory", 340, 280)
+            items.button_surface.blit(items.text, items.rect)
+            self.screen.blit(items.button_surface, (items.butt_rect.x, items.butt_rect.y))
            
             pygame.display.flip()  
             for e in pygame.event.get():
@@ -152,6 +156,8 @@ class BattleMenu():
                           global enemy
                           enemy = random.randint(1,3)
                           self.running = False
+                     if items.butt_rect.collidepoint(e.pos):
+                          print('Inventory')
                 self.handle_input(e)
 
     global combat
