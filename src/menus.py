@@ -89,8 +89,6 @@ class BattleMenu():
     global enemy
     global monster
 
-    monster = Goblin(1)    
-
     def __init__(self,game,options={}):
         # super().__init__(screen)
         self.game = game
@@ -99,9 +97,15 @@ class BattleMenu():
         self.player = game.player
         self.run()
 
+    def start_combat(self):
+         self.monster = Goblin(1)
+
     def run(self):
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT,20)
+        
+        self.start_combat()
+        
         while self.running:
             self.game.screen.fill("white")
             height = self.game.screen.get_height();
@@ -110,10 +114,9 @@ class BattleMenu():
             monster_info = pygame.draw.rect(self.game.screen, "black", [10, 10, 200, 100], 3,border_radius = 15)
             player_info = pygame.draw.rect(self.game.screen,'blue',[width-310,height-210,300,200],3,border_radius = 15)        
             
-
-            text = monster.name
+            text = self.monster.name
             self.game.screen.blit(FONT.render(text,False,'black'),(20,20))
-            self.game.screen.blit(FONT.render(f"{monster.hp}/{monster.max_hp}",False,"black"),(20,45))
+            self.game.screen.blit(FONT.render(f"{self.monster.hp}/{self.monster.max_hp}",False,"black"),(20,45))
 
             #Added player name and hp
             text2 = self.player.name
@@ -141,7 +144,7 @@ class BattleMenu():
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
                      if fight.butt_rect.collidepoint(e.pos):
-                          combat(self, self.player, monster)
+                          combat(self, self.player, self.monster)
                      if defend.butt_rect.collidepoint(e.pos):
                           print('defend')
                      if run.butt_rect.collidepoint(e.pos):
