@@ -15,37 +15,21 @@ class Monster(Entity):
         pass
 
 class Goblin(Monster):
-    def __init__(self, lvl):
+    def __init__(self, game):
         self.name = 'Goblin'
-        self.max_hp = 5 + (1 * lvl)
-        self.hp = 5 + (1 * lvl)
-        self.atk = 1 * lvl
-
-class Hobgoblin(Monster):
-    def __init__(self, lvl):
-        self.name = 'HobGoblin'
-        self.max_hp = 10 + (5 * lvl)
-        self.hp = 10 + (5 * lvl)
-        self.atk = 4 * lvl
-        #self.dex = 1 * lvl
-
-class Ogre(Monster):
-    def __init__(self, lvl):
-        self.name = 'Ogre'
-        self.max_hp = 20 + (5 * lvl)
-        self.hp = 20 + (5 * lvl)
-        self.atk = 6 * lvl
-        #self.dex = .5 * lvl
+        self.game = game
+        self.lvl = int(game.turn * .25)
+        self.max_hp = 5 + (1 * self.lvl)
+        self.hp = 5 + (1 * self.lvl)
+        self.atk = 1 + (1 * self.lvl)
 
 class Player(Entity):
-    def __init__(self, name, lvl, game=None,x:int=0,y:int=0):
+    def __init__(self, name, game,x:int=0,y:int=0):
         self.name = name
-        self.max_hp = 20
-        self.hp = 20
-        self.atk = 3 * lvl
+        self.game = game
+        self.lvl = int(game.turn * .4)
         #self.dex = 2 * lvl
         self.inventory = Inventory()
-        self.game = game
         # self.image = pg.surface()
         # self.image.fill((255,255, 0))
         # self.rect = self.image.get_rect()
@@ -56,8 +40,22 @@ class Player(Entity):
         self.y += dy
 
     def update(self):
-        self.rect.x = self.x * 20
-        self.rect.y = self.y * 20
+        self.lvl = int(self.game.turn)
+        self.atk = self.atk
+        #self.rect.x = self.x * 20
+        #self.rect.y = self.y * 20
+
+    @property
+    def lvl(self):
+        return self._lvl
+    
+    @lvl.setter
+    def lvl(self, value):
+        self._lvl = value
+        self.max_hp = 20 + (2 * int(self.lvl * .1))
+        self.hp = self.max_hp
+        self.atk = 1 + (1 * int(self.lvl * .2))
+    
 
 def miss_hit(player_dex, enemy_dex):
     pdex = player_dex

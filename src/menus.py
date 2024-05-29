@@ -98,7 +98,8 @@ class BattleMenu():
         self.run()
 
     def start_combat(self):
-         self.monster = Goblin(1)
+         self.monster = Goblin(self.game)
+         self.player.update()
 
     def run(self):
         self.running = True

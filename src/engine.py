@@ -7,7 +7,7 @@ class Engine:
     def __init__(self):
         self.turn = 0
         self.running = False
-        self.player = Player("Bilbo",1,self) # TODO: Character creation?
+        self.player = Player("Bilbo",self) # TODO: Character creation?
         # self.enemies = pygame.sprite.LayeredUpdates()
         self.enemies = []
 
@@ -16,7 +16,7 @@ class Engine:
            Initiated by player movement/action in battle.
         '''
         self.turn += 1
-        # self.player.update()
+        self.player.update()
         # for enemy in self.enemies:
         #      enemy.update()
 
