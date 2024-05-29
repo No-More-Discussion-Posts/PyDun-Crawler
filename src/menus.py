@@ -3,8 +3,9 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from input_handlers import OPTIONS, Option
-from entities import Entity
+from entities import *
 from typing import Tuple
+from random import randint
 class Menu:
     def __init__(self,screen,options):
         self.screen=screen
@@ -82,6 +83,10 @@ class PauseMenu(Menu):
     
             
 class BattleMenu():
+    #New enemy global variable to randomly assign which enemy type is created
+    global enemy
+    enemy = randint(1,3)
+
     def __init__(self,screen,options={}):
         # super().__init__(screen)
         self.screen = screen
@@ -101,10 +106,15 @@ class BattleMenu():
             player_info = pygame.draw.rect(self.screen,'blue',[width-310,height-210,300,200],3,border_radius = 15)
 
             # Fill in the details
-            monster = Entity("Monster",50)
-            player = Entity("Player",100)
+            # Defining which enemy class to populate based of the psuedo random number generated
+            if enemy == 1:
+                 monster = Goblin(1)
+            elif enemy == 2:
+                 monster = Hobgoblin(1)
+            elif enemy == 3:
+                 monster = Ogre(1)
+            player = Player('Bob', 1)
 
-            
             
             text = monster.name
             self.screen.blit(FONT.render(text,False,'black'),(20,20))
