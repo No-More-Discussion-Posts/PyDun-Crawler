@@ -9,13 +9,16 @@ class Engine:
         self.running = False
         self.player = Player("Bilbo",1) # TODO: Character creation?
         # self.enemies = pygame.sprite.LayeredUpdates()
-        self.listening = []
+        self.enemies = []
 
     def update(self):
         '''Make updates every turn such as monster movement, etc. 
            Initiated by player movement/action in battle.
         '''
         self.turn += 1
+        self.player.update()
+        for enemy in self.enemies:
+             enemy.update()
 
     def events(self):
         '''Manage events such as keypress, mouse clicks, etc.''' 

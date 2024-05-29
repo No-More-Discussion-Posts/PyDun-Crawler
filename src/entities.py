@@ -2,7 +2,13 @@ import random
 import pygame as pg #TODO: make consistent
 
 
-class Monster:
+class Entity:
+
+    def update(self):
+        '''All entities need an update method to be called per game turn.'''
+        pass
+
+class Monster(Entity):
     def __init__(self,):
         pass
 
@@ -31,7 +37,7 @@ class Ogre(Monster):
         self.atk = 6 * lvl
         #self.dex = .5 * lvl
 
-class Player:
+class Player(Entity):
     def __init__(self, name, lvl, game=None,x:int=0,y:int=0):
         self.name = name
         self.max_hp = 20
@@ -48,7 +54,7 @@ class Player:
         self.x += dx
         self.y += dy
         #game.update()
-        
+
     def update(self):
         self.rect.x = self.x * 20
         self.rect.y = self.y * 20
