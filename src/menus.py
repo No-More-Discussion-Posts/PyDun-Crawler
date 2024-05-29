@@ -58,11 +58,8 @@ class Menu:
             pygame.display.update()  
             for e in pygame.event.get():
                 self.handle_input(e)
-
-
-    def __del__(self):
-        '''Close operations for Menu class'''
         pygame.display.set_caption(self.previous_caption)
+
 
 class PauseMenu(Menu):
     def __init__(self,game,options=[]):

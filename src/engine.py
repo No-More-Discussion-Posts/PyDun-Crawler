@@ -1,4 +1,5 @@
 import pygame
+import sys
 from entities import Player
 from menus import PauseMenu,BattleMenu
 from config import *
@@ -7,7 +8,6 @@ class Engine:
         self.turn = 0
         self.running = False
         self.player = Player("Bilbo",1) # TODO: Character creation?
-        pygame.display.set_caption(GAME_CAPTION)
         # self.enemies = pygame.sprite.LayeredUpdates()
         self.listening = []
 
@@ -16,15 +16,12 @@ class Engine:
            Initiated by player movement/action in battle.
         '''
         self.turn += 1
-        for listener in self.listening:
-            listener.next_turn() # Maybe worth adding the current turn since creatures could be added later in the game.
 
     def events(self):
-        '''Manage events such as keypress, mouse clicks, etc.'''
-        events = pygame.event.get()
-        for event in events:
+        '''Manage events such as keypress, mouse clicks, etc.''' 
+        for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                self.running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     PauseMenu(self)
@@ -40,11 +37,13 @@ class Engine:
     def run(self):
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+        pygame.display.set_caption(GAME_CAPTION)
         self.running=True
         while self.running:
             self.events()
             self.draw()
-
+        pygame.quit()
+        sys.exit()
 
     def Test_Grid(self):
         # draw red rectangle

@@ -47,7 +47,8 @@ class Player:
     def movement(self, dx = 0, dy = 0):
         self.x += dx
         self.y += dy
-
+        #game.update()
+        
     def update(self):
         self.rect.x = self.x * 20
         self.rect.y = self.y * 20
