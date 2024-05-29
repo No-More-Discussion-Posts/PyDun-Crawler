@@ -1,6 +1,6 @@
 """Main Game Loop"""
 import pygame
-from Entities import *
+from entities import *
 from menus import PauseMenu, BattleMenu
 
 SCREEN_WIDTH = 640

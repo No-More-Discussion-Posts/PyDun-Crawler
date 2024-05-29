@@ -1,5 +1,5 @@
 import random
-
+import pygame as pg
 class Goblin:
     def __init__(self, lvl):
         #The lvl variable should be influenced by the global turn timer
@@ -26,13 +26,25 @@ class Ogre:
         #self.dex = .5 * lvl
 
 class Player:
-    def __init__(self, name, lvl):
+    def __init__(self, name, lvl, game=None,x:int=0,y:int=0):
         self.name = name
         self.max_hp = 20
         self.hp = 20
         self.atk = 3 * lvl
         #self.dex = 2 * lvl
+        self.game = game
+        # self.image = pg.surface()
+        # self.image.fill((255,255, 0))
+        # self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+    def movement(self, dx = 0, dy = 0):
+        self.x += dx
+        self.y += dy
 
+    def update(self):
+        self.rect.x = self.x * 20
+        self.rect.y = self.y * 20
 
 def miss_hit(player_dex, enemy_dex):
     pdex = player_dex
@@ -51,3 +63,18 @@ def miss_hit(player_dex, enemy_dex):
             return True
         elif y < miss_chance:
             return False
+        
+class Wall():
+    def __init__(self, game, x, y) -> None:
+        pass
+
+    def move():
+        pass
+
+class Door():
+    def __init__(self, game, x, y) -> None:
+        pass
+
+class Treasure():
+    def __init__(self, game, x, y) -> None:
+        pass
