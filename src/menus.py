@@ -146,6 +146,8 @@ class BattleMenu():
             items = button("Inventory", 340, 280)
             items.button_surface.blit(items.text, items.rect)
             self.game.screen.blit(items.button_surface, (items.butt_rect.x, items.butt_rect.y))
+
+            
            
             pygame.display.flip()  
             for e in pygame.event.get():
@@ -158,7 +160,11 @@ class BattleMenu():
                           self.player.game.update()
                           self.running = False
                      if items.butt_rect.collidepoint(e.pos):
-                          print(player.inventory.inventory)
+                          if self.player.inventory.inventory == {}:
+                               pass
+                          else:
+                            self.inventory_screen()
+                          print(self.player.inventory.inventory)
                 self.handle_input(e)
 
     global combat
@@ -175,8 +181,86 @@ class BattleMenu():
               player.inventory.update_item(monster.item, 1)
               print(player.inventory.inventory)
               self.running = False
-              
 
+    def inventory_screen(self):
+         self.running = True
+         FONT = pygame.font.Font(self.DEFAULT_FONT,20)
+         while self.running:
+            self.game.screen.fill("white")
+            height = self.game.screen.get_height();
+            width = self.game.screen.get_width()
+            # Create info areas
+            monster_info = pygame.draw.rect(self.game.screen, "black", [10, 10, 200, 100], 3,border_radius = 15)
+            player_info = pygame.draw.rect(self.game.screen,'blue',[width-310,height-210,300,200],3,border_radius = 15)        
+            
+            text = self.monster.name
+            self.game.screen.blit(FONT.render(text,False,'black'),(20,20))
+            self.game.screen.blit(FONT.render(f"{self.monster.hp}/{self.monster.max_hp}",False,"black"),(20,45))
+
+            #Added player name and hp
+            text2 = self.player.name
+            self.game.screen.blit(FONT.render(text2, False,'blue'),(340,160))
+            self.game.screen.blit(FONT.render(f"{self.player.hp}/{self.player.max_hp}", False, "blue"), (340,185))
+
+            #Button Testing
+            i = 1
+            for item in self.player.inventory.inventory:
+                 if i == 1:
+                      item1_text = f"{item}"
+                      item1 = button(f"{item}", 340, 210)
+                      item1.button_surface.blit(item1.text, item1.rect)
+                      self.game.screen.blit(item1.button_surface, (item1.butt_rect.x, item1.butt_rect.y))
+                      item2 = button("No Item", 485, 210)
+                      item2.button_surface.blit(item2.text, item2.rect)
+                      self.game.screen.blit(item2.button_surface, (item2.butt_rect.x, item2.butt_rect.y))
+                      item3 = button("No Item", 340, 280)
+                      item3.button_surface.blit(item3.text, item3.rect)
+                      self.game.screen.blit(item3.button_surface, (item3.butt_rect.x, item3.butt_rect.y))
+                 if i == 2:
+                      item2_text = f"{item}"
+                      item2 = button(f"{item}", 485, 210)
+                      item2.button_surface.blit(item2.text, item2.rect)
+                      self.game.screen.blit(item2.button_surface, (item2.butt_rect.x, item2.butt_rect.y))
+                      item3 = button("No Item", 340, 280)
+                      item3.button_surface.blit(item3.text, item3.rect)
+                      self.game.screen.blit(item3.button_surface, (item3.butt_rect.x, item3.butt_rect.y))
+                 if i == 3:
+                      item3_text = f"{item}"
+                      item3 = button(f"{item}", 340, 280)
+                      item3.button_surface.blit(item3.text, item3.rect)
+                      self.game.screen.blit(item3.button_surface, (item3.butt_rect.x, item3.butt_rect.y))
+                 i += 1
+
+            retbutt = button("Close", 485, 280)
+            retbutt.button_surface.blit(retbutt.text, retbutt.rect)
+            self.game.screen.blit(retbutt.button_surface, (retbutt.butt_rect.x, retbutt.butt_rect.y))
+
+            pygame.display.flip()
+            for e in pygame.event.get():
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                     if item1.butt_rect.collidepoint(e.pos):
+                          self.resolve_item(self.player, item1_text)
+                          self.player.inventory.use_item(item1_text, 1)
+                     if item2.butt_rect.collidepoint(e.pos):
+                          self.resolve_item(self.player, item2_text)
+                     if item3.butt_rect.collidepoint(e.pos):
+                          self.resolve_item(self.player, item3_text)
+                     if retbutt.butt_rect.collidepoint(e.pos):
+                          return
+                self.handle_input(e)
+    def resolve_item(self, player, item):
+         if item == 'L HP Pot':
+              player.hp += 10
+              if player.hp > player.max_hp:
+                   player.hp = player.max_hp
+         elif item == 'M HP Pot':
+              player.hp += 8
+              if player.hp > player.max_hp:
+                   player.hp = player.max_hp
+         elif item == 'S HP Pot':
+              player.hp += 5
+              if player.hp > player.max_hp:
+                   player.hp = player.max_hp
 
     def handle_input(self,input) -> None:
             if input.type == pygame.KEYDOWN:

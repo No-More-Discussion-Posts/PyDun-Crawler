@@ -2,7 +2,7 @@ import random
 from inventory import Inventory
 import pygame as pg #TODO: make consistent
 
-items = {1: 'Health Potion', 2: 'Attack Potion', 3: 'Defense Potion'}
+items = {1: 'S HP Pot', 2: 'M HP Pot', 3: 'L HP Pot'}
 
 
 
@@ -63,8 +63,10 @@ class Player(Entity):
         self.y += dy
 
     def update(self):
-        self.lvl = int(self.game.turn)
+        self.lvl = int(self.game.turn * .4)
         self.atk = self.atk
+        self.hp = self.hp
+        self.max_hp = self.max_hp
         #self.rect.x = self.x * 20
         #self.rect.y = self.y * 20
 
@@ -75,9 +77,9 @@ class Player(Entity):
     @lvl.setter
     def lvl(self, value):
         self._lvl = value
-        self.max_hp = 20 + (2 * int(self.lvl * .1))
+        self.max_hp = 20 + (2 * int(self.lvl))
         self.hp = self.max_hp
-        self.atk = 1 + (1 * int(self.lvl * .2))
+        self.atk = 1 + (1 * int(self.lvl))
     
 
 def miss_hit(player_dex, enemy_dex):
