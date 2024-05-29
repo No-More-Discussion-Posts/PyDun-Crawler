@@ -89,14 +89,7 @@ class BattleMenu():
     global enemy
     global monster
 
-    enemy = random.randint(1,3)
-    if enemy == 1:
-        monster = Goblin(1)
-    elif enemy == 2:
-        monster = Hobgoblin(1)
-    elif enemy == 3:
-        monster = Ogre(1)
-    
+    monster = Goblin(1)    
 
     def __init__(self,game,options={}):
         # super().__init__(screen)

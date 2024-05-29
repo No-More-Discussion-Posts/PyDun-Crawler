@@ -16,12 +16,10 @@ class Monster(Entity):
 
 class Goblin(Monster):
     def __init__(self, lvl):
-        #The lvl variable should be influenced by the global turn timer
         self.name = 'Goblin'
-        self.max_hp = 10 + (2 * lvl)
-        self.hp = 10 + (2 * lvl)
-        self.atk = 2 * lvl
-        #self.dex = 2.5 * lvl
+        self.max_hp = 5 + (1 * lvl)
+        self.hp = 5 + (1 * lvl)
+        self.atk = 1 * lvl
 
 class Hobgoblin(Monster):
     def __init__(self, lvl):
