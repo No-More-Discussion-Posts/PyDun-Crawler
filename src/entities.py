@@ -1,4 +1,5 @@
 import random
+from inventory import Inventory
 
 class Goblin:
     def __init__(self, lvl):
@@ -32,6 +33,7 @@ class Player:
         self.hp = 20
         self.atk = 3 * lvl
         #self.dex = 2 * lvl
+        self.inventory = Inventory()
 
 
 def miss_hit(player_dex, enemy_dex):
