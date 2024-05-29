@@ -1,6 +1,12 @@
 import random
-import pygame as pg
-class Goblin:
+import pygame as pg #TODO: make consistent
+
+
+class Monster:
+    def __init__(self,):
+        pass
+
+class Goblin(Monster):
     def __init__(self, lvl):
         #The lvl variable should be influenced by the global turn timer
         self.name = 'Goblin'
@@ -9,7 +15,7 @@ class Goblin:
         self.atk = 2 * lvl
         #self.dex = 2.5 * lvl
 
-class Hobgoblin:
+class Hobgoblin(Monster):
     def __init__(self, lvl):
         self.name = 'HobGoblin'
         self.max_hp = 10 + (5 * lvl)
@@ -17,7 +23,7 @@ class Hobgoblin:
         self.atk = 4 * lvl
         #self.dex = 1 * lvl
 
-class Ogre:
+class Ogre(Monster):
     def __init__(self, lvl):
         self.name = 'Ogre'
         self.max_hp = 20 + (5 * lvl)
