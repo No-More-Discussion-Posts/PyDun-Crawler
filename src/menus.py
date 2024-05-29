@@ -98,7 +98,13 @@ class BattleMenu():
         self.run()
 
     def start_combat(self):
-         self.monster = Goblin(self.game)
+         num = random.randint(1, 3)
+         if num == 1:
+            self.monster = Goblin(self.game)
+         if num == 2:
+            self.monster = HobGoblin(self.game)
+         if num == 3:
+            self.monster = Ogre(self.game)
          self.player.update()
 
     def run(self):
@@ -149,23 +155,22 @@ class BattleMenu():
                      if defend.butt_rect.collidepoint(e.pos):
                           print('defend')
                      if run.butt_rect.collidepoint(e.pos):
-                          global enemy
-                          enemy = random.randint(1,3)
+                          self.player.game.update()
                           self.running = False
                      if items.butt_rect.collidepoint(e.pos):
-                          print('Inventory')
+                          print(player.inventory.inventory)
                 self.handle_input(e)
 
     global combat
     def combat(self, player, monster):
          #Just a basic Combat system can be better later
-         player.game.update()
          player.hp = player.hp - monster.atk
          monster.hp = monster.hp - player.atk
          if player.hp <= 0:
               pygame.quit()
               sys.exit()
          elif monster.hp <= 0:
+              player.game.update()
               print(monster.item)
               player.inventory.update_item(monster.item, 1)
               print(player.inventory.inventory)
