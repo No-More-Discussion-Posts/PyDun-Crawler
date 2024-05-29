@@ -7,7 +7,7 @@ class Engine:
     def __init__(self):
         self.turn = 0
         self.running = False
-        self.player = Player("Bilbo",1) # TODO: Character creation?
+        self.player = Player("Bilbo",1,self) # TODO: Character creation?
         # self.enemies = pygame.sprite.LayeredUpdates()
         self.enemies = []
 
@@ -16,9 +16,9 @@ class Engine:
            Initiated by player movement/action in battle.
         '''
         self.turn += 1
-        self.player.update()
-        for enemy in self.enemies:
-             enemy.update()
+        # self.player.update()
+        # for enemy in self.enemies:
+        #      enemy.update()
 
     def events(self):
         '''Manage events such as keypress, mouse clicks, etc.''' 
@@ -35,8 +35,16 @@ class Engine:
         '''Draw to the screen'''
         self.screen.fill('white')
         self.Test_Grid()
-        pygame.display.flip()
-    
+        self.show_turn()
+        pygame.display.update()
+
+    def show_turn(self):
+        font = pygame.font.get_default_font()
+        FONT = pygame.font.Font(font,TILE_SIZE)
+        turn = FONT.render(str(self.turn),False,'black')
+        self.screen.blit(turn,(20,20))
+        # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
+
     def run(self):
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))

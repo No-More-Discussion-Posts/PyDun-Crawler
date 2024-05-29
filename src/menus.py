@@ -96,13 +96,14 @@ class BattleMenu():
         monster = Hobgoblin(1)
     elif enemy == 3:
         monster = Ogre(1)
-    player = Player('Bob', 1)
+    
 
     def __init__(self,game,options={}):
         # super().__init__(screen)
         self.game = game
         self.options = options
         self.DEFAULT_FONT = pygame.font.get_default_font()
+        self.player = game.player
         self.run()
 
     def run(self):
@@ -122,9 +123,9 @@ class BattleMenu():
             self.game.screen.blit(FONT.render(f"{monster.hp}/{monster.max_hp}",False,"black"),(20,45))
 
             #Added player name and hp
-            text2 = player.name
+            text2 = self.player.name
             self.game.screen.blit(FONT.render(text2, False,'blue'),(340,160))
-            self.game.screen.blit(FONT.render(f"{player.hp}/{player.max_hp}", False, "blue"), (340,185))
+            self.game.screen.blit(FONT.render(f"{self.player.hp}/{self.player.max_hp}", False, "blue"), (340,185))
 
             #Button Testing
             fight = button('Fight', 340, 210)
@@ -143,7 +144,7 @@ class BattleMenu():
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
                      if fight.butt_rect.collidepoint(e.pos):
-                          combat(self, player, monster)
+                          combat(self, self.player, monster)
                      if defend.butt_rect.collidepoint(e.pos):
                           print('defend')
                      if run.butt_rect.collidepoint(e.pos):
@@ -155,6 +156,7 @@ class BattleMenu():
     global combat
     def combat(self, player, monster):
          #Just a basic Combat system can be better later
+         player.game.update()
          player.hp = player.hp - monster.atk
          monster.hp = monster.hp - player.atk
          if player.hp <= 0:
