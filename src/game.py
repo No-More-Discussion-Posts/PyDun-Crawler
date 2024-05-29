@@ -1,5 +1,6 @@
 """Main Game Loop"""
 import pygame
+import random
 from menus import PauseMenu, BattleMenu
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 360
