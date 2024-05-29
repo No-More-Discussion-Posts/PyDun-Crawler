@@ -1,9 +1,3 @@
-class Entity:
-    def __init__(self,name,max_hp):
-        self.name = name
-        self.max_hp = max_hp
-        self.hp = max_hp
-
 class Goblin:
     def __init__(self, lvl):
         #The lvl variable should be influenced by the global turn timer

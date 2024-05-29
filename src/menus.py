@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 from input_handlers import OPTIONS, Option
 from entities import *
+from button import *
 from typing import Tuple
 from random import randint
 class Menu:
@@ -115,15 +116,48 @@ class BattleMenu():
                  monster = Ogre(1)
             player = Player('Bob', 1)
 
-            
+
             text = monster.name
             self.screen.blit(FONT.render(text,False,'black'),(20,20))
             self.screen.blit(FONT.render(f"{monster.hp}/{monster.max_hp}",False,"black"),(20,45))
-           
+
+            #Added player name and hp
+            text2 = player.name
+            self.screen.blit(FONT.render(text2, False,'blue'),(340,160))
+            self.screen.blit(FONT.render(f"{player.hp}/{player.max_hp}", False, "blue"), (340,185))
+
+            #Button Testing
+            fight = button('Fight', 340, 210)
+            fight.button_surface.blit(fight.text, fight.rect)
+            self.screen.blit(fight.button_surface, (fight.butt_rect.x, fight.butt_rect.y))
+
+            defend = button('Defend', 485, 210)
+            defend.button_surface.blit(defend.text, defend.rect)
+            self.screen.blit(defend.button_surface, (defend.butt_rect.x, defend.butt_rect.y))
+
+            run = button("Run", 340, 280)
+            run.button_surface.blit(run.text, run.rect)
+            self.screen.blit(run.button_surface, (run.butt_rect.x, run.butt_rect.y))
            
             pygame.display.flip()  
             for e in pygame.event.get():
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                     if fight.butt_rect.collidepoint(e.pos):
+                          self.handle_button_click(1)
+                     if defend.butt_rect.collidepoint(e.pos):
+                          self.handle_button_click(2)
+                     if run.butt_rect.collidepoint(e.pos):
+                          self.handle_button_click(3)
                 self.handle_input(e)
+
+    def handle_button_click(self, but):
+         if but == 1:
+              print("Fight")
+         elif but == 2:
+              print("Defend")
+         elif but == 3:
+              print("Run")
+              self.running = False
 
     def handle_input(self,input) -> None:
             if input.type == pygame.KEYDOWN:
