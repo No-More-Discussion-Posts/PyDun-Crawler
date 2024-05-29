@@ -1,37 +1,14 @@
 """Main Game Loop"""
-import pygame
-import random
-from menus import PauseMenu, BattleMenu
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 360
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+# pause menu allow for inventory view
+#  --- Save?
 
-# Colors. Move to separate file or use a color package in the future
-WHITE = (255,255,255)
-BLACK = (0,0,0)
-GREEN = (0,255,0)
-BG_COLOR = BLACK
+import pygame
+from engine import Engine
+
 def main()->None:
     '''Main game loop'''
-    pygame.display.set_caption("Dungeon Crawler")
-    running = True
-    while running:
-        events = pygame.event.get()
-        screen.fill(BG_COLOR)
-        pygame.draw.circle(screen,"red",(SCREEN_WIDTH/2,SCREEN_HEIGHT/2),20)
-        for event in events:
-            # print(event)
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_p:
-                    PauseMenu(screen)
-                if event.key == pygame.K_b:
-                    BattleMenu(screen)
-        pygame.display.update()
-    # End game loop
-    pygame.quit()
-
+    game = Engine()
+    game.run()
+   
 if __name__ == "__main__":
     main()

@@ -8,13 +8,14 @@ from button import *
 from typing import Tuple
 from random import randint
 class Menu:
-    def __init__(self,screen,options):
-        self.screen=screen
+    def __init__(self,game,options):
+        self.game = game
         self.options = options
         self.previous_caption = pygame.display.get_caption()[0] 
         self.DEFAULT_FONT = pygame.font.get_default_font()
         self.runnable_opts = []
         self.handlers = []
+        # TODO: Add a layer option or some what to say if this will just overlay another menu or if it takes over the screen
 
     def handle_options(self) -> None:
         for option in self.options:
@@ -26,7 +27,7 @@ class Menu:
                 pos = option.data['pos']
                 font = option.data['font'] if 'font' in option.data else self.DEFAULT_FONT
                 FONT = pygame.font.Font(font,size)
-                self.runnable_opts.append(lambda: self.screen.blit(FONT.render(text,False,(255,255,255)),pos))
+                self.runnable_opts.append(lambda: self.game.screen.blit(FONT.render(text,False,(255,255,255)),pos))
             elif option.type == OPTIONS.HANDLER:
                  event_type = option.data.get('event_type')
                  if event_type in [pygame.KEYDOWN,pygame.KEYUP]:
@@ -52,20 +53,17 @@ class Menu:
     def run(self) -> None:
         self.running = True
         while self.running:
-            self.screen.fill((0,0,0))
+            self.game.screen.fill((0,0,0))
             self.run_opts() 
             pygame.display.update()  
             for e in pygame.event.get():
                 self.handle_input(e)
-
-
-    def __del__(self):
-        '''Close operations for Menu class'''
         pygame.display.set_caption(self.previous_caption)
 
+
 class PauseMenu(Menu):
-    def __init__(self,screen,options=[]):
-        super().__init__(screen,options)
+    def __init__(self,game,options=[]):
+        super().__init__(game,options)
         self.options = options
         self.options.append(Option(OPTIONS.CAPTION,"Paused"))
         self.options.append(Option(OPTIONS.PRINT, dict(
@@ -98,58 +96,59 @@ class BattleMenu():
         monster = Hobgoblin(1)
     elif enemy == 3:
         monster = Ogre(1)
-    player = Player('Bob', 1)
+    
 
-    def __init__(self,screen,options={}):
+    def __init__(self,game,options={}):
         # super().__init__(screen)
-        self.screen = screen
+        self.game = game
         self.options = options
         self.DEFAULT_FONT = pygame.font.get_default_font()
+        self.player = game.player
         self.run()
 
     def run(self):
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT,20)
         while self.running:
-            self.screen.fill("white")
-            height = self.screen.get_height();
-            width = self.screen.get_width()
+            self.game.screen.fill("white")
+            height = self.game.screen.get_height();
+            width = self.game.screen.get_width()
             # Create info areas
-            monster_info = pygame.draw.rect(self.screen, "black", [10, 10, 200, 100], 3,border_radius = 15)
-            player_info = pygame.draw.rect(self.screen,'blue',[width-310,height-210,300,200],3,border_radius = 15)        
+            monster_info = pygame.draw.rect(self.game.screen, "black", [10, 10, 200, 100], 3,border_radius = 15)
+            player_info = pygame.draw.rect(self.game.screen,'blue',[width-310,height-210,300,200],3,border_radius = 15)        
             
 
             text = monster.name
-            self.screen.blit(FONT.render(text,False,'black'),(20,20))
-            self.screen.blit(FONT.render(f"{monster.hp}/{monster.max_hp}",False,"black"),(20,45))
+            self.game.screen.blit(FONT.render(text,False,'black'),(20,20))
+            self.game.screen.blit(FONT.render(f"{monster.hp}/{monster.max_hp}",False,"black"),(20,45))
 
             #Added player name and hp
-            text2 = player.name
-            self.screen.blit(FONT.render(text2, False,'blue'),(340,160))
-            self.screen.blit(FONT.render(f"{player.hp}/{player.max_hp}", False, "blue"), (340,185))
+            text2 = self.player.name
+            self.game.screen.blit(FONT.render(text2, False,'blue'),(340,160))
+            self.game.screen.blit(FONT.render(f"{self.player.hp}/{self.player.max_hp}", False, "blue"), (340,185))
 
             #Button Testing
             fight = button('Fight', 340, 210)
             fight.button_surface.blit(fight.text, fight.rect)
-            self.screen.blit(fight.button_surface, (fight.butt_rect.x, fight.butt_rect.y))
+            self.game.screen.blit(fight.button_surface, (fight.butt_rect.x, fight.butt_rect.y))
 
             defend = button('Defend', 485, 210)
             defend.button_surface.blit(defend.text, defend.rect)
-            self.screen.blit(defend.button_surface, (defend.butt_rect.x, defend.butt_rect.y))
+            self.game.screen.blit(defend.button_surface, (defend.butt_rect.x, defend.butt_rect.y))
 
             run = button("Run", 485, 280)
             run.button_surface.blit(run.text, run.rect)
-            self.screen.blit(run.button_surface, (run.butt_rect.x, run.butt_rect.y))
+            self.game.screen.blit(run.button_surface, (run.butt_rect.x, run.butt_rect.y))
 
             items = button("Inventory", 340, 280)
             items.button_surface.blit(items.text, items.rect)
-            self.screen.blit(items.button_surface, (items.butt_rect.x, items.butt_rect.y))
+            self.game.screen.blit(items.button_surface, (items.butt_rect.x, items.butt_rect.y))
            
             pygame.display.flip()  
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
                      if fight.butt_rect.collidepoint(e.pos):
-                          combat(self, player, monster)
+                          combat(self, self.player, monster)
                      if defend.butt_rect.collidepoint(e.pos):
                           print('defend')
                      if run.butt_rect.collidepoint(e.pos):
@@ -163,6 +162,7 @@ class BattleMenu():
     global combat
     def combat(self, player, monster):
          #Just a basic Combat system can be better later
+         player.game.update()
          player.hp = player.hp - monster.atk
          monster.hp = monster.hp - player.atk
          if player.hp <= 0:
@@ -183,7 +183,7 @@ class BattleMenu():
 
 # class InfoBox:
 #     def __init__(self,screen,position:Tuple[int,int],height:int=-1,width:int=-1):
-#         self.screen = screen
+#         self.game.screen = screen
 #         self.x, self.y  = position
 #         self.FONT_STYLE = pygame.font.get_default_font()
 #         self.text = []
@@ -207,10 +207,10 @@ class BattleMenu():
 #         self.text.append(dict(text=new_text,size=(h,w)))
 
 #     def display(self):
-#         border = pygame.draw.rect(self.screen, "black", [self.x,self.y, self.width, self.height], 3,border_radius = 15)      
+#         border = pygame.draw.rect(self.game.screen, "black", [self.x,self.y, self.width, self.height], 3,border_radius = 15)      
 #         x = self.x + self.border_buffer
 #         y = self.y + self.border_buffer
 #         for text in self.text:
-#             self.screen.blit(text['text'],(x,y))
-#             self.screen.blit(FONT.render(f"{monster.hp}/{monster.max_hp}",False,"black"),(20,45))
+#             self.game.screen.blit(text['text'],(x,y))
+#             self.game.screen.blit(FONT.render(f"{monster.hp}/{monster.max_hp}",False,"black"),(20,45))
 #             x+=text.
