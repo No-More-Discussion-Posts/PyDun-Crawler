@@ -85,8 +85,20 @@ class PauseMenu(Menu):
             
 class BattleMenu():
     #New enemy global variable to randomly assign which enemy type is created
+    # Fill in the details
+    # Defining which enemy class to populate based of the psuedo random number generated
+    global player
     global enemy
-    enemy = randint(1,3)
+    global monster
+
+    enemy = random.randint(1,3)
+    if enemy == 1:
+        monster = Goblin(1)
+    elif enemy == 2:
+        monster = Hobgoblin(1)
+    elif enemy == 3:
+        monster = Ogre(1)
+    player = Player('Bob', 1)
 
     def __init__(self,screen,options={}):
         # super().__init__(screen)
@@ -104,18 +116,8 @@ class BattleMenu():
             width = self.screen.get_width()
             # Create info areas
             monster_info = pygame.draw.rect(self.screen, "black", [10, 10, 200, 100], 3,border_radius = 15)
-            player_info = pygame.draw.rect(self.screen,'blue',[width-310,height-210,300,200],3,border_radius = 15)
-
-            # Fill in the details
-            # Defining which enemy class to populate based of the psuedo random number generated
-            if enemy == 1:
-                 monster = Goblin(1)
-            elif enemy == 2:
-                 monster = Hobgoblin(1)
-            elif enemy == 3:
-                 monster = Ogre(1)
-            player = Player('Bob', 1)
-
+            player_info = pygame.draw.rect(self.screen,'blue',[width-310,height-210,300,200],3,border_radius = 15)        
+            
 
             text = monster.name
             self.screen.blit(FONT.render(text,False,'black'),(20,20))
@@ -143,21 +145,27 @@ class BattleMenu():
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
                      if fight.butt_rect.collidepoint(e.pos):
-                          self.handle_button_click(1)
+                          combat(self, player, monster)
                      if defend.butt_rect.collidepoint(e.pos):
-                          self.handle_button_click(2)
+                          print('defend')
                      if run.butt_rect.collidepoint(e.pos):
-                          self.handle_button_click(3)
+                          global enemy
+                          enemy = random.randint(1,3)
+                          self.running = False
                 self.handle_input(e)
 
-    def handle_button_click(self, but):
-         if but == 1:
-              print("Fight")
-         elif but == 2:
-              print("Defend")
-         elif but == 3:
-              print("Run")
+    global combat
+    def combat(self, player, monster):
+         #Just a basic Combat system can be better later
+         player.hp = player.hp - monster.atk
+         monster.hp = monster.hp - player.atk
+         if player.hp <= 0:
+              pygame.quit()
+              sys.exit()
+         elif monster.hp <= 0:
               self.running = False
+              
+
 
     def handle_input(self,input) -> None:
             if input.type == pygame.KEYDOWN:
