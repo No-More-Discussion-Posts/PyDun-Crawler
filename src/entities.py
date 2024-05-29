@@ -1,38 +1,58 @@
 import random
-import pygame as pg
-class Goblin:
-    def __init__(self, lvl):
-        #The lvl variable should be influenced by the global turn timer
+from inventory import Inventory
+import pygame as pg #TODO: make consistent
+
+items = {1: 'S HP Pot', 2: 'M HP Pot', 3: 'L HP Pot'}
+
+
+
+class Entity:
+
+    def update(self):
+        '''All entities need an update method to be called per game turn.'''
+        pass
+
+class Monster(Entity):
+    def __init__(self,):
+        pass
+
+class Goblin(Monster):
+    def __init__(self, game):
         self.name = 'Goblin'
-        self.max_hp = 10 + (2 * lvl)
-        self.hp = 10 + (2 * lvl)
-        self.atk = 2 * lvl
-        #self.dex = 2.5 * lvl
-
-class Hobgoblin:
-    def __init__(self, lvl):
-        self.name = 'HobGoblin'
-        self.max_hp = 10 + (5 * lvl)
-        self.hp = 10 + (5 * lvl)
-        self.atk = 4 * lvl
-        #self.dex = 1 * lvl
-
-class Ogre:
-    def __init__(self, lvl):
-        self.name = 'Ogre'
-        self.max_hp = 20 + (5 * lvl)
-        self.hp = 20 + (5 * lvl)
-        self.atk = 6 * lvl
-        #self.dex = .5 * lvl
-
-class Player:
-    def __init__(self, name, lvl, game=None,x:int=0,y:int=0):
-        self.name = name
-        self.max_hp = 20
-        self.hp = 20
-        self.atk = 3 * lvl
-        #self.dex = 2 * lvl
         self.game = game
+        self.lvl = int(game.turn * .25)
+        self.max_hp = 5 + (1 * self.lvl)
+        self.hp = 5 + (1 * self.lvl)
+        self.atk = 1 + (1 * self.lvl)
+        self.item = items[random.randint(1, 3)]
+        
+class HobGoblin(Monster):
+    def __init__(self, game):
+        self.name = 'HobGoblin'
+        self.game = game
+        self.lvl = int(game.turn * .25)
+        self.max_hp = 7 + (1 * self.lvl)
+        self.hp = 7 + (1 * self.lvl)
+        self.atk = 2 + (1 * self.lvl)
+        self.item = items[random.randint(1, 3)]
+
+class Ogre(Monster):
+    def __init__(self, game):
+        self.name = 'Ogre'
+        self.game = game
+        self.lvl = int(game.turn * .25)
+        self.max_hp = 12 + (1 * self.lvl)
+        self.hp = 12 + (1 * self.lvl)
+        self.atk = 4 + (1 * self.lvl)
+        self.item = items[random.randint(1, 3)]
+
+class Player(Entity):
+    def __init__(self, name, game,x:int=0,y:int=0):
+        self.name = name
+        self.game = game
+        self.lvl = int(game.turn * .4)
+        #self.dex = 2 * lvl
+        self.inventory = Inventory()
         # self.image = pg.surface()
         # self.image.fill((255,255, 0))
         # self.rect = self.image.get_rect()
@@ -43,8 +63,24 @@ class Player:
         self.y += dy
 
     def update(self):
-        self.rect.x = self.x * 20
-        self.rect.y = self.y * 20
+        self.lvl = int(self.game.turn * .4)
+        self.atk = self.atk
+        self.hp = self.hp
+        self.max_hp = self.max_hp
+        #self.rect.x = self.x * 20
+        #self.rect.y = self.y * 20
+
+    @property
+    def lvl(self):
+        return self._lvl
+    
+    @lvl.setter
+    def lvl(self, value):
+        self._lvl = value
+        self.max_hp = 20 + (2 * int(self.lvl))
+        self.hp = self.max_hp
+        self.atk = 1 + (1 * int(self.lvl))
+    
 
 def miss_hit(player_dex, enemy_dex):
     pdex = player_dex
