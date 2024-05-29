@@ -2,6 +2,8 @@ import random
 from inventory import Inventory
 import pygame as pg #TODO: make consistent
 
+items = {1: 'Health Potion', 2: 'Attack Potion', 3: 'Defense Potion'}
+
 
 
 class Entity:
@@ -22,6 +24,7 @@ class Goblin(Monster):
         self.max_hp = 5 + (1 * self.lvl)
         self.hp = 5 + (1 * self.lvl)
         self.atk = 1 + (1 * self.lvl)
+        self.item = items[random.randint(1, 3)]
 
 class Player(Entity):
     def __init__(self, name, game,x:int=0,y:int=0):
