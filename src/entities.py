@@ -75,6 +75,7 @@ class Player(Entity):
        
 
     def movement(self, dx, dy):
+        self.game.update()
         self.x += dx * TILE_SIZE
         self.y += dy * TILE_SIZE
         self.rect.x = self.x
