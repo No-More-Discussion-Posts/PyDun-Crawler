@@ -91,6 +91,12 @@ class Player(Entity):
         self.max_hp = self.max_hp
         # self.rect.x = self.x * TILE_SIZE
         # self.rect.y = self.y * TILE_SIZE
+    
+    def check_collisions(self, x, y):
+        #checks the player sprite(self) and and sprite in the blocks sprite group or overlap
+        if pg.sprite.spritecollide(self, self.game.blocks, False):
+            #if there is overlap between player and wall sprites, the player the designated spot
+            self.movement(x, y)
 
     @property
     def lvl(self):
@@ -155,7 +161,7 @@ class Wall(pg.sprite.Sprite):
 
         self.game = game
         self._layer = Tile_Layer
-        self.groups = self.game.all_sprites
+        self.groups = self.game.blocks
         pg.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * TILE_SIZE
