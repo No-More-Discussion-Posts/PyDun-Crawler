@@ -163,7 +163,6 @@ class BattleMenu():
                                pass
                           else:
                             self.inventory_screen()
-                          print(self.player.inventory.inventory)
                 self.handle_input(e)
 
     global combat
@@ -184,9 +183,7 @@ class BattleMenu():
               sys.exit()
          elif monster.hp <= 0:
               player.game.update()
-              print(monster.item)
               player.inventory.update_item(monster.item, 1)
-              print(player.inventory.inventory)
               self.running = False
 
     def inventory_screen(self):
