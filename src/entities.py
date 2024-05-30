@@ -101,7 +101,7 @@ class Player(Entity):
         self._lvl = value
         self.max_hp = 20
         self.hp = self.max_hp
-        self.atk = 1 + (1 * int(self.lvl))
+        self.atk = 2
 
 
 """
