@@ -3,6 +3,7 @@ import sys
 from entities import *
 from menus import PauseMenu, BattleMenu
 from config import *
+from random import randint
 
 
 class Engine:
@@ -17,7 +18,7 @@ class Engine:
         """Make updates every turn such as monster movement, etc.
         Initiated by player movement/action in battle.
         """
-        self.turn += 1
+        #self.turn += 1
         self.player.update()
         # for enemy in self.enemies:
         #      enemy.update()
@@ -38,20 +39,24 @@ class Engine:
                     #checks for player and wall overlap
                     #if true, moves player back 1
                     self.player.check_collisions(0, 1)
+                    self.turn += 1
                 if event.key == pygame.K_s:
                     self.player.movement(0, 1)
                     self.player.check_collisions(0, -1)
+                    self.turn += 1
                 if event.key == pygame.K_a:
                     self.player.movement(-1, 0)
                     self.player.check_collisions(1, 0)
+                    self.turn += 1
                 if event.key == pygame.K_d:
                     self.player.movement(1, 0)
                     self.player.check_collisions(-1, 0)
+                    self.turn += 1
 
     def new_game(self):
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
-        self.enemies = pygame.sprite.LayeredUpdates()
+        self.monsters = pygame.sprite.LayeredUpdates()
         self.player = Player("bilbo", self, 17, 9)
         for x in tile_map[0]:
             self.wall = Wall(self, x, 0)
@@ -59,6 +64,13 @@ class Engine:
         for y in tile_map[1]:
             self.wall = Wall(self, 0, y)
             self.wall = Wall(self, 31, y)
+        num = random.randint(1, 3)
+        if num == 1:
+            self.monster = Goblin(self)
+        if num == 2:
+            self.monster = HobGoblin(self)
+        if num == 3:
+            self.monster = Ogre(self)
 
     def draw(self):
         """Draw to the screen"""

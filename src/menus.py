@@ -7,6 +7,7 @@ from entities import *
 from button import *
 from typing import Tuple
 from random import randint
+from engine import *
 import time
 
 
@@ -110,7 +111,7 @@ class PauseMenu(Menu):
         self.run()
 
 
-class BattleMenu:
+class BattleMenu():
     # New enemy global variable to randomly assign which enemy type is created
     # Fill in the details
     # Defining which enemy class to populate based of the psuedo random number generated
@@ -121,23 +122,28 @@ class BattleMenu:
         self.options = options
         self.DEFAULT_FONT = pygame.font.get_default_font()
         self.player = game.player
+        self.monster = game.monster #added since enemy is generated in overworld. -Roland
         self.run()
 
+    """ #### DEPRECATED -Roland ####
     def start_combat(self):
+        
         num = random.randint(1, 3)
         if num == 1:
-            self.monster = Goblin()
+            self.monster = Goblin(self)
         if num == 2:
-            self.monster = HobGoblin()
+            self.monster = HobGoblin(self)
         if num == 3:
-            self.monster = Ogre()
-        self.player.update()
+            self.monster = Ogre(self)
 
+        self.player.update()
+    """
+        
     def run(self):
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
 
-        self.start_combat()
+        #self.start_combat()  #commented out for testing random enemy generation on overworld. -Roland
 
         while self.running:
             self.game.screen.fill("white")
@@ -215,6 +221,7 @@ class BattleMenu:
         elif self.monster.hp <= 0:
             self.player.game.update()
             self.player.inventory.update_item(self.monster.item, 1)
+            self.monster.kill()   #added this to remove monster from overworld after battle is won. -Roland
             self.running = False
 
     def inventory_screen(self):
