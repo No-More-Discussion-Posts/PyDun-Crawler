@@ -7,6 +7,7 @@ from entities import *
 from button import *
 from typing import Tuple
 from random import randint
+import time
 class Menu:
     def __init__(self,game,options):
         self.game = game
@@ -100,11 +101,11 @@ class BattleMenu():
     def start_combat(self):
          num = random.randint(1, 3)
          if num == 1:
-            self.monster = Goblin(self.game)
+            self.monster = Goblin()
          if num == 2:
-            self.monster = HobGoblin(self.game)
+            self.monster = HobGoblin()
          if num == 3:
-            self.monster = Ogre(self.game)
+            self.monster = Ogre()
          self.player.update()
 
     def run(self):
@@ -153,9 +154,9 @@ class BattleMenu():
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
                      if fight.butt_rect.collidepoint(e.pos):
-                          combat(self, self.player, self.monster)
+                          combat(self, self.player, self.monster, False)
                      if defend.butt_rect.collidepoint(e.pos):
-                          print('defend')
+                          combat(self, self.player, self.monster, True)
                      if run.butt_rect.collidepoint(e.pos):
                           self.player.game.update()
                           self.running = False
@@ -168,10 +169,18 @@ class BattleMenu():
                 self.handle_input(e)
 
     global combat
-    def combat(self, player, monster):
+    def combat(self, player, monster, defend):
          #Just a basic Combat system can be better later
-         player.hp = player.hp - monster.atk
-         monster.hp = monster.hp - player.atk
+         if defend == True:
+              player.hp = player.hp - int(monster.atk / 2)
+              parry_chance = random.randint(1,2)
+              if parry_chance == 2:
+                   monster.hp = monster.hp - player.atk
+              else:
+                   pass
+         elif defend == False:
+              monster.hp = monster.hp - player.atk
+              player.hp = player.hp - monster.atk
          if player.hp <= 0:
               pygame.quit()
               sys.exit()
@@ -202,7 +211,7 @@ class BattleMenu():
             self.game.screen.blit(FONT.render(text2, False,'blue'),(340,160))
             self.game.screen.blit(FONT.render(f"{self.player.hp}/{self.player.max_hp}", False, "blue"), (340,185))
 
-            #Button Testing
+            #Inventory Testing
             i = 1
             for item in self.player.inventory.inventory:
                  if i == 1:

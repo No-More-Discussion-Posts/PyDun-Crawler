@@ -17,33 +17,33 @@ class Monster(Entity):
         pass
 
 class Goblin(Monster):
-    def __init__(self, game):
+    def __init__(self):
         self.name = 'Goblin'
-        self.game = game
-        self.lvl = int(game.turn * .25)
-        self.max_hp = 5 + (1 * self.lvl)
-        self.hp = 5 + (1 * self.lvl)
-        self.atk = 1 + (1 * self.lvl)
+        #self.game = game
+        #self.lvl = int(game.turn * .25)
+        self.max_hp = 10
+        self.hp = 10
+        self.atk = 1
         self.item = items[random.randint(1, 3)]
         
 class HobGoblin(Monster):
-    def __init__(self, game):
+    def __init__(self):
         self.name = 'HobGoblin'
-        self.game = game
-        self.lvl = int(game.turn * .25)
-        self.max_hp = 7 + (1 * self.lvl)
-        self.hp = 7 + (1 * self.lvl)
-        self.atk = 2 + (1 * self.lvl)
+        #self.game = game
+        #self.lvl = int(game.turn * .25)
+        self.max_hp = 15
+        self.hp = 15
+        self.atk = 2
         self.item = items[random.randint(1, 3)]
 
 class Ogre(Monster):
-    def __init__(self, game):
+    def __init__(self):
         self.name = 'Ogre'
-        self.game = game
-        self.lvl = int(game.turn * .25)
-        self.max_hp = 12 + (1 * self.lvl)
-        self.hp = 12 + (1 * self.lvl)
-        self.atk = 4 + (1 * self.lvl)
+        #self.game = game
+        #self.lvl = int(game.turn * .25)
+        self.max_hp = 20
+        self.hp = 20
+        self.atk = 4
         self.item = items[random.randint(1, 3)]
 
 class Player(Entity):
@@ -77,9 +77,9 @@ class Player(Entity):
     @lvl.setter
     def lvl(self, value):
         self._lvl = value
-        self.max_hp = 20 + (2 * int(self.lvl))
+        self.max_hp = 20
         self.hp = self.max_hp
-        self.atk = 1 + (1 * int(self.lvl))
+        self.atk = 2
     
 
 def miss_hit(player_dex, enemy_dex):
