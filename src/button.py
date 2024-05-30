@@ -23,12 +23,14 @@ class Button:
             )
         )
         self.butt_rect = pygame.Rect(x, y, 135, 60)
-        self.button_surface.blit(self.text, self.rect)
-        self.game.screen.blit(self.button_surface, (self.butt_rect.x, self.butt_rect.y))
         self.on_click = on_click
     
     def set_on_click(self,action):
         self.on_click = action
+
+    def show(self):
+        self.button_surface.blit(self.text, self.rect)
+        self.game.screen.blit(self.button_surface, (self.butt_rect.x, self.butt_rect.y))
 
     def click(self):
         self.on_click()

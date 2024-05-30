@@ -114,9 +114,6 @@ class BattleMenu:
     # New enemy global variable to randomly assign which enemy type is created
     # Fill in the details
     # Defining which enemy class to populate based of the psuedo random number generated
-    global player
-    global enemy
-    global monster
 
     def __init__(self, game, options={}):
         # super().__init__(screen)
@@ -175,20 +172,21 @@ class BattleMenu:
 
             # Button Testing
             fight = Button("Fight", self.game, 340, 210)
-
+            fight.show()
             defend = Button("Defend", self.game, 485, 210)
-
+            defend.show()
             run = Button("Run", self.game, 485, 280)
-
+            run.show()
             items = Button("Inventory", self.game, 340, 280)
+            items.show()
 
             pygame.display.flip()
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     if fight.butt_rect.collidepoint(e.pos):
-                        combat(self, self.player, self.monster, False)
+                        self.combat(defend=False)
                     if defend.butt_rect.collidepoint(e.pos):
-                        combat(self, self.player, self.monster, True)
+                        self.combat(defend=True)
                     if run.butt_rect.collidepoint(e.pos):
                         self.player.game.update()
                         self.running = False
@@ -199,26 +197,24 @@ class BattleMenu:
                             self.inventory_screen()
                 self.handle_input(e)
 
-    global combat
-
-    def combat(self, player, monster, defend):
+    def combat(self, defend):
         # Just a basic Combat system can be better later
         if defend == True:
-            player.hp = player.hp - int(monster.atk / 2)
+            self.player.hp = self.player.hp - int(self.monster.atk / 2)
             parry_chance = random.randint(1, 2)
             if parry_chance == 2:
-                monster.hp = monster.hp - player.atk
+                self.monster.hp = self.monster.hp - self.player.atk
             else:
                 pass
         elif defend == False:
-            monster.hp = monster.hp - player.atk
-            player.hp = player.hp - monster.atk
-        if player.hp <= 0:
+            self.monster.hp = self.monster.hp - self.player.atk
+            self.player.hp = self.player.hp - self.monster.atk
+        if self.player.hp <= 0:
             pygame.quit()
             sys.exit()
-        elif monster.hp <= 0:
-            player.game.update()
-            player.inventory.update_item(monster.item, 1)
+        elif self.monster.hp <= 0:
+            self.player.game.update()
+            self.player.inventory.update_item(self.monster.item, 1)
             self.running = False
 
     def inventory_screen(self):
