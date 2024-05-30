@@ -132,23 +132,17 @@ class BattleMenu():
             self.game.screen.blit(FONT.render(f"{self.player.hp}/{self.player.max_hp}", False, "blue"), (340,185))
 
             #Button Testing
-            fight = button('Fight', 340, 210)
-            fight.button_surface.blit(fight.text, fight.rect)
-            self.game.screen.blit(fight.button_surface, (fight.butt_rect.x, fight.butt_rect.y))
+            fight = button('Fight', self.game, 340, 210)
+            fight.show
 
-            defend = button('Defend', 485, 210)
-            defend.button_surface.blit(defend.text, defend.rect)
-            self.game.screen.blit(defend.button_surface, (defend.butt_rect.x, defend.butt_rect.y))
+            defend = button('Defend', self.game, 485, 210)
+            defend.show
 
-            run = button("Run", 485, 280)
-            run.button_surface.blit(run.text, run.rect)
-            self.game.screen.blit(run.button_surface, (run.butt_rect.x, run.butt_rect.y))
+            run = button("Run", self.game, 485, 280)
+            run.show
 
-            items = button("Inventory", 340, 280)
-            items.button_surface.blit(items.text, items.rect)
-            self.game.screen.blit(items.button_surface, (items.butt_rect.x, items.butt_rect.y))
-
-            
+            items = button("Inventory", self.game, 340, 280)
+            items.show
            
             pygame.display.flip()  
             for e in pygame.event.get():
@@ -165,7 +159,6 @@ class BattleMenu():
                                pass
                           else:
                             self.inventory_screen()
-                          print(self.player.inventory.inventory)
                 self.handle_input(e)
 
     global combat
@@ -186,9 +179,7 @@ class BattleMenu():
               sys.exit()
          elif monster.hp <= 0:
               player.game.update()
-              print(monster.item)
               player.inventory.update_item(monster.item, 1)
-              print(player.inventory.inventory)
               self.running = False
 
     def inventory_screen(self):
@@ -216,33 +207,26 @@ class BattleMenu():
             for item in self.player.inventory.inventory:
                  if i == 1:
                       item1_text = f"{item}"
-                      item1 = button(f"{item}", 340, 210)
-                      item1.button_surface.blit(item1.text, item1.rect)
-                      self.game.screen.blit(item1.button_surface, (item1.butt_rect.x, item1.butt_rect.y))
-                      item2 = button("No Item", 485, 210)
-                      item2.button_surface.blit(item2.text, item2.rect)
-                      self.game.screen.blit(item2.button_surface, (item2.butt_rect.x, item2.butt_rect.y))
-                      item3 = button("No Item", 340, 280)
-                      item3.button_surface.blit(item3.text, item3.rect)
-                      self.game.screen.blit(item3.button_surface, (item3.butt_rect.x, item3.butt_rect.y))
+                      item1 = button(f"{item}", self.game, 340, 210)
+                      item1.show
+                      item2 = button("No Item", self.game, 485, 210)
+                      item2.show
+                      item3 = button("No Item", self.game, 340, 280)
+                      item3.show
                  if i == 2:
                       item2_text = f"{item}"
-                      item2 = button(f"{item}", 485, 210)
-                      item2.button_surface.blit(item2.text, item2.rect)
-                      self.game.screen.blit(item2.button_surface, (item2.butt_rect.x, item2.butt_rect.y))
-                      item3 = button("No Item", 340, 280)
-                      item3.button_surface.blit(item3.text, item3.rect)
-                      self.game.screen.blit(item3.button_surface, (item3.butt_rect.x, item3.butt_rect.y))
+                      item2 = button(f"{item}", self.game, 485, 210)
+                      item2.show
+                      item3 = button("No Item", self.game, 340, 280)
+                      item3.show
                  if i == 3:
                       item3_text = f"{item}"
-                      item3 = button(f"{item}", 340, 280)
-                      item3.button_surface.blit(item3.text, item3.rect)
-                      self.game.screen.blit(item3.button_surface, (item3.butt_rect.x, item3.butt_rect.y))
+                      item3 = button(f"{item}", self.game, 340, 280)
+                      item3.show
                  i += 1
 
-            retbutt = button("Close", 485, 280)
-            retbutt.button_surface.blit(retbutt.text, retbutt.rect)
-            self.game.screen.blit(retbutt.button_surface, (retbutt.butt_rect.x, retbutt.butt_rect.y))
+            retbutt = button("Close", self.game, 485, 280)
+            retbutt.show
 
             pygame.display.flip()
             for e in pygame.event.get():
