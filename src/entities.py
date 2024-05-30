@@ -2,6 +2,7 @@ import random
 from inventory import Inventory
 import pygame as pg  # TODO: make consistent
 from config import *
+from menus import *
 
 items = {1: "S HP Pot", 2: "M HP Pot", 3: "L HP Pot"}
 
@@ -13,9 +14,7 @@ class Entity(pg.sprite.Sprite):
 
 
 class Monster(Entity):
-    def __init__(
-        self,
-    ):
+    def __init__(self):
         pass
 
 
@@ -30,7 +29,7 @@ class Goblin(Monster):
         self.item = items[random.randint(1, 3)]
 
         #Sprite Generation Block
-        self.groups = self.game.all_sprites
+        self.groups = self.game.monsters
         pg.sprite.Sprite.__init__(self, self.groups)
         #random location on grid
         self.x = random.randint(1,30) * TILE_SIZE
@@ -57,7 +56,7 @@ class HobGoblin(Monster):
         self.item = items[random.randint(1, 3)]
 
         #Sprite Generation Block
-        self.groups = self.game.all_sprites
+        self.groups = self.game.monsters
         pg.sprite.Sprite.__init__(self, self.groups)
         #random location on grid
         self.x = random.randint(1,30) * TILE_SIZE
@@ -84,7 +83,7 @@ class Ogre(Monster):
         self.item = items[random.randint(1, 3)]
 
         #Sprite Generation Block
-        self.groups = self.game.all_sprites
+        self.groups = self.game.monsters
         pg.sprite.Sprite.__init__(self, self.groups)
         #random location on grid
         self.x = random.randint(1,30) * TILE_SIZE
@@ -145,6 +144,8 @@ class Player(Entity):
         if pg.sprite.spritecollide(self, self.game.blocks, False):
             #if there is overlap between player and wall sprites, the player the designated spot
             self.movement(x, y)
+        elif pg.sprite.spritecollide(self, self.game.monsters, False):
+            BattleMenu(self.game)
 
     @property
     def lvl(self):
@@ -225,6 +226,25 @@ class Wall(pg.sprite.Sprite):
         self.rect.y = self.y
         self.wall_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
 
+class Background(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = Tile_Layer
+        self.groups = self.game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x * TILE_SIZE
+        self.y = y * TILE_SIZE
+        self.width = TILE_SIZE
+        self.height = TILE_SIZE
+
+        self.image = pg.Surface([self.width, self.height])
+        self.image.fill(MasterChief)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
 
 class Door:
     def __init__(self, game, x, y) -> None:

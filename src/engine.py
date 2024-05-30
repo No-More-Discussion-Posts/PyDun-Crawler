@@ -31,8 +31,8 @@ class Engine:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     PauseMenu(self)
-                if event.key == pygame.K_b:
-                    BattleMenu(self)
+                #if event.key == pygame.K_b:
+                    #BattleMenu(self)  -Testing -Roland
                 if event.key == pygame.K_w:
                     #Moves player incriments 
                     self.player.movement(0, -1)
@@ -64,6 +64,9 @@ class Engine:
         for y in tile_map[1]:
             self.wall = Wall(self, 0, y)
             self.wall = Wall(self, 31, y)
+        for x in range(1,31):
+            for y in range(1,17):
+                self.bg = Background(self, x, y)
         num = random.randint(1, 3)
         if num == 1:
             self.monster = Goblin(self)
@@ -79,7 +82,9 @@ class Engine:
         self.all_sprites.draw(self.screen)
         self.blocks.update()
         self.blocks.draw(self.screen)
-        self.Test_Grid()
+        self.monsters.update()
+        self.monsters.draw(self.screen)
+        #self.Test_Grid()
         self.show_turn()
 
         pygame.display.update()
