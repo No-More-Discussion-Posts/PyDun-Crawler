@@ -1,13 +1,13 @@
 import pygame
 import sys
-from entities import Player
+from entities import *
 from menus import PauseMenu,BattleMenu
 from config import *
 class Engine:
     def __init__(self):
         self.turn = 0
         self.running = False
-        self.player = Player("Bilbo",self) # TODO: Character creation?
+        #self.player = Player("Bilbo",self) # TODO: Character creation?
         # self.enemies = pygame.sprite.LayeredUpdates()
         self.enemies = []
 
@@ -30,12 +30,38 @@ class Engine:
                     PauseMenu(self)
                 if event.key == pygame.K_b:
                     BattleMenu(self)
+                if event.key == pygame.K_w:
+                    self.player.movement(0,-1)
+                    #for self.wall in Wall.groups:
+                        #if self.player.player_rect.colliderect(self.wall.wall_rect):
+                            #self.player.image.fill(RED)
+                            #self.player.movement(0,1)
+                if event.key == pygame.K_s:
+                    self.player.movement(0,1)
+                if event.key == pygame.K_a:
+                    self.player.movement(-1,0)
+                if event.key == pygame.K_d:
+                    self.player.movement(1,0)
 
+    def new_game(self): 
+        self.all_sprites = pygame.sprite.LayeredUpdates()
+        self.blocks = pygame.sprite.LayeredUpdates()
+        self.enemies = pygame.sprite.LayeredUpdates()
+        self.player = Player("bilbo", self, 17, 9)
+        for x in tile_map[0]:
+            self.wall = Wall(self,x,0)
+            self.wall = Wall(self,x,17)
+        for y in tile_map[1]:
+            self.wall = Wall(self,0,y)
+            self.wall = Wall(self,31,y)
     def draw(self):
         '''Draw to the screen'''
         self.screen.fill('white')
+        self.all_sprites.update()
+        self.all_sprites.draw(self.screen)
         self.Test_Grid()
         self.show_turn()
+
         pygame.display.update()
 
     def show_turn(self):
@@ -49,22 +75,20 @@ class Engine:
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
         pygame.display.set_caption(GAME_CAPTION)
+    
+        
         self.running=True
         while self.running:
+            #SHOULD WAIT FOR INPUT
             self.events()
             self.draw()
         pygame.quit()
         sys.exit()
 
     def Test_Grid(self):
-        # draw red rectangle
-        pygame.draw.rect(self.screen, (255, 0, 0), [100, 50, 400, 100], 6)
-
-        #draw lines horizontally
+       
         for x in range(0, 640, 20):
                 pygame.draw.line(self.screen, (128, 128, 128), (x, 0), (x, 360))
         #draw lines vertically
         for y in range(0, 360, 20):
                 pygame.draw.line(self.screen, (128, 128, 128), (0, y), (640, y))
-        #draw blue rectangle
-        pygame.draw.rect(self.screen, (0, 0, 255), [50, 100, 400, 100], 6)
