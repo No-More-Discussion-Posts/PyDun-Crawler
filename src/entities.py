@@ -52,6 +52,7 @@ class Player(Entity):
     def __init__(self, name, game, x , y):
         self.name = name
         self.game = game
+        self._layer = Player_Layer
         self.lvl = int(game.turn * .4)
         #self.dex = 2 * lvl
         self.inventory = Inventory()
@@ -59,8 +60,8 @@ class Player(Entity):
         self.groups = self.game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
 
-        self.x = x
-        self.y = y
+        self.x = x * TILE_SIZE
+        self.y = y * TILE_SIZE
         self.width = TILE_SIZE
         self.hieght = TILE_SIZE
 
@@ -68,14 +69,17 @@ class Player(Entity):
         self.image.fill(DeadSalmon)
 
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x * TILE_SIZE
+        self.rect.y = y * TILE_SIZE
+
+       
 
     def movement(self, dx, dy):
         self.x += dx * TILE_SIZE
         self.y += dy * TILE_SIZE
         self.rect.x = self.x
         self.rect.y = self.y 
+        self.player_rect = pg.Rect(self.rect.x,self.rect.y,TILE_SIZE,TILE_SIZE)
 
     def update(self):
         self.lvl = int(self.game.turn * .4)
@@ -147,21 +151,22 @@ class Wall(pg.sprite.Sprite):
      def __init__(self, game, x , y):
         
         self.game = game
-        self._layer = Player_Layer
+        self._layer = Tile_Layer
         self.groups = self.game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
         self.width = TILE_SIZE
-        self.hieght = TILE_SIZE
+        self.height = TILE_SIZE
 
-        self.image = pg.Surface([self.width, self.hieght])
+        self.image = pg.Surface([self.width, self.height])
         self.image.fill(BLUE)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        self.wall_rect = pg.Rect(self.rect.x,self.rect.y,TILE_SIZE,TILE_SIZE)
 
 class Door():
     def __init__(self, game, x, y) -> None:

@@ -32,6 +32,10 @@ class Engine:
                     BattleMenu(self)
                 if event.key == pygame.K_w:
                     self.player.movement(0,-1)
+                    #for self.wall in Wall.groups:
+                        #if self.player.player_rect.colliderect(self.wall.wall_rect):
+                            #self.player.image.fill(RED)
+                            #self.player.movement(0,1)
                 if event.key == pygame.K_s:
                     self.player.movement(0,1)
                 if event.key == pygame.K_a:
@@ -43,8 +47,13 @@ class Engine:
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
-        self.player = Player("bilbo", self, 0, 0)
-    
+        self.player = Player("bilbo", self, 17, 9)
+        for x in tile_map[0]:
+            self.wall = Wall(self,x,0)
+            self.wall = Wall(self,x,17)
+        for y in tile_map[1]:
+            self.wall = Wall(self,0,y)
+            self.wall = Wall(self,31,y)
     def draw(self):
         '''Draw to the screen'''
         self.screen.fill('white')
@@ -58,7 +67,7 @@ class Engine:
     def show_turn(self):
         font = pygame.font.get_default_font()
         FONT = pygame.font.Font(font,TILE_SIZE)
-        turn = FONT.render(str(self.player.x),False,'black')
+        turn = FONT.render(str(self.turn),False,'black')
         self.screen.blit(turn,(20,20))
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
@@ -70,7 +79,7 @@ class Engine:
         
         self.running=True
         while self.running:
-            #SHOULD WAIT FOR INPUT (PROBABLY ON KEY RELEASE)
+            #SHOULD WAIT FOR INPUT
             self.events()
             self.draw()
         pygame.quit()
