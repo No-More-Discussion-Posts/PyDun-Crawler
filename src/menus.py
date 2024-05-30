@@ -147,8 +147,6 @@ class BattleMenu():
             items = button("Inventory", 340, 280)
             items.button_surface.blit(items.text, items.rect)
             self.game.screen.blit(items.button_surface, (items.butt_rect.x, items.butt_rect.y))
-
-            
            
             pygame.display.flip()  
             for e in pygame.event.get():
