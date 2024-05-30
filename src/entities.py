@@ -13,7 +13,9 @@ class Entity(pg.sprite.Sprite):
 
 
 class Monster(Entity):
-    def __init__(self,):
+    def __init__(
+        self,
+    ):
         pass
 
 

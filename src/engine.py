@@ -14,8 +14,8 @@ class Engine:
         self.enemies = []
 
     def update(self):
-        """Make updates every turn such as monster movement, etc. 
-           Initiated by player movement/action in battle.
+        """Make updates every turn such as monster movement, etc.
+        Initiated by player movement/action in battle.
         """
         self.turn += 1
         self.player.update()
