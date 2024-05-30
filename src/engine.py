@@ -22,28 +22,28 @@ class Engine:
         # for enemy in self.enemies:
         #      enemy.update()
 
-    def events(self):
+    def handle_event(self,event):
         """Manage events such as keypress, mouse clicks, etc."""
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_p:
-                    PauseMenu(self)
-                if event.key == pygame.K_b:
-                    BattleMenu(self)
-                if event.key == pygame.K_w:
-                    self.player.movement(0, -1)
-                    # for self.wall in Wall.groups:
-                    # if self.player.player_rect.colliderect(self.wall.wall_rect):
-                    # self.player.image.fill(RED)
-                    # self.player.movement(0,1)
-                if event.key == pygame.K_s:
-                    self.player.movement(0, 1)
-                if event.key == pygame.K_a:
-                    self.player.movement(-1, 0)
-                if event.key == pygame.K_d:
-                    self.player.movement(1, 0)
+        # for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            self.running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_p:
+                PauseMenu(self)
+            if event.key == pygame.K_b:
+                BattleMenu(self)
+            if event.key == pygame.K_w:
+                self.player.movement(0, -1)
+                # for self.wall in Wall.groups:
+                # if self.player.player_rect.colliderect(self.wall.wall_rect):
+                # self.player.image.fill(RED)
+                # self.player.movement(0,1)
+            if event.key == pygame.K_s:
+                self.player.movement(0, 1)
+            if event.key == pygame.K_a:
+                self.player.movement(-1, 0)
+            if event.key == pygame.K_d:
+                self.player.movement(1, 0)
 
     def new_game(self):
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -82,7 +82,8 @@ class Engine:
         self.running = True
         while self.running:
             # SHOULD WAIT FOR INPUT
-            self.events()
+            for event in pygame.event.get():
+                self.handle_event(event)
             self.draw()
         pygame.quit()
         sys.exit()
