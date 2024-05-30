@@ -8,12 +8,12 @@ class OPTIONS(Enum):
 
 
 class Option:
-    def __init__(self,type,data):
+    def __init__(self, type, data):
         self.type = type
         self.data = data
+
 
 # TODO: Replace handler code in menus.Menu with an event handler class.
 class EventHandler:
     def __init__(self):
         pass
-
