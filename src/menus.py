@@ -133,16 +133,16 @@ class BattleMenu():
 
             #Button Testing
             fight = button('Fight', self.game, 340, 210)
-            fight.show
+            fight.show()
 
             defend = button('Defend', self.game, 485, 210)
-            defend.show
+            defend.show()
 
             run = button("Run", self.game, 485, 280)
-            run.show
+            run.show()
 
             items = button("Inventory", self.game, 340, 280)
-            items.show
+            items.show()
            
             pygame.display.flip()  
             for e in pygame.event.get():
@@ -208,25 +208,25 @@ class BattleMenu():
                  if i == 1:
                       item1_text = f"{item}"
                       item1 = button(f"{item}", self.game, 340, 210)
-                      item1.show
+                      item1.show()
                       item2 = button("No Item", self.game, 485, 210)
-                      item2.show
+                      item2.show()
                       item3 = button("No Item", self.game, 340, 280)
-                      item3.show
+                      item3.show()
                  if i == 2:
                       item2_text = f"{item}"
                       item2 = button(f"{item}", self.game, 485, 210)
-                      item2.show
+                      item2.show()
                       item3 = button("No Item", self.game, 340, 280)
-                      item3.show
+                      item3.show()
                  if i == 3:
                       item3_text = f"{item}"
                       item3 = button(f"{item}", self.game, 340, 280)
-                      item3.show
+                      item3.show()
                  i += 1
 
             retbutt = button("Close", self.game, 485, 280)
-            retbutt.show
+            retbutt.show()
 
             pygame.display.flip()
             for e in pygame.event.get():
