@@ -1,8 +1,7 @@
 import pygame
-from engine import Engine
 
 class Button:
-    def __init__(self, name:str, game:Engine, x:int, y:int,on_click = None):
+    def __init__(self, name:str, game, x:int, y:int,on_click = None):
         """Simple Button
 
         Args:

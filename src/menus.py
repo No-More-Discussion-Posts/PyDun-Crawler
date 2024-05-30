@@ -61,7 +61,6 @@ class Menu:
                         button.button_surface, (button.butt_rect.x, button.butt_rect.y)
                     )
                 )
-                # self.game.screen.blit(button.
 
     def handle_input(self, input) -> None:
         for handler in self.handlers:
