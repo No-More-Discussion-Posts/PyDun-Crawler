@@ -1,4 +1,5 @@
 import random
+import math
 from inventory import Inventory
 import pygame as pg  # TODO: make consistent
 from config import *
@@ -14,9 +15,32 @@ class Entity(pg.sprite.Sprite):
 
 
 class Monster(Entity):
-    def __init__(self):
-        pass
+    def __init__(self, game):
+        self.game = game
 
+    def movement(self,player):
+        self.game.update()
+        self.player = player
+        #enemy to player vector math here
+        dx = self.player.rect.x - self.rect.x
+        dy = self.player.rect.y - self.rect.y
+        if(abs(dx) > abs(dy)):
+            if(dx > 0):
+                dx = 1
+                self.x += dx * TILE_SIZE
+            elif(dx < 0):
+                dx = -1
+                self.x += dx * TILE_SIZE
+        else:
+            if(dy > 0):
+                dy = 1
+                self.y += dy * TILE_SIZE
+            elif(dy < 0):
+                dy = -1
+                self.y += dy * TILE_SIZE
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.monster_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
 
 class Goblin(Monster):
     def __init__(self, game):
@@ -45,6 +69,7 @@ class Goblin(Monster):
         #end sprite generation block
 
 
+
 class HobGoblin(Monster):
     def __init__(self, game):
         self.name = "HobGoblin"
@@ -70,6 +95,7 @@ class HobGoblin(Monster):
         self.rect.x = self.x
         self.rect.y = self.y
         #end sprite generation block
+    
 
 
 class Ogre(Monster):
@@ -97,6 +123,7 @@ class Ogre(Monster):
         self.rect.x = self.x
         self.rect.y = self.y
         #end sprite generation block
+    
 
 
 class Player(Entity):
@@ -117,7 +144,7 @@ class Player(Entity):
         self.height = TILE_SIZE
 
         self.image = pg.Surface([self.width, self.height])
-        self.image.fill(DeadSalmon)
+        self.image.fill(BreastCancerAwareness)
 
         self.rect = self.image.get_rect()
         self.rect.x = x * TILE_SIZE

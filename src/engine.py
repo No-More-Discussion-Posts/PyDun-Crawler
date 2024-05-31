@@ -40,18 +40,30 @@ class Engine:
                     #if true, moves player back 1
                     self.player.check_collisions(0, 1)
                     self.turn += 1
+                    #time.sleep(1)
+                    self.monster.movement(self.player)
+                    self.player.check_collisions(0, 1)
                 if event.key == pygame.K_s:
                     self.player.movement(0, 1)
                     self.player.check_collisions(0, -1)
                     self.turn += 1
+                    #time.sleep(1)
+                    self.monster.movement(self.player)
+                    self.player.check_collisions(0, -1)
                 if event.key == pygame.K_a:
                     self.player.movement(-1, 0)
                     self.player.check_collisions(1, 0)
                     self.turn += 1
+                    #time.sleep(1)
+                    self.monster.movement(self.player)
+                    self.player.check_collisions(1, 0)
                 if event.key == pygame.K_d:
                     self.player.movement(1, 0)
                     self.player.check_collisions(-1, 0)
                     self.turn += 1
+                    #time.sleep(1)
+                    self.monster.movement(self.player)
+                    self.player.check_collisions(-1, 0)
 
     def new_game(self):
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -82,6 +94,7 @@ class Engine:
         self.all_sprites.draw(self.screen)
         self.blocks.update()
         self.blocks.draw(self.screen)
+
         self.monsters.update()
         self.monsters.draw(self.screen)
         #self.Test_Grid()

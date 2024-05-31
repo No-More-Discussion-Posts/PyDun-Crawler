@@ -207,7 +207,7 @@ class BattleMenu():
         # Just a basic Combat system can be better later
         if defend == True:
             self.player.hp = self.player.hp - int(self.monster.atk / 2)
-            parry_chance = random.randint(1, 2)
+            parry_chance = random.randint(1, 2) 
             if parry_chance == 2:
                 self.monster.hp = self.monster.hp - self.player.atk
             else:
