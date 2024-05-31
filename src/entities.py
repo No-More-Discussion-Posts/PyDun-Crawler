@@ -24,20 +24,22 @@ class Monster(Entity):
         #enemy to player vector math here
         dx = self.player.rect.x - self.rect.x
         dy = self.player.rect.y - self.rect.y
-        if(abs(dx) > abs(dy)):
-            if(dx > 0):
-                dx = 1
-                self.x += dx * TILE_SIZE
-            elif(dx < 0):
-                dx = -1
-                self.x += dx * TILE_SIZE
-        else:
-            if(dy > 0):
-                dy = 1
-                self.y += dy * TILE_SIZE
-            elif(dy < 0):
-                dy = -1
-                self.y += dy * TILE_SIZE
+        if(abs(dx) < 100) and (abs(dy) < 100):
+            if(abs(dx) > abs(dy)):
+                if(dx > 0):
+                    dx = 1
+                    self.x += dx * TILE_SIZE
+                elif(dx < 0):
+                    dx = -1
+                    self.x += dx * TILE_SIZE
+            else:
+                if(dy > 0):
+                    dy = 1
+                    self.y += dy * TILE_SIZE
+                elif(dy < 0):
+                    dy = -1
+                    self.y += dy * TILE_SIZE
+
         self.rect.x = self.x
         self.rect.y = self.y
         self.monster_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
