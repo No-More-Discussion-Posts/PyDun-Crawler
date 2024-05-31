@@ -4,6 +4,7 @@ from src.engine import Engine
 import pygame 
 import os
 from src.config import *
+from math import sqrt
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 pygame.init()
 
@@ -54,3 +55,21 @@ def test_move_left(game):
     new_x = player.x
     new_y = player.y
     assert new_x == (x-TILE_SIZE)
+
+def test_monster_movement(game):
+    player = game.player
+    monster = game.monster
+    #ensure player is within range of monster
+    monster.x = player.x + 2 * TILE_SIZE
+    monster.y = player.y + 2 * TILE_SIZE
+    monster.rect.x = monster.x
+    monster.rect.y = monster.y
+
+    distance = sqrt((player.x-monster.x)**2+(player.y-monster.y)**2)
+    monster.movement(player)
+    new_distance = sqrt((player.x-monster.x)**2+(player.y-monster.y)**2)
+
+    assert new_distance < distance
+
+
+    

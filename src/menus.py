@@ -192,20 +192,6 @@ class BattleMenu():
         self.player = game.player
         self.monster = game.monster #added since enemy is generated in overworld. -Roland
         self.run()
-
-    """ #### DEPRECATED -Roland ####
-    def start_combat(self):
-        
-        num = random.randint(1, 3)
-        if num == 1:
-            self.monster = Goblin(self)
-        if num == 2:
-            self.monster = HobGoblin(self)
-        if num == 3:
-            self.monster = Ogre(self)
-
-        self.player.update()
-    """
         
     def run(self):
         self.running = True
@@ -275,7 +261,7 @@ class BattleMenu():
         # Just a basic Combat system can be better later
         if defend == True:
             self.player.hp = self.player.hp - int(self.monster.atk / 2)
-            parry_chance = random.randint(1, 2) 
+            parry_chance = randint(1, 2) 
             if parry_chance == 2:
                 self.monster.hp = self.monster.hp - self.player.atk
             else:
