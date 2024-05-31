@@ -19,8 +19,8 @@ def test_move_up(game):
     player = game.player
     x = player.x
     y = player.y
-    go_forward = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_w))
-    game.handle_event(go_forward)
+    movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_w))
+    game.handle_event(movement)
     new_x = player.x
     new_y = player.y
     assert new_y == (y-TILE_SIZE)
@@ -29,8 +29,28 @@ def test_move_down(game):
     player = game.player
     x = player.x
     y = player.y
-    go_forward = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_s))
-    game.handle_event(go_forward)
+    movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_s))
+    game.handle_event(movement)
     new_x = player.x
     new_y = player.y
     assert new_y == (y+TILE_SIZE)
+
+def test_move_right(game):
+    player = game.player
+    x = player.x
+    y = player.y
+    movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_d))
+    game.handle_event(movement)
+    new_x = player.x
+    new_y = player.y
+    assert new_x == (x+TILE_SIZE)
+
+def test_move_left(game):
+    player = game.player
+    x = player.x
+    y = player.y
+    movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_a))
+    game.handle_event(movement)
+    new_x = player.x
+    new_y = player.y
+    assert new_x == (x-TILE_SIZE)
