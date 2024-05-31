@@ -17,6 +17,23 @@ class Monster(Entity):
     def __init__(self, game):
         self.game = game
 
+    def sprite_gen(self):
+        #Sprite Generation Block
+        self.groups = self.game.monsters
+        pg.sprite.Sprite.__init__(self, self.groups)
+        #random location on grid
+        self.x = random.randint(1,30) * TILE_SIZE
+        self.y = random.randint(1,16) * TILE_SIZE
+        #rest of sprite generation block
+        self.width = TILE_SIZE
+        self.height = TILE_SIZE
+        self.image = pg.Surface([self.width, self.height])
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+        #end sprite generation block
+
     def movement(self,player):
         time.sleep(.5)
         self.game.update()
@@ -54,22 +71,7 @@ class Goblin(Monster):
         self.hp = 10
         self.atk = 1
         self.item = items[random.randint(1, 3)]
-
-        #Sprite Generation Block
-        self.groups = self.game.monsters
-        pg.sprite.Sprite.__init__(self, self.groups)
-        #random location on grid
-        self.x = random.randint(1,30) * TILE_SIZE
-        self.y = random.randint(1,16) * TILE_SIZE
-        #rest of sprite generation block
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-        self.image = pg.Surface([self.width, self.height])
-        self.image.fill(GREEN)
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-        #end sprite generation block
+        self.sprite_gen()
 
 class HobGoblin(Monster):
     def __init__(self, game):
@@ -81,22 +83,8 @@ class HobGoblin(Monster):
         self.hp = 15
         self.atk = 2
         self.item = items[random.randint(1, 3)]
+        self.sprite_gen()
 
-        #Sprite Generation Block
-        self.groups = self.game.monsters
-        pg.sprite.Sprite.__init__(self, self.groups)
-        #random location on grid
-        self.x = random.randint(1,30) * TILE_SIZE
-        self.y = random.randint(1,16) * TILE_SIZE
-        #rest of sprite generation block
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-        self.image = pg.Surface([self.width, self.height])
-        self.image.fill(RED)
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-        #end sprite generation block
 
 class Ogre(Monster):
     def __init__(self, game):
@@ -108,22 +96,7 @@ class Ogre(Monster):
         self.hp = 20
         self.atk = 4
         self.item = items[random.randint(1, 3)]
-
-        #Sprite Generation Block
-        self.groups = self.game.monsters
-        pg.sprite.Sprite.__init__(self, self.groups)
-        #random location on grid
-        self.x = random.randint(1,30) * TILE_SIZE
-        self.y = random.randint(1,16) * TILE_SIZE
-        #rest of sprite generation block
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-        self.image = pg.Surface([self.width, self.height])
-        self.image.fill(DaytonaPeach)
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-        #end sprite generation block
+        self.sprite_gen()
     
 class Player(Entity):
     def __init__(self, name, game, x, y):
@@ -183,6 +156,7 @@ class Player(Entity):
         self.max_hp = 20
         self.hp = self.max_hp
         self.atk = 2
+
 ###TYLER EXPERIMENTAL###
 def miss_hit(player_dex, enemy_dex):
     pdex = player_dex
@@ -202,6 +176,7 @@ def miss_hit(player_dex, enemy_dex):
         elif y < miss_chance:
             return False
 ###TYLER EXPERIMENTAL###
+
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
 

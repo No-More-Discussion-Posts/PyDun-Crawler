@@ -31,6 +31,7 @@ class Engine:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     PauseMenu(self)
+                    self.draw()
                 #if event.key == pygame.K_b:
                     #BattleMenu(self)  -Testing -Roland
                 if event.key == pygame.K_w:

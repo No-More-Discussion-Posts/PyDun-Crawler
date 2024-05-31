@@ -8,7 +8,7 @@ from button import *
 from typing import Tuple
 from random import randint
 from engine import *
-import time
+from config import *
 
 
 class Menu:
@@ -49,6 +49,8 @@ class Menu:
                             "func": lambda x: result() if x.key == key else ...,
                         }
                     )
+            #Not Currently Working
+            '''
             elif option.type == OPTIONS.BUTTON:
                 text = option.data["text"]
                 position = option.data["position"]
@@ -62,6 +64,7 @@ class Menu:
                         button.button_surface, (button.butt_rect.x, button.butt_rect.y)
                     )
                 )
+            '''
 
     def handle_input(self, input) -> None:
         for handler in self.handlers:
@@ -91,11 +94,12 @@ class Menu:
 
 class PauseMenu(Menu):
     def __init__(self, game, options=[]):
+        #Pause Menu is currently broken#
         super().__init__(game, options)
         self.options = options
         self.options.append(Option(OPTIONS.CAPTION, "Paused"))
         self.options.append(
-            Option(OPTIONS.PRINT, dict(size=20, text="PAUSED", pos=(100, 100)))
+            Option(OPTIONS.PRINT, dict(size=20, text="PAUSED", pos=(270, 20)))
         )
         self.options.append(
             Option(
