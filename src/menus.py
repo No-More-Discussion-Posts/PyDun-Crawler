@@ -8,7 +8,7 @@ from button import *
 from typing import Tuple
 from random import randint
 from engine import *
-from config import *
+import time
 
 
 class Menu:
@@ -49,8 +49,6 @@ class Menu:
                             "func": lambda x: result() if x.key == key else ...,
                         }
                     )
-            #Not Currently Working
-            '''
             elif option.type == OPTIONS.BUTTON:
                 text = option.data["text"]
                 position = option.data["position"]
@@ -64,7 +62,6 @@ class Menu:
                         button.button_surface, (button.butt_rect.x, button.butt_rect.y)
                     )
                 )
-            '''
 
     def handle_input(self, input) -> None:
         for handler in self.handlers:
@@ -94,8 +91,9 @@ class Menu:
 
 class PauseMenu(Menu):
     def __init__(self, game, options=[]):
-        #Pause Menu is currently broken#
+        #Pause is now fixed
         super().__init__(game, options)
+        self.player = game.player
         self.options = options
         self.options.append(Option(OPTIONS.CAPTION, "Paused"))
         self.options.append(
@@ -111,8 +109,74 @@ class PauseMenu(Menu):
                 ),
             )
         )
+
         self.handle_options()
-        self.run()
+        #self.run()
+        self.running = True
+        while self.running:
+            self.game.screen.fill(Cyantology)
+            self.run_opts()
+            
+            #Creating Buttons
+            inventory = Button("Inventory", self.game, 242, 70)
+            close_pause = Button("Close", self.game, 242, 140)
+            quit_g = Button("Quit", self.game, 242, 280)
+
+            #Making Buttons Show up
+            inventory.show()
+            close_pause.show()
+            quit_g.show()
+
+            pygame.display.update()
+            for e in pygame.event.get():
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if inventory.butt_rect.collidepoint(e.pos):
+                        if len(game.player.inventory.inventory) != 0:
+                            self.inventory_list()
+                        else:
+                            pass
+                    if close_pause.butt_rect.collidepoint(e.pos):
+                        self.stop()
+                    if quit_g.butt_rect.collidepoint(e.pos):
+                        pygame.quit()
+                        sys.exit()
+                else:
+                    self.handle_input(e)
+        pygame.display.set_caption(self.previous_caption)
+
+    def inventory_list(self):
+        self.running = True
+        FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
+        while self.running:
+            self.game.screen.fill(Cyantology)
+            self.run_opts()
+            inv_list = len(self.game.player.inventory.inventory)
+            place_holder = 1
+            for item in self.game.player.inventory.inventory:
+                if place_holder == 1:
+                    item1_text = f"{item}"
+                    item1 = Button(f"{item}", self.game, 242, 70)
+                    item1.show()
+                if inv_list == 2:
+                    item2_text = f"{item}"
+                    item2 = Button(f"{item}", self.game, 242, 140)
+                    item2.show()
+                if inv_list == 3:
+                    item3_text = f"{item}"
+                    item3 = Button(f"{item}", self.game, 242, 210)
+                    item3.show()
+                place_holder += 1
+            close_item = Button("Close", self.game, 242, 280)
+            close_item.show()
+
+            pygame.display.update()
+            for e in pygame.event.get():
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if close_item.butt_rect.collidepoint(e.pos):
+                        return
+                else:
+                    self.handle_input(e)
+
 
 
 class BattleMenu():
@@ -268,21 +332,21 @@ class BattleMenu():
                 if i == 1:
                     item1_text = f"{item}"
                     item1 = Button(f"{item}", self.game, 340, 210)
-
+                    item1.show()
                     item2 = Button("No Item", self.game, 485, 210)
-
+                    item2.show()
                     item3 = Button("No Item", self.game, 340, 280)
-
+                    item3.show()
                 if i == 2:
                     item2_text = f"{item}"
                     item2 = Button(f"{item}", self.game, 485, 210)
-
+                    item2.show()
                     item3 = Button("No Item", self.game, 340, 280)
-
+                    item3.show()
                 if i == 3:
                     item3_text = f"{item}"
                     item3 = Button(f"{item}", self.game, 340, 280)
-
+                    item3.show()
                 i += 1
 
             retbutt = Button("Close", self.game, 485, 280)
