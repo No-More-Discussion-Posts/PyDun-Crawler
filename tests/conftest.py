@@ -1,6 +1,6 @@
 import pytest
-from src.engine import Engine
-from src.config import *
+from copd.engine import Engine
+from copd.config import *
 import pygame 
 
 @pytest.fixture
