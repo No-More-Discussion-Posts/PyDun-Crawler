@@ -20,84 +20,36 @@ class Monster(Entity):
 
 
 class Goblin(Monster):
-    def __init__(self, game):
+    def __init__(self):
         self.name = "Goblin"
-        self.game = game
+        # self.game = game
         # self.lvl = int(game.turn * .25)
         self.max_hp = 10
         self.hp = 10
         self.atk = 1
         self.item = items[random.randint(1, 3)]
 
-        #Sprite Generation Block
-        self.groups = self.game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
-        #random location on grid
-        self.x = random.randint(1,30) * TILE_SIZE
-        self.y = random.randint(1,16) * TILE_SIZE
-        #rest of sprite generation block
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-        self.image = pg.Surface([self.width, self.height])
-        self.image.fill(GREEN)
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-        #end sprite generation block
-
 
 class HobGoblin(Monster):
-    def __init__(self, game):
+    def __init__(self):
         self.name = "HobGoblin"
-        self.game = game
+        # self.game = game
         # self.lvl = int(game.turn * .25)
         self.max_hp = 15
         self.hp = 15
         self.atk = 2
         self.item = items[random.randint(1, 3)]
 
-        #Sprite Generation Block
-        self.groups = self.game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
-        #random location on grid
-        self.x = random.randint(1,30) * TILE_SIZE
-        self.y = random.randint(1,16) * TILE_SIZE
-        #rest of sprite generation block
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-        self.image = pg.Surface([self.width, self.height])
-        self.image.fill(RED)
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-        #end sprite generation block
-
 
 class Ogre(Monster):
-    def __init__(self, game):
+    def __init__(self):
         self.name = "Ogre"
-        self.game = game
+        # self.game = game
         # self.lvl = int(game.turn * .25)
         self.max_hp = 20
         self.hp = 20
         self.atk = 4
         self.item = items[random.randint(1, 3)]
-
-        #Sprite Generation Block
-        self.groups = self.game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
-        #random location on grid
-        self.x = random.randint(1,30) * TILE_SIZE
-        self.y = random.randint(1,16) * TILE_SIZE
-        #rest of sprite generation block
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-        self.image = pg.Surface([self.width, self.height])
-        self.image.fill(DaytonaPeach)
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-        #end sprite generation block
 
 
 class Player(Entity):
@@ -115,9 +67,9 @@ class Player(Entity):
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
         self.width = TILE_SIZE
-        self.height = TILE_SIZE
+        self.hieght = TILE_SIZE
 
-        self.image = pg.Surface([self.width, self.height])
+        self.image = pg.Surface([self.width, self.hieght])
         self.image.fill(DeadSalmon)
 
         self.rect = self.image.get_rect()
