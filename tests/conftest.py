@@ -1,7 +1,7 @@
 import pytest
 from copd.engine import Engine
 from copd.config import *
-import pygame 
+import pygame
 
 
 @pytest.fixture

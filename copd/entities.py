@@ -122,7 +122,7 @@ class Player(Entity):
         self.rect = self.image.get_rect()
         self.rect.x = x * TILE_SIZE
         self.rect.y = y * TILE_SIZE
-
+    
     def movement(self, dx, dy):
         self.game.update()
         self.x += dx * TILE_SIZE

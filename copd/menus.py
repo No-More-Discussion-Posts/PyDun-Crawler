@@ -1,14 +1,11 @@
 import pygame
 import sys
-from dataclasses import dataclass
-from enum import Enum
-from .input_handlers import OPTIONS, Option
+from random import randint
 from .entities import *
 from .button import *
-from typing import Tuple
-from random import randint
 from .engine import *
-import time
+from .menu_options import Option, MenuOption
+
 
 
 class Menu:
@@ -23,9 +20,9 @@ class Menu:
 
     def handle_options(self) -> None:
         for option in self.options:
-            if option.type == OPTIONS.CAPTION:
+            if option.type == MenuOption.CAPTION:
                 pygame.display.set_caption(option.data)
-            elif option.type == OPTIONS.PRINT:
+            elif option.type == MenuOption.PRINT:
                 size = option.data["size"]
                 text = option.data["text"]
                 pos = option.data["pos"]
@@ -38,7 +35,7 @@ class Menu:
                         FONT.render(text, False, (255, 255, 255)), pos
                     )
                 )
-            elif option.type == OPTIONS.HANDLER:
+            elif option.type == MenuOption.HANDLER:
                 event_type = option.data.get("event_type")
                 if event_type in [pygame.KEYDOWN, pygame.KEYUP]:
                     key = option.data.get("key")
@@ -49,7 +46,7 @@ class Menu:
                             "func": lambda x: result() if x.key == key else ...,
                         }
                     )
-            elif option.type == OPTIONS.BUTTON:
+            elif option.type == MenuOption.BUTTON:
                 text = option.data["text"]
                 position = option.data["position"]
                 on_click = option.data["on_click"]
@@ -95,13 +92,13 @@ class PauseMenu(Menu):
         super().__init__(game, options)
         self.player = game.player
         self.options = options
-        self.options.append(Option(OPTIONS.CAPTION, "Paused"))
+        self.options.append(Option(MenuOption.CAPTION, "Paused"))
         self.options.append(
-            Option(OPTIONS.PRINT, dict(size=20, text="PAUSED", pos=(270, 20)))
+            Option(MenuOption.PRINT, dict(size=20, text="PAUSED", pos=(270, 20)))
         )
         self.options.append(
             Option(
-                OPTIONS.HANDLER,
+                MenuOption.HANDLER,
                 dict(
                     event_type=pygame.KEYDOWN,
                     key=pygame.K_p,
