@@ -2,12 +2,12 @@ import pygame
 import sys
 from dataclasses import dataclass
 from enum import Enum
-from input_handlers import OPTIONS, Option
-from entities import *
-from button import *
+from .input_handlers import OPTIONS, Option
+from .entities import *
+from .button import *
 from typing import Tuple
 from random import randint
-from engine import *
+from .engine import *
 import time
 
 

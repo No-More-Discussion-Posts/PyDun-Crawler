@@ -1,9 +1,9 @@
 import random
 import math
-from inventory import Inventory
+from .inventory import Inventory
 import pygame as pg  # TODO: make consistent
-from config import *
-from menus import BattleMenu
+from .config import *
+from .menus import BattleMenu
 import time
 
 items = {1: "S HP Pot", 2: "M HP Pot", 3: "L HP Pot"}

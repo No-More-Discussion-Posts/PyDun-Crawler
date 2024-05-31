@@ -1,5 +1,5 @@
 import pygame
-from config import *
+from .config import *
 
 class Button:
     def __init__(self, name:str, game, x:int, y:int,on_click = None):

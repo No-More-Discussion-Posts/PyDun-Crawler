@@ -4,7 +4,7 @@
 #  --- Save?
 
 import pygame
-from engine import Engine
+from .engine import Engine
 
 
 def main() -> None:

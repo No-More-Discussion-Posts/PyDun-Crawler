@@ -1,8 +1,8 @@
 import pygame
 import sys
-from entities import *
-from menus import PauseMenu, BattleMenu
-from config import *
+from .entities import *
+from .menus import PauseMenu, BattleMenu
+from .config import *
 from random import randint
 
 
