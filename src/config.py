@@ -45,7 +45,8 @@ GAME_CAPTION = "Crawl of PyDun"
 
 BG_Layer = 0
 Tile_Layer = 1
-Player_Layer = 2
+Door_Layer = 2
+Player_Layer = 3
 
 NachoCheese = (255, 208, 108)
 DaytonaPeach = (253, 221, 200)

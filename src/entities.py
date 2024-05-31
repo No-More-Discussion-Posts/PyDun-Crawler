@@ -13,12 +13,12 @@ class Entity(pg.sprite.Sprite):
         """All entities need an update method to be called per game turn."""
         pass
 
-
 class Monster(Entity):
     def __init__(self, game):
         self.game = game
 
     def movement(self,player):
+        time.sleep(.5)
         self.game.update()
         self.player = player
         #enemy to player vector math here
@@ -46,6 +46,7 @@ class Goblin(Monster):
     def __init__(self, game):
         self.name = "Goblin"
         self.game = game
+        self._layer = Player_Layer
         # self.lvl = int(game.turn * .25)
         self.max_hp = 10
         self.hp = 10
@@ -68,12 +69,11 @@ class Goblin(Monster):
         self.rect.y = self.y
         #end sprite generation block
 
-
-
 class HobGoblin(Monster):
     def __init__(self, game):
         self.name = "HobGoblin"
         self.game = game
+        self._layer = Player_Layer
         # self.lvl = int(game.turn * .25)
         self.max_hp = 15
         self.hp = 15
@@ -95,13 +95,12 @@ class HobGoblin(Monster):
         self.rect.x = self.x
         self.rect.y = self.y
         #end sprite generation block
-    
-
 
 class Ogre(Monster):
     def __init__(self, game):
         self.name = "Ogre"
         self.game = game
+        self._layer = Player_Layer
         # self.lvl = int(game.turn * .25)
         self.max_hp = 20
         self.hp = 20
@@ -124,8 +123,6 @@ class Ogre(Monster):
         self.rect.y = self.y
         #end sprite generation block
     
-
-
 class Player(Entity):
     def __init__(self, name, game, x, y):
         self.name = name
@@ -135,7 +132,7 @@ class Player(Entity):
         # self.dex = 2 * lvl
         self.inventory = Inventory()
 
-        self.groups = self.game.all_sprites
+        self.groups = self.game.players
         pg.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * TILE_SIZE
@@ -184,35 +181,7 @@ class Player(Entity):
         self.max_hp = 20
         self.hp = self.max_hp
         self.atk = 2
-
-
-"""
-class Player(pg.sprite.Sprite):
-    def __init__(self, game, x , y):
-        
-        self.game = game
-        self._layer = Player_Layer
-        self.groups = self.game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
-
-        self.x = x + TILE_SIZE
-        self.y = y + TILE_SIZE
-        self.width = TILE_SIZE
-        self.hieght = TILE_SIZE
-
-        self.image = pg.Surface([self.width, self.hieght])
-        self.image.fill(DeadSalmon)
-
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y    
-    
-    
-    def update(self):
-        pass
-"""
-
-
+###TYLER EXPERIMENTAL###
 def miss_hit(player_dex, enemy_dex):
     pdex = player_dex
     edex = enemy_dex
@@ -230,29 +199,32 @@ def miss_hit(player_dex, enemy_dex):
             return True
         elif y < miss_chance:
             return False
-
-
+###TYLER EXPERIMENTAL###
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
 
         self.game = game
+        ###WALL SPECIFIC###
         self._layer = Tile_Layer
         self.groups = self.game.blocks
+        ###WALL SPECIFIC###
         pg.sprite.Sprite.__init__(self, self.groups)
 
+        #sprite size(used for referencing the sprite)
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
         self.width = TILE_SIZE
         self.height = TILE_SIZE
 
         self.image = pg.Surface([self.width, self.height])
+        ###WALL SPECIFIC###
         self.image.fill(BLUE)
+        ###WALL SPECIFIC###
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
         self.wall_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
-
 class Background(pg.sprite.Sprite):
     def __init__(self, game, x, y):
 
@@ -272,12 +244,27 @@ class Background(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+class Door(Entity): 
+    def __init__(self, game, x, y):
+        self.game = game
+        self._layer = Door_Layer
+        self.groups = self.game.doors
+        pg.sprite.Sprite.__init__(self, self.groups)
 
-class Door:
-    def __init__(self, game, x, y) -> None:
-        pass
+        self.x = x * TILE_SIZE
+        self.y = y * TILE_SIZE
+        self.width = TILE_SIZE
+        self.height = TILE_SIZE
+
+        self.image = pg.Surface([self.width, self.height])
+        self.image.fill(Snugglepuss)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+        
 
 
-class Treasure:
+class Treasure():
     def __init__(self, game, x, y) -> None:
         pass
