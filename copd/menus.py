@@ -128,10 +128,7 @@ class PauseMenu(Menu):
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     if inventory.butt_rect.collidepoint(e.pos):
-                        if len(game.player.inventory.inventory) != 0:
-                            self.inventory_list()
-                        else:
-                            pass
+                        self.inventory_list()
                     if close_pause.butt_rect.collidepoint(e.pos):
                         self.stop()
                     if quit_g.butt_rect.collidepoint(e.pos):
@@ -147,18 +144,17 @@ class PauseMenu(Menu):
         while self.running:
             self.game.screen.fill(Cyantology)
             self.run_opts()
-            inv_list = len(self.game.player.inventory.inventory)
             place_holder = 1
             for item in self.game.player.inventory.inventory:
                 if place_holder == 1:
                     item1_text = f"{item}"
                     item1 = Button(f"{item}", self.game, 242, 70)
                     item1.show()
-                if inv_list == 2:
+                if place_holder == 2:
                     item2_text = f"{item}"
                     item2 = Button(f"{item}", self.game, 242, 140)
                     item2.show()
-                if inv_list == 3:
+                if place_holder == 3:
                     item3_text = f"{item}"
                     item3 = Button(f"{item}", self.game, 242, 210)
                     item3.show()
@@ -197,7 +193,7 @@ class BattleMenu():
         #self.start_combat()  #commented out for testing random enemy generation on overworld. -Roland
 
         while self.running:
-            self.game.screen.fill("white")
+            self.game.screen.fill(Snugglepuss)
             height = self.game.screen.get_height()
             width = self.game.screen.get_width()
             # Create info areas
@@ -248,10 +244,7 @@ class BattleMenu():
                         self.player.game.update()
                         self.running = False
                     if items.butt_rect.collidepoint(e.pos):
-                        if self.player.inventory.inventory == {}:
-                            pass
-                        else:
-                            self.inventory_screen()
+                        self.inventory_screen()
                 self.handle_input(e)
 
     def combat(self, defend):
@@ -279,7 +272,7 @@ class BattleMenu():
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
         while self.running:
-            self.game.screen.fill("white")
+            self.game.screen.fill(Snugglepuss)
             height = self.game.screen.get_height()
             width = self.game.screen.get_width()
             # Create info areas
@@ -310,33 +303,29 @@ class BattleMenu():
             )
 
             # Inventory Testing
-            i = 1
-            for item in self.player.inventory.inventory:
-                if i == 1:
+            place_holder = 1
+            for item in self.game.player.inventory.inventory:
+                if place_holder == 1:
                     item1_text = f"{item}"
                     item1 = Button(f"{item}", self.game, 340, 210)
                     item1.show()
-                    item2 = Button("No Item", self.game, 485, 210)
-                    item2.show()
-                    item3 = Button("No Item", self.game, 340, 280)
-                    item3.show()
-                if i == 2:
+                if place_holder == 2:
                     item2_text = f"{item}"
                     item2 = Button(f"{item}", self.game, 485, 210)
                     item2.show()
-                    item3 = Button("No Item", self.game, 340, 280)
-                    item3.show()
-                if i == 3:
+                if place_holder == 3:
                     item3_text = f"{item}"
                     item3 = Button(f"{item}", self.game, 340, 280)
                     item3.show()
-                i += 1
-
+                place_holder += 1
             retbutt = Button("Close", self.game, 485, 280)
+            retbutt.show()
 
             pygame.display.flip()
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
+                    if retbutt.butt_rect.collidepoint(e.pos):
+                        return
                     if item1.butt_rect.collidepoint(e.pos):
                         self.resolve_item(self.player, item1_text)
                         self.player.inventory.use_item(item1_text, 1)
@@ -344,8 +333,6 @@ class BattleMenu():
                         self.resolve_item(self.player, item2_text)
                     if item3.butt_rect.collidepoint(e.pos):
                         self.resolve_item(self.player, item3_text)
-                    if retbutt.butt_rect.collidepoint(e.pos):
-                        return
                 self.handle_input(e)
 
     def resolve_item(self, player, item):
