@@ -1,4 +1,5 @@
 import pygame
+from config import *
 
 class Button:
     def __init__(self, name:str, game, x:int, y:int,on_click = None):
@@ -15,7 +16,7 @@ class Button:
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
         self.game = game
         self.button_surface = pygame.Surface((135, 60))
-        self.text = FONT.render(name, True, (255, 255, 255))
+        self.text = FONT.render(name, True, WHITE)
         self.rect = self.text.get_rect(
             center=(
                 self.button_surface.get_width() / 2,
