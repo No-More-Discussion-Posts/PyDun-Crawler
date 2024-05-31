@@ -2,7 +2,9 @@ import pytest
 from copd.engine import Engine
 from copd.config import *
 import pygame
-
+import os
+os.environ["SDL_VIDEODRIVER"] = "dummy"
+pygame.init()
 
 @pytest.fixture
 def game():
@@ -12,4 +14,5 @@ def game():
     game.add_player()
     game.add_monster()
     game.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+
     return game
