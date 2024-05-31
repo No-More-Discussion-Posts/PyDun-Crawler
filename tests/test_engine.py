@@ -7,11 +7,15 @@ from src.config import *
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 pygame.init()
 
-def test_movement():
+@pytest.fixture
+def game():
     game = Engine()
     game.new_game()
     game.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-    # game.running = True # force it to think the game is running
+    return game
+
+def test_move_up(game):
+    
     player = game.player
     x = player.x
     y = player.y
@@ -19,4 +23,14 @@ def test_movement():
     game.handle_event(go_forward)
     new_x = player.x
     new_y = player.y
-    assert (x,y) != (new_x,new_y)
+    assert new_y == (y-TILE_SIZE)
+
+def test_move_down(game):
+    player = game.player
+    x = player.x
+    y = player.y
+    go_forward = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_s))
+    game.handle_event(go_forward)
+    new_x = player.x
+    new_y = player.y
+    assert new_y == (y+TILE_SIZE)
