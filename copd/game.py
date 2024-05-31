@@ -16,6 +16,9 @@ def main() -> None:
     """Main game loop"""
     game = Engine()
     game.new_game()
+    game.load_map()
+    game.add_player()
+    game.add_monster()
     game.run()
 
 

@@ -1,8 +1,10 @@
 import pygame
+import random
 import sys
+
 from .entities import *
-from .menus import PauseMenu, BattleMenu
-from .config import *
+# from .menus import PauseMenu, BattleMenu
+from .config import DEFAULT_MAP
 from .states import GameStates
 from .input_handlers import EventHandler
 
@@ -25,6 +27,49 @@ class Engine:
         for enemy in self.enemies:
             enemy.update()
 
+    def add_player(self,player = None)-> None:
+        if player is None:
+            self.player = Player("Bilbo", self, 15, 9)
+        else:
+            self.player = player
+
+    def load_map(self, map = None)->None:
+        # Allow loading of custom map
+        if map is not None:
+            map = map
+        else:
+            map = DEFAULT_MAP
+
+
+        #draws Wall Entitiy at top and bottom of tile_map in config
+        for x in map[0]:
+            self.wall = Wall(self, x, 0)
+            self.wall = Wall(self, x, 17)
+        #draws Wall Entitiy at leftmost and rightmost positions of tile_map in config
+        #add doors to each wall edge!!!!!!!!!!!!! -Roland
+        for y in map[1]:
+            self.wall = Wall(self, 0, y)
+            self.wall = Wall(self, 31, y)
+        #draws background Entity in each tile of Tile_map in config
+        #placed in lowest layer
+        for x in range(1,31):
+            for y in range(1,17):
+                self.bg = Background(self, x, y)
+        self.door = Door(self, 0, 7)
+
+    def add_monster(self,monster = None):
+        if monster is not None:
+            self.monster = monster
+        else:
+            #initilizes random enemy sprite in room
+            num = random.randint(1, 3)
+            if num == 1:
+                self.monster = Goblin(self)
+            if num == 2:
+                self.monster = HobGoblin(self)
+            if num == 3:
+                self.monster = Ogre(self)
+
     def new_game(self):
         #initialize all sprite groups
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -33,34 +78,6 @@ class Engine:
         self.players = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
         #create player character
-        self.player = Player("Bilbo", self, 15, 9)
-        #draws Wall Entitiy at top and bottom of tile_map in config
-        for x in tile_map[0]:
-            self.wall = Wall(self, x, 0)
-            self.wall = Wall(self, x, 17)
-        #draws Wall Entitiy at leftmost and rightmost positions of tile_map in config
-        #add doors to each wall edge!!!!!!!!!!!!! -Roland
-        for y in tile_map[1]:
-            self.wall = Wall(self, 0, y)
-            self.wall = Wall(self, 31, y)
-        #draws background Entity in each tile of Tile_map in config
-        #placed in lowest layer
-        for x in range(1,31):
-            for y in range(1,17):
-                self.bg = Background(self, x, y)
-
-
-        self.door = Door(self, 0, 7)
-
-
-        #initilizes random enemy sprite in room
-        num = random.randint(1, 3)
-        if num == 1:
-            self.monster = Goblin(self)
-        if num == 2:
-            self.monster = HobGoblin(self)
-        if num == 3:
-            self.monster = Ogre(self)
 
     def draw(self):
         """Draw to the screen"""

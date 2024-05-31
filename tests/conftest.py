@@ -8,5 +8,8 @@ import pygame
 def game():
     game = Engine()
     game.new_game()
+    game.load_map()
+    game.add_player()
+    game.add_monster()
     game.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
     return game

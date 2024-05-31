@@ -2,7 +2,7 @@ SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 360
 TILE_SIZE = 20
 
-tile_map = [
+DEFAULT_MAP = [
     [
         0,
         1,
