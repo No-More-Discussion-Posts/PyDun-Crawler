@@ -9,7 +9,9 @@ from .states import GameStates
 from .input_handlers import EventHandler
 
 
+
 class Engine:
+    
     def __init__(self):
         self.turn = 0
         self.running = False
@@ -18,16 +20,9 @@ class Engine:
         self.event_handler = EventHandler(self)
         self.handle_event = self.event_handler.handle_event
 
-    def update(self):
-        """Make updates every turn such as monster movement, etc.
-        Initiated by player movement/action in battle.
-        """
-        #self.turn += 1
-        self.player.update()
-        for enemy in self.enemies:
-            enemy.update()
 
     def add_player(self,player = None)-> None:
+          
         if player is None:
             self.player = Player("Bilbo", self, 15, 9)
         else:
@@ -79,26 +74,36 @@ class Engine:
         self.doors = pygame.sprite.LayeredUpdates()
         #create player character
 
+    def update(self):
+        """Make updates every turn such as monster movement, etc.
+        Initiated by player movement/action in battle.
+        """
+        self.all_sprites.update()
+        self.players.update()
+        self.blocks.update()
+        self.monsters.update()
+        self.doors.update()
+        self.draw()
+
     def draw(self):
         """Draw to the screen"""
         #update "all sprites", then draw to screem
-        self.all_sprites.update()
+        
         self.all_sprites.draw(self.screen)
         #update player sprites and draws to screen
-        self.players.update()
+        
         self.players.draw(self.screen)
         #updates and draws non-traversable sprites
-        self.blocks.update()
+        
         self.blocks.draw(self.screen)
-        #displays turn to screen
-        self.show_turn()
+        
         #updates mosnster sprite groups and draws to screen
-        self.monsters.update()
+        
         self.monsters.draw(self.screen)
 
-        self.doors.update()
         self.doors.draw(self.screen)
-        #self.Test_Grid()
+        #displays turn to screen
+        self.show_turn()
         #updates all updates//draws to pygame screen
         pygame.display.update()
 

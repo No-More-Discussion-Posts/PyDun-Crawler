@@ -12,7 +12,7 @@ class EventHandler:
                 self.game.running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
-                    PauseMenu(self)
+                    PauseMenu(self.game)
                     self.game.draw()
                 #if event.key == pygame.K_b:
                     #BattleMenu(self)  -Testing -Roland

@@ -1,8 +1,7 @@
 import pytest
 import pygame
 import os
-os.environ["SDL_VIDEODRIVER"] = "dummy"
-pygame.init()
+
 
 def test_fight(game):
     pass

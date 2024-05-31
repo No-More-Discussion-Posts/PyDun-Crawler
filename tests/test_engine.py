@@ -1,12 +1,7 @@
-import pytest
-import sys
-from copd.engine import Engine
 import pygame 
-import os
 from copd.config import * 
 from math import sqrt
-os.environ["SDL_VIDEODRIVER"] = "dummy"
-pygame.init()
+
 
 def test_move_up(game):
     
