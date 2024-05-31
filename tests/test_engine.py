@@ -1,19 +1,12 @@
 import pytest
 import sys
-from src.engine import Engine
+from copd.engine import Engine
 import pygame 
 import os
-from src.config import *
+from copd.config import * 
 from math import sqrt
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 pygame.init()
-
-@pytest.fixture
-def game():
-    game = Engine()
-    game.new_game()
-    game.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-    return game
 
 def test_move_up(game):
     
