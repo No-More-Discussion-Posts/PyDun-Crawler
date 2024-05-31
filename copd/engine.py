@@ -3,16 +3,18 @@ import sys
 from .entities import *
 from .menus import PauseMenu, BattleMenu
 from .config import *
-from random import randint
+from .states import GameStates
+from .input_handlers import EventHandler
 
 
 class Engine:
     def __init__(self):
         self.turn = 0
         self.running = False
-        # self.player = Player("Bilbo",self) # TODO: Character creation?
-        # self.enemies = pygame.sprite.LayeredUpdates()
+        self.state = GameStates.MAIN # will need to change this when changing between menus
         self.enemies = []
+        self.event_handler = EventHandler(self)
+        self.handle_event = self.event_handler.handle_event
 
     def update(self):
         """Make updates every turn such as monster movement, etc.
@@ -22,52 +24,6 @@ class Engine:
         self.player.update()
         for enemy in self.enemies:
             enemy.update()
-
-    def handle_event(self,event):
-        """Manage events such as keypress, mouse clicks, etc."""
-        if event.type == pygame.QUIT:
-            self.running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_p:
-                PauseMenu(self)
-                self.draw()
-            #if event.key == pygame.K_b:
-                #BattleMenu(self)  -Testing -Roland
-            if event.key == pygame.K_w:
-                #Moves player incriments 
-                self.player.movement(0, -1)
-                #checks for player and wall overlap
-                #if true, moves player back 1
-                self.player.check_collisions(0, 1)
-                self.turn += 1
-                self.draw()
-                self.monster.movement(self.player)
-                self.player.check_collisions(0, 1)
-                self.draw()
-            if event.key == pygame.K_s:
-                self.player.movement(0, 1)
-                self.player.check_collisions(0, -1)
-                self.turn += 1
-                self.draw()
-                self.monster.movement(self.player)
-                self.player.check_collisions(0, -1)
-                self.draw()
-            if event.key == pygame.K_a:
-                self.player.movement(-1, 0)
-                self.player.check_collisions(1, 0)
-                self.turn += 1
-                self.draw()
-                self.monster.movement(self.player)
-                self.player.check_collisions(1, 0)
-                self.draw()
-            if event.key == pygame.K_d:
-                self.player.movement(1, 0)
-                self.player.check_collisions(-1, 0)
-                self.turn += 1
-                self.draw()
-                self.monster.movement(self.player)
-                self.player.check_collisions(-1, 0)
-                self.draw()
 
     def new_game(self):
         #initialize all sprite groups
