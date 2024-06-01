@@ -15,3 +15,17 @@ class Inventory:
         self.inventory[item_name] -= item_count
         if self.inventory[item_name] == 0:
             self.inventory.pop(item_name)
+
+class Equipped:
+    def __init__(self):
+        self.equipped = {'Armor': 'No Item'}
+
+    def equip_item(self, item_part, item_name):
+        self.equipped[item_part] = item_name
+    
+    def unequip_item(self, item_part, item_name):
+        if item_name in self.equipped:
+            self.equipped[item_part] = 'No Item'
+        else:
+            pass
+    

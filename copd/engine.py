@@ -22,17 +22,18 @@ class Engine:
 
 
     def add_player(self,player = None)-> None:
-          
+        #initilize player object
         if player is None:
             self.player = Player("Bilbo", self, 15, 9)
         else:
             self.player = player
 
     def load_map(self, map = None)->None:
-        # Allow loading of custom map
+        # if no map is supplied in args
         if map is not None:
             map = map
         else:
+            #load default starting map
             map = DEFAULT_MAP
 
 
@@ -50,7 +51,7 @@ class Engine:
         for x in range(1,31):
             for y in range(1,17):
                 self.bg = Background(self, x, y)
-        self.door = Door(self, 0, 7)
+        self.door = Door(self, 1, 7)
 
     def add_monster(self,monster = None):
         if monster is not None:
@@ -78,6 +79,7 @@ class Engine:
         """Make updates every turn such as monster movement, etc.
         Initiated by player movement/action in battle.
         """
+        #updates all sprite object values
         self.all_sprites.update()
         self.players.update()
         self.blocks.update()
@@ -87,24 +89,14 @@ class Engine:
 
     def draw(self):
         """Draw to the screen"""
-        #update "all sprites", then draw to screem
-        
+        #draws all aprite groups to screen
         self.all_sprites.draw(self.screen)
-        #update player sprites and draws to screen
-        
         self.players.draw(self.screen)
-        #updates and draws non-traversable sprites
-        
         self.blocks.draw(self.screen)
-        
-        #updates mosnster sprite groups and draws to screen
-        
         self.monsters.draw(self.screen)
-
         self.doors.draw(self.screen)
-        #displays turn to screen
         self.show_turn()
-        #updates all updates//draws to pygame screen
+
         pygame.display.update()
 
     def show_turn(self):

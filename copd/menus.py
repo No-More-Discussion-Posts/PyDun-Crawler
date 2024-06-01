@@ -116,24 +116,24 @@ class PauseMenu(Menu):
             
             #Creating Buttons
             inventory = Button("Inventory", self.game, 242, 70)
-            close_pause = Button("Close", self.game, 242, 140)
-            quit_g = Button("Quit", self.game, 242, 280)
+            equip = Button("Equipment", self.game, 242, 140)
+            close_pause = Button("Close", self.game, 242, 280)
 
             #Making Buttons Show up
             inventory.show()
+            equip.show()
             close_pause.show()
-            quit_g.show()
+            
 
             pygame.display.update()
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     if inventory.butt_rect.collidepoint(e.pos):
                         self.inventory_list()
+                    if equip.butt_rect.collidepoint(e.pos):
+                        self.equipment_list()
                     if close_pause.butt_rect.collidepoint(e.pos):
                         self.stop()
-                    if quit_g.butt_rect.collidepoint(e.pos):
-                        pygame.quit()
-                        sys.exit()
                 else:
                     self.handle_input(e)
         pygame.display.set_caption(self.previous_caption)
@@ -146,6 +146,38 @@ class PauseMenu(Menu):
             self.run_opts()
             place_holder = 1
             for item in self.game.player.inventory.inventory:
+                if place_holder == 1:
+                    item1_text = f"{item}"
+                    item1 = Button(f"{item}", self.game, 242, 70)
+                    item1.show()
+                if place_holder == 2:
+                    item2_text = f"{item}"
+                    item2 = Button(f"{item}", self.game, 242, 140)
+                    item2.show()
+                if place_holder == 3:
+                    item3_text = f"{item}"
+                    item3 = Button(f"{item}", self.game, 242, 210)
+                    item3.show()
+                place_holder += 1
+            close_item = Button("Close", self.game, 242, 280)
+            close_item.show()
+
+            pygame.display.update()
+            for e in pygame.event.get():
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if close_item.butt_rect.collidepoint(e.pos):
+                        return
+                else:
+                    self.handle_input(e)
+
+    def equipment_list(self):
+        self.running = True
+        FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
+        while self.running:
+            self.game.screen.fill(Cyantology)
+            self.run_opts()
+            place_holder = 1
+            for item in self.game.player.equipped.equipped:
                 if place_holder == 1:
                     item1_text = f"{item}"
                     item1 = Button(f"{item}", self.game, 242, 70)
@@ -241,7 +273,7 @@ class BattleMenu():
                     if defend.butt_rect.collidepoint(e.pos):
                         self.combat(defend=True)
                     if run.butt_rect.collidepoint(e.pos):
-                        self.player.game.update()
+                        #self.player.game.update()
                         self.running = False
                     if items.butt_rect.collidepoint(e.pos):
                         self.inventory_screen()

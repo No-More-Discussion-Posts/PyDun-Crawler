@@ -15,10 +15,15 @@ from copd.engine import Engine
 def main() -> None:
     """Main game loop"""
     game = Engine()
+    #load all sprites groups
     game.new_game()
+    #load default map
     game.load_map()
+    #initilize player object
     game.add_player()
+    #initilize monster object
     game.add_monster()
+    #game loop
     game.run()
 
 

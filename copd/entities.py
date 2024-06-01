@@ -1,6 +1,6 @@
 import random
 import math
-from .inventory import Inventory
+from .inventory import Inventory, Equipped
 import pygame as pg  # TODO: make consistent
 from .config import *
 from .menus import BattleMenu
@@ -8,8 +8,11 @@ import time
 
 items = {1: "S HP Pot", 2: "M HP Pot", 3: "L HP Pot"}
 
-
+class immovable_entitiy(pg.sprite.Sprite):
+    #class to initilize a sprite that is immovable
+    pass
 class Entity(pg.sprite.Sprite):
+    #class to initilize a sprite with movement and actions
     def update(self):
         """All entities need an update method to be called per game turn."""
         pass
@@ -86,7 +89,6 @@ class HobGoblin(Monster):
         self.item = items[random.randint(1, 3)]
         self.sprite_gen()
 
-
 class Ogre(Monster):
     def __init__(self, game):
         self.name = "Ogre"
@@ -101,16 +103,19 @@ class Ogre(Monster):
     
 class Player(Entity):
     def __init__(self, name, game, x, y):
+        #name of player
         self.name = name
+        #current running game
         self.game = game
         self._layer = Player_Layer
         self.lvl = int(game.turn * 0.4)
         # self.dex = 2 * lvl
         self.inventory = Inventory()
+        self.equipped = Equipped()
 
         self.groups = self.game.players
         pg.sprite.Sprite.__init__(self, self.groups)
-
+        #
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
         self.width = TILE_SIZE
@@ -124,9 +129,12 @@ class Player(Entity):
         self.rect.y = y * TILE_SIZE
     
     def movement(self, dx, dy):
+        #updates sprite x and y coords
         self.game.update()
+        #transforms 1 pixel movements to tile based movements
         self.x += dx * TILE_SIZE
         self.y += dy * TILE_SIZE
+        
         self.rect.x = self.x
         self.rect.y = self.y
         self.player_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
@@ -136,17 +144,19 @@ class Player(Entity):
         self.atk = self.atk
         self.hp = self.hp
         self.max_hp = self.max_hp
-        # self.rect.x = self.x * TILE_SIZE
-        # self.rect.y = self.y * TILE_SIZE
     
     def check_collisions(self, x, y):
         #checks the player sprite(self) and and sprite in the blocks sprite group or overlap
         if pg.sprite.spritecollide(self, self.game.blocks, False):
             #if there is overlap between player and wall sprites, the player the designated spot
             self.movement(x, y)
+        #checks for sprite overlap 
         elif pg.sprite.spritecollide(self, self.game.monsters, False):
             BattleMenu(self.game)
-
+        #
+        elif pg.sprite.spritecollide(self, self.game.doors, False):
+            self.game.load_map(FAFO_MAP)
+            
     @property
     def lvl(self):
         return self._lvl
@@ -157,26 +167,6 @@ class Player(Entity):
         self.max_hp = 20
         self.hp = self.max_hp
         self.atk = 2
-
-###TYLER EXPERIMENTAL###
-def miss_hit(player_dex, enemy_dex):
-    pdex = player_dex
-    edex = enemy_dex
-    if edex > pdex:
-        miss_chance = int(100 - ((pdex / edex) * 100))
-    elif pdex > edex:
-        miss_chance = 0
-    if miss_chance == 0:
-        return True
-    elif miss_chance >= 100:
-        return False
-    elif 100 > miss_chance > 0:
-        y = random.randint(1, 100)
-        if y > miss_chance:
-            return True
-        elif y < miss_chance:
-            return False
-###TYLER EXPERIMENTAL###
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -240,9 +230,27 @@ class Door(Entity):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
-        
-
 
 class Treasure():
     def __init__(self, game, x, y) -> None:
         pass
+
+###TYLER EXPERIMENTAL###
+def miss_hit(player_dex, enemy_dex):
+    pdex = player_dex
+    edex = enemy_dex
+    if edex > pdex:
+        miss_chance = int(100 - ((pdex / edex) * 100))
+    elif pdex > edex:
+        miss_chance = 0
+    if miss_chance == 0:
+        return True
+    elif miss_chance >= 100:
+        return False
+    elif 100 > miss_chance > 0:
+        y = random.randint(1, 100)
+        if y > miss_chance:
+            return True
+        elif y < miss_chance:
+            return False
+###TYLER EXPERIMENTAL###
