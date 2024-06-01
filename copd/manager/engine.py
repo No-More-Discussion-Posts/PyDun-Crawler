@@ -1,29 +1,20 @@
-from enum import Enum
-
-class Components(Enum):
-    POSITION = 1
-    VELOCITY = 2
-
 class Entity():
     '''
     Distinct Object
     '''
-    components = []
+    
     def __init__(self):
-        pass
+        self.components = {}
 
 
     def add_component(self,component):
-        pass
+        self.components[type(component)] = component
     
     def remove_component(self,component):
-        pass
+        self.components.pop(component)
     
-    def get_component(self,component):
-        pass
-
-    def get_components(self,components):
-        return [self.get_component(c) for c in components]
+    def get(self,component):
+        return self.components.get(component)
 
 
 class Component:
@@ -35,6 +26,7 @@ class System():
     Functions behind the components
     '''
     systems = []
+    entities = []
     database = {}
 
     def __init__(self) -> None:
@@ -42,6 +34,10 @@ class System():
             raise Exception('Duplicate system types')
         System.systems.append(self)
         System.database[type(self)] = self
+
+    def add_entity(self,entity):
+        if entity not in self.entities:
+            self.entities.append(entity)
 
     @classmethod
     def update_all(cls):
