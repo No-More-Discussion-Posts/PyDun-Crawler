@@ -5,3 +5,4 @@ class GameStates(Enum):
 	BATTLE = 2            # In the Battle Menu
 	PAUSED = 3            # Game Paused
 	INVENTORY = 4         # In the Inventory Menu
+	EQUIPMENT = 5		  # New Equipment Menu
