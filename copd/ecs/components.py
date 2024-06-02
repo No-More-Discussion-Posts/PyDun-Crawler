@@ -53,26 +53,10 @@ class Velocity(Component):
     def __repr__(self):
         return f"Velocity - dx:{self.dx}, dy:{self.dy}"
 
-# class HitPoints(Component):
+class HitPoints(Component):
+    def __init__(self,max_hp=-1,hp=-1):
+        self.max_hp = max_hp
+        self.hp = hp 
 
-# @Component
-# class Mobile:
-#     def __init__(self) -> None:
-#         pass
-
-#     def move_up(self):
-#         pass
-
-#     def move_down(self):
-#         pass
-
-#     def move_left(self):
-#         pass
-
-#     def move_right(self):
-#         pass
-
-#     def move(self,x,y):
-#         pass
-
+    
 

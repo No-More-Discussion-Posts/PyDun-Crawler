@@ -1,6 +1,6 @@
 import pygame
 from .menus import PauseMenu
-from .states import GameStates
+from .ecs.states import GameStates
 from .ecs.components import Velocity,Position
 
 
@@ -18,8 +18,8 @@ class EventHandler:
                     self.game.draw()
                 if event.key in [pygame.K_w,pygame.K_a,pygame.K_s,pygame.K_d]:
                     self.game.player.get(Velocity).set_from_key(event.key)
-                    self.game.movement.update_all()
+                    self.game.Movement.update_all()
                     self.game.player.movement()
                     self.game.monster.movement()
-                    self.game.player.check_collisions()
+                    self.game.Collision.update_all()
                     self.game.draw()

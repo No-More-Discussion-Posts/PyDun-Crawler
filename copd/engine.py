@@ -5,10 +5,10 @@ import sys
 from .entities import *
 # from .menus import PauseMenu, BattleMenu
 from .config import DEFAULT_MAP
-from .states import GameStates
+from .ecs.states import GameStates
 from .input_handlers import EventHandler
 #test
-from .ecs.systems import Movement
+from .ecs.systems import Movement, Collision
 from .ecs.components import Position,Velocity
 
 
@@ -22,7 +22,8 @@ class Engine:
         self.enemies = []
         self.event_handler = EventHandler(self)
         self.handle_event = self.event_handler.handle_event
-        self.movement = Movement()
+        self.Movement = Movement()
+        self.Collision = Collision()
 
 
 
@@ -34,7 +35,8 @@ class Engine:
             self.player.add_component(Velocity())
         else:
             self.player = player
-        self.movement.add_entity(self.player)
+        self.Movement.add_entity(self.player)
+        self.Collision.add_entity(self.player)
 
     def load_map(self, map = None)->None:
         # if no map is supplied in args
@@ -73,7 +75,7 @@ class Engine:
                 self.monster = HobGoblin(self)
             if num == 3:
                 self.monster = Ogre(self)
-        self.movement.add_entity(self.monster)
+        self.Movement.add_entity(self.monster)
 
     def new_game(self):
         #initialize all sprite groups
@@ -127,6 +129,9 @@ class Engine:
         while self.running:
             for event in pygame.event.get():
                 self.handle_event(event)
+            if self.state == GameStates.BATTLE:
+                BattleMenu(self)
+            self.draw()
         pygame.quit()
         sys.exit()
 
