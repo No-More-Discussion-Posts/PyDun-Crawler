@@ -13,14 +13,49 @@ class immovable_entitiy(pg.sprite.Sprite):
     #class to initilize a sprite that is immovable
     pass
 class Entity(pg.sprite.Sprite):
+    def __init__(self,game,x=0,y=0):
+        super().__init__()
+        self.components = {}
+        self.add_component(Position(x,y))
+        self.add_component(Velocity())
+
+    @property
+    def x(self):
+        return self.get(Position).x
+    
+    @x.setter
+    def x(self,x):
+        self.get(Position).x = x
+
+    @property 
+    def y(self):
+        return self.get(Position).y
+    
+    @y.setter
+    def y(self,y):
+        self.get(Position).y = y
+        
     #class to initilize a sprite with movement and actions
     def update(self):
         """All entities need an update method to be called per game turn."""
         pass
+    def add_component(self,component):
+        self.components[type(component)] = component
+    
+    def get(self,component):
+        return self.components.get(component)
+    
+    def movement(self):
+        #updates sprite x and y coords
+        self.game.update()
+        dx = self.get(Velocity).dx * TILE_SIZE
+        dy = self.get(Velocity).dy * TILE_SIZE
+        self.rect.move_ip(dx,dy)
 
 class Monster(Entity):
-    def __init__(self, game):
-        self.game = game
+
+    def __init__(self, game, x=0, y=0):
+        super().__init__(game, x, y)
 
     def sprite_gen(self):
         #Sprite Generation Block
@@ -68,6 +103,7 @@ class Monster(Entity):
 
 class Goblin(Monster):
     def __init__(self, game):
+        super().__init__(game)
         self.name = "Goblin"
         self.game = game
         self._layer = Player_Layer
@@ -80,6 +116,7 @@ class Goblin(Monster):
 
 class HobGoblin(Monster):
     def __init__(self, game):
+        super().__init__(game)
         self.name = "HobGoblin"
         self.game = game
         self._layer = Player_Layer
@@ -92,6 +129,7 @@ class HobGoblin(Monster):
 
 class Ogre(Monster):
     def __init__(self, game):
+        super().__init__(game)
         self.name = "Ogre"
         self.game = game
         self._layer = Player_Layer
@@ -104,6 +142,7 @@ class Ogre(Monster):
     
 class Player(Entity):
     def __init__(self, name, game, x, y):
+        super().__init__(game,x,y)
         #name of player
         self.name = name
         #current running game
@@ -131,18 +170,7 @@ class Player(Entity):
 
         self.components = {}
 
-    def add_component(self,component):
-        self.components[type(component)] = component
-    
-    def get(self,component):
-        return self.components.get(component)
-    
-    def movement(self):
-        #updates sprite x and y coords
-        self.game.update()
-        self.rect.x = self.get(Position).x * TILE_SIZE
-        self.rect.y = self.get(Position).y * TILE_SIZE
-        self.player_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
+
 
     def update(self):
         self.lvl = int(self.game.turn * 0.4)
@@ -220,6 +248,7 @@ class Background(pg.sprite.Sprite):
         self.rect.y = self.y
 class Door(Entity): 
     def __init__(self, game, x, y):
+        super().__init__(game,x,y)
         self.game = game
         self._layer = Door_Layer
         self.groups = self.game.doors
