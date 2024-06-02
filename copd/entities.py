@@ -6,7 +6,8 @@ from .config import *
 from .menus import BattleMenu
 import time
 
-items = {1: "S HP Pot", 2: "M HP Pot", 3: "L HP Pot"}
+
+items = {1 : "Health Pot", 2 : {"Helm" : "Bronze Helmet"}, 3 : {"Armor" : "Bronze Armor"}, 4 : {"Weapon" : "Bronze Sword"}}
 
 class immovable_entitiy(pg.sprite.Sprite):
     #class to initilize a sprite that is immovable
@@ -74,7 +75,7 @@ class Goblin(Monster):
         self.max_hp = 10
         self.hp = 10
         self.atk = 1
-        self.item = items[random.randint(1, 3)]
+        self.item = items[random.randint(1, 4)]
         self.sprite_gen()
 
 class HobGoblin(Monster):
@@ -86,7 +87,7 @@ class HobGoblin(Monster):
         self.max_hp = 15
         self.hp = 15
         self.atk = 2
-        self.item = items[random.randint(1, 3)]
+        self.item = items[random.randint(1, 4)]
         self.sprite_gen()
 
 class Ogre(Monster):
@@ -98,7 +99,7 @@ class Ogre(Monster):
         self.max_hp = 20
         self.hp = 20
         self.atk = 4
-        self.item = items[random.randint(1, 3)]
+        self.item = items[random.randint(1, 4)]
         self.sprite_gen()
     
 class Player(Entity):
@@ -155,7 +156,8 @@ class Player(Entity):
             BattleMenu(self.game)
         #
         elif pg.sprite.spritecollide(self, self.game.doors, False):
-            self.game.load_map(FAFO_MAP)
+            #Generate_dun.load_room(self, map)
+            pass
             
     @property
     def lvl(self):
@@ -167,7 +169,6 @@ class Player(Entity):
         self.max_hp = 20
         self.hp = self.max_hp
         self.atk = 2
-
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
 

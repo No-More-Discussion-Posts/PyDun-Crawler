@@ -1,3 +1,4 @@
+
 class Inventory:
     def __init__(self):
         self.inventory = {}
@@ -18,7 +19,7 @@ class Inventory:
 
 class Equipped:
     def __init__(self):
-        self.equipped = {'Armor': 'No Item'}
+        self.equipped = {'Helm' : 'No Item', 'Armor': 'No Item', 'Weapon' : 'No Item'}
 
     def equip_item(self, item_part, item_name):
         self.equipped[item_part] = item_name

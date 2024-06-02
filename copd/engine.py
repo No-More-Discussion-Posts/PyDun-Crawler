@@ -10,6 +10,8 @@ from .input_handlers import EventHandler
 
 
 
+
+
 class Engine:
     
     def __init__(self):
@@ -35,24 +37,13 @@ class Engine:
         else:
             #load default starting map
             map = DEFAULT_MAP
-
-
-        #draws Wall Entitiy at top and bottom of tile_map in config
-        for x in map[0]:
-            self.wall = Wall(self, x, 0)
-            self.wall = Wall(self, x, 17)
-        #draws Wall Entitiy at leftmost and rightmost positions of tile_map in config
-        #add doors to each wall edge!!!!!!!!!!!!! -Roland
-        for y in map[1]:
-            self.wall = Wall(self, 0, y)
-            self.wall = Wall(self, 31, y)
-        #draws background Entity in each tile of Tile_map in config
-        #placed in lowest layer
-        for x in range(1,31):
-            for y in range(1,17):
-                self.bg = Background(self, x, y)
-        self.door = Door(self, 1, 7)
-
+        
+        #draws walls to dungeon(is temporary)
+        #Generate_dun.add_monster(self)
+        self.DrawWalls(map)
+        self.add_monster(self)
+        
+    
     def add_monster(self,monster = None):
         if monster is not None:
             self.monster = monster
@@ -65,7 +56,7 @@ class Engine:
                 self.monster = HobGoblin(self)
             if num == 3:
                 self.monster = Ogre(self)
-
+    
     def new_game(self):
         #initialize all sprite groups
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -129,3 +120,22 @@ class Engine:
         # draw lines vertically
         for y in range(0, 360, 20):
             pygame.draw.line(self.screen, (128, 128, 128), (0, y), (640, y))
+
+    def DrawWalls(self, map):
+        for x in map[0]:
+            if x == 17:
+                self.door = Door(self, x, 0)
+                self.door = Door(self, x, 17)
+            else:
+                self.wall = Wall(self, x, 0)
+                self.wall = Wall(self, x, 17)
+        for y in map[1]:
+            if y == 9:
+                self.door = Door(self, 0, y)
+                self.door = Door(self, 31, y)
+            else:
+                self.wall = Wall(self, 0, y)
+                self.wall = Wall(self, 31, y)
+        for x in range(1,31):
+            for y in range(1,17):
+                self.bg = Background(self, x, y)

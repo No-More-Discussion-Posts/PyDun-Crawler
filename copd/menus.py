@@ -6,8 +6,6 @@ from .button import *
 from .engine import *
 from .menu_options import Option, MenuOption
 
-#I push
-
 class Menu:
     def __init__(self, game, options):
         self.game = game
@@ -180,16 +178,25 @@ class PauseMenu(Menu):
             for item in self.game.player.equipped.equipped:
                 if place_holder == 1:
                     item1_text = f"{item}"
-                    item1 = Button(f"{item}", self.game, 242, 70)
+                    item1 = Button(f"{item}", self.game, 172, 70)
                     item1.show()
+                    item1_item_text = f"{self.game.player.equipped.equipped[item]}"
+                    item1_item = Button(f"{self.game.player.equipped.equipped[item]}", self.game, 312, 70)
+                    item1_item.show()
                 if place_holder == 2:
                     item2_text = f"{item}"
-                    item2 = Button(f"{item}", self.game, 242, 140)
+                    item2 = Button(f"{item}", self.game, 172, 140)
                     item2.show()
+                    item2_item_text = f"{self.game.player.equipped.equipped[item]}"
+                    item2_item = Button(f"{self.game.player.equipped.equipped[item]}", self.game, 312, 140)
+                    item2_item.show()
                 if place_holder == 3:
                     item3_text = f"{item}"
-                    item3 = Button(f"{item}", self.game, 242, 210)
+                    item3 = Button(f"{item}", self.game, 172, 210)
                     item3.show()
+                    item3_item_text = f"{self.game.player.equipped.equipped[item]}"
+                    item3_item = Button(f"{self.game.player.equipped.equipped[item]}", self.game, 312, 210)
+                    item3_item.show()
                 place_holder += 1
             close_item = Button("Close", self.game, 242, 280)
             close_item.show()
@@ -296,7 +303,16 @@ class BattleMenu():
             sys.exit()
         elif self.monster.hp <= 0:
             self.player.game.update()
-            self.player.inventory.update_item(self.monster.item, 1)
+            if self.monster.item != "Health Pot":
+                x = str(self.monster.item.keys())
+                #Don't Look I just wanted it to fucking work okay....don't judge me -Tyler
+                x = x.strip('dict_keys')
+                x = x.strip('()')
+                x = x.strip('[]')
+                x = x.strip('\'\'')
+                self.player.equipped.equip_item(x,self.monster.item[x])
+            elif self.monster.item == "Health Pot":
+                self.player.inventory.update_item(self.monster.item, 1)
             self.monster.kill()   #added this to remove monster from overworld after battle is won. -Roland
             self.running = False
 
