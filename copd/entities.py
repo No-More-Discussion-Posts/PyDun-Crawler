@@ -5,6 +5,7 @@ import pygame as pg  # TODO: make consistent
 from .config import *
 from .menus import BattleMenu
 import time
+from .manager.components import Position,Velocity
 
 items = {1: "S HP Pot", 2: "M HP Pot", 3: "L HP Pot"}
 
@@ -127,16 +128,20 @@ class Player(Entity):
         self.rect = self.image.get_rect()
         self.rect.x = x * TILE_SIZE
         self.rect.y = y * TILE_SIZE
+
+        self.components = {}
+
+    def add_component(self,component):
+        self.components[type(component)] = component
     
-    def movement(self, dx, dy):
+    def get(self,component):
+        return self.components.get(component)
+    
+    def movement(self):
         #updates sprite x and y coords
         self.game.update()
-        #transforms 1 pixel movements to tile based movements
-        self.x += dx * TILE_SIZE
-        self.y += dy * TILE_SIZE
-        
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect.x = self.get(Position).x * TILE_SIZE
+        self.rect.y = self.get(Position).y * TILE_SIZE
         self.player_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
 
     def update(self):
@@ -149,7 +154,8 @@ class Player(Entity):
         #checks the player sprite(self) and and sprite in the blocks sprite group or overlap
         if pg.sprite.spritecollide(self, self.game.blocks, False):
             #if there is overlap between player and wall sprites, the player the designated spot
-            self.movement(x, y)
+            self.get(Position)+Velocity(x,y)
+            self.movement()
         #checks for sprite overlap 
         elif pg.sprite.spritecollide(self, self.game.monsters, False):
             BattleMenu(self.game)

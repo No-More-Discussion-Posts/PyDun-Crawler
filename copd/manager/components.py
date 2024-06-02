@@ -23,6 +23,8 @@ class Position(Component):
         else:
             raise TypeError("Position must be incremented with a Velocity object")
         return self
+    def __str__(self):
+        return f"Position - x:{self.x}, y:{self.y}"
     
     def __repr__(self):
         return f"Position - x:{self.x}, y:{self.y}"
@@ -32,10 +34,18 @@ class Velocity(Component):
     def __init__(self,dx:int=0,dy:int=0):
         self.dx = dx
         self.dy = dy
+    
+    def set(self,dx,dy):
+        self.dx = dx
+        self.dy = dy
 
+    def __str__(self):
+        return f"Velocity - dx:{self.dx}, dy:{self.dy}"
+    
     def __repr__(self):
         return f"Velocity - dx:{self.dx}, dy:{self.dy}"
 
+# class HitPoints(Component):
 
 # @Component
 # class Mobile:

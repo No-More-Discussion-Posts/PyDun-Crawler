@@ -7,6 +7,9 @@ from .entities import *
 from .config import DEFAULT_MAP
 from .states import GameStates
 from .input_handlers import EventHandler
+#test
+from .manager.systems import Movement
+from .manager.components import Position,Velocity
 
 
 
@@ -19,12 +22,17 @@ class Engine:
         self.enemies = []
         self.event_handler = EventHandler(self)
         self.handle_event = self.event_handler.handle_event
+        self.movement = Movement()
+
 
 
     def add_player(self,player = None)-> None:
         #initilize player object
         if player is None:
             self.player = Player("Bilbo", self, 15, 9)
+            self.player.add_component(Position(15,9))
+            self.player.add_component(Velocity())
+            self.movement.add_entity(self.player)
         else:
             self.player = player
 
