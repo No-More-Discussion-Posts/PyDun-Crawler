@@ -157,7 +157,7 @@ class Player(Entity):
         
         elif pg.sprite.spritecollide(self, self.game.doors, False):
             self.game.load_map(NachoCheese)
-        elif pg.sprite.spritecollide(self, self.game.treasure, True):
+        elif pg.sprite.spritecollide(self, self.game.treasures, True):
             
             pass
         
@@ -239,7 +239,7 @@ class Treasure(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
         self._layer = Door_Layer
-        self.groups = self.game.Treasures
+        self.groups = self.game.treasures
         pg.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * TILE_SIZE

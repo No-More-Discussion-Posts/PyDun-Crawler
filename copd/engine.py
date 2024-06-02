@@ -40,8 +40,7 @@ class Engine:
         
         self.DrawWalls(map, color)
         self.add_monster(self)
-        self.add_treasure()
-        print("map loaded")
+        self.add_treasure(14, 10)
 
     def new_game(self):
         #initialize all sprite groups
@@ -74,6 +73,7 @@ class Engine:
         self.blocks.draw(self.screen)
         self.monsters.draw(self.screen)
         self.doors.draw(self.screen)
+        self.treasures.draw(self.screen)
         self.show_turn()
 
         pygame.display.update()
