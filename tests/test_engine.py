@@ -9,7 +9,6 @@ def test_move_up(game):
     y = player.get(Position).y
     movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_w))
     game.handle_event(movement)
-    print(player.get(Velocity))
     new_y = player.get(Position).y
     assert new_y == (y-1)
 
@@ -53,7 +52,7 @@ def test_monster_movement(game):
     monster.rect.y = monster.y
 
     distance = sqrt((player.x-monster.x)**2+(player.y-monster.y)**2)
-    monster.movement(player)
+    monster.movement()
     new_distance = sqrt((player.x-monster.x)**2+(player.y-monster.y)**2)
 
     assert new_distance <= distance

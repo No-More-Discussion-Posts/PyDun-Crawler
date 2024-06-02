@@ -56,6 +56,8 @@ class Monster(Entity):
 
     def __init__(self, game, x=0, y=0):
         super().__init__(game, x, y)
+        self.add_component(Position(x,y))
+        self.add_component(Velocity())
 
     def sprite_gen(self):
         #Sprite Generation Block
@@ -74,13 +76,11 @@ class Monster(Entity):
         self.rect.y = self.y
         #end sprite generation block
 
-    def movement(self,player):
-        time.sleep(.5)
+    def movement(self):
         self.game.update()
-        self.player = player
         #enemy to player vector math here
-        dx = self.player.rect.x - self.rect.x
-        dy = self.player.rect.y - self.rect.y
+        dx = self.game.player.rect.x - self.rect.x
+        dy = self.game.player.rect.y - self.rect.y
         if(abs(dx) < 100) and (abs(dy) < 100):
             if(abs(dx) > abs(dy)):
                 if(dx > 0):
@@ -96,7 +96,7 @@ class Monster(Entity):
                 elif(dy < 0):
                     dy = -1
                     self.y += dy * TILE_SIZE
-
+        # time.sleep(.5) if velocity > 0
         self.rect.x = self.x
         self.rect.y = self.y
         self.monster_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
@@ -178,10 +178,12 @@ class Player(Entity):
         self.hp = self.hp
         self.max_hp = self.max_hp
     
-    def check_collisions(self, x, y):
+    def check_collisions(self):
         #checks the player sprite(self) and and sprite in the blocks sprite group or overlap
         if pg.sprite.spritecollide(self, self.game.blocks, False):
             #if there is overlap between player and wall sprites, the player the designated spot
+            x = self.get(Velocity).x * - 1
+            y = self.get(Velocity).y * - 1
             self.get(Position)+Velocity(x,y)
             self.movement()
         #checks for sprite overlap 

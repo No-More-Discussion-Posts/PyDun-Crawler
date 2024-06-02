@@ -35,6 +35,7 @@ class Engine:
             self.movement.add_entity(self.player)
         else:
             self.player = player
+        self.movement.add_entity(self.player)
 
     def load_map(self, map = None)->None:
         # if no map is supplied in args
@@ -73,6 +74,7 @@ class Engine:
                 self.monster = HobGoblin(self)
             if num == 3:
                 self.monster = Ogre(self)
+        self.movement.add_entity(self.monster)
 
     def new_game(self):
         #initialize all sprite groups
