@@ -1,7 +1,7 @@
 import pygame 
 from copd.config import * 
 from math import sqrt
-from  copd.manager.components import *
+from  copd.ecs.components import *
 
 def test_move_up(game):
     

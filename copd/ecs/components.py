@@ -1,14 +1,7 @@
 import pygame
-from .engine import Component
+from .ecs import Component
 
 
-# class WASDComponent(Component):
-#     def __init__(self):
-#         pass
-
-#     def update(self):
-#         #update velocity
-#         pass
         
 
 class Position(Component):
@@ -50,7 +43,7 @@ class Velocity(Component):
             case pygame.K_d:
                 self.dx = 1
                 self.dy = 0
-                
+
     def set(self,dx,dy):
         self.dx = dx
         self.dy = dy

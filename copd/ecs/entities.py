@@ -1,4 +1,4 @@
-from .engine import Entity
+from .ecs import Entity
 from .components import Position,Velocity
 
 class Player(Entity):

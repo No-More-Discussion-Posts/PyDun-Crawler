@@ -1,7 +1,7 @@
 import pygame
 from .menus import PauseMenu
 from .states import GameStates
-from .manager.components import Velocity,Position
+from .ecs.components import Velocity,Position
 
 
 class EventHandler:
@@ -21,6 +21,5 @@ class EventHandler:
                     self.game.movement.update_all()
                     self.game.player.movement()
                     self.game.monster.movement()
-                    self.game.movement.update_all()
                     self.game.player.check_collisions()
                     self.game.draw()

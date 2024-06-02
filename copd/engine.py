@@ -8,8 +8,8 @@ from .config import DEFAULT_MAP
 from .states import GameStates
 from .input_handlers import EventHandler
 #test
-from .manager.systems import Movement
-from .manager.components import Position,Velocity
+from .ecs.systems import Movement
+from .ecs.components import Position,Velocity
 
 
 
@@ -32,7 +32,7 @@ class Engine:
             self.player = Player("Bilbo", self, 15, 9)
             self.player.add_component(Position(15,9))
             self.player.add_component(Velocity())
-            self.movement.add_entity(self.player)
+            # self.movement.add_entity(self.player)
         else:
             self.player = player
         self.movement.add_entity(self.player)
@@ -86,16 +86,17 @@ class Engine:
         #create player character
 
     def update(self):
-        """Make updates every turn such as monster movement, etc.
-        Initiated by player movement/action in battle.
-        """
-        #updates all sprite object values
-        self.all_sprites.update()
-        self.players.update()
-        self.blocks.update()
-        self.monsters.update()
-        self.doors.update()
-        self.draw()
+        pass
+    #     """Make updates every turn such as monster movement, etc.
+    #     Initiated by player movement/action in battle.
+    #     """
+    #     #updates all sprite object values
+    #     self.all_sprites.update()
+    #     self.players.update()
+    #     # self.blocks.update()
+    #     self.monsters.update()
+    #     self.doors.update()
+    #     self.draw()
 
     def draw(self):
         """Draw to the screen"""
@@ -125,10 +126,8 @@ class Engine:
 
         self.running = True
         while self.running:
-            # SHOULD WAIT FOR INPUT
             for event in pygame.event.get():
                 self.handle_event(event)
-            #self.draw()
         pygame.quit()
         sys.exit()
 

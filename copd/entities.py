@@ -5,7 +5,7 @@ import pygame as pg  # TODO: make consistent
 from .config import *
 from .menus import BattleMenu
 import time
-from .manager.components import Position,Velocity
+from .ecs.components import Position,Velocity
 
 items = {1: "S HP Pot", 2: "M HP Pot", 3: "L HP Pot"}
 
@@ -39,6 +39,7 @@ class Entity(pg.sprite.Sprite):
     def update(self):
         """All entities need an update method to be called per game turn."""
         pass
+
     def add_component(self,component):
         self.components[type(component)] = component
     
