@@ -32,7 +32,6 @@ class Engine:
             self.player = Player("Bilbo", self, 15, 9)
             self.player.add_component(Position(15,9))
             self.player.add_component(Velocity())
-            # self.movement.add_entity(self.player)
         else:
             self.player = player
         self.movement.add_entity(self.player)
@@ -86,7 +85,7 @@ class Engine:
         #create player character
 
     def update(self):
-        pass
+        self.turn += 1
     #     """Make updates every turn such as monster movement, etc.
     #     Initiated by player movement/action in battle.
     #     """

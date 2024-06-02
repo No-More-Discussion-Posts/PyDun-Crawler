@@ -78,7 +78,6 @@ class Monster(Entity):
         #end sprite generation block
 
     def movement(self):
-        self.game.update()
         #enemy to player vector math here
         dx = self.game.player.rect.x - self.rect.x
         dy = self.game.player.rect.y - self.rect.y
