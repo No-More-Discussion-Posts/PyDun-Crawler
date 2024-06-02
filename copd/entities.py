@@ -178,25 +178,7 @@ class Player(Entity):
         self.hp = self.hp
         self.max_hp = self.max_hp
     
-    def check_collisions(self):
-        #checks the player sprite(self) and and sprite in the blocks sprite group or overlap
-        if pg.sprite.spritecollide(self, self.game.blocks, False):
-            #if there is overlap between player and wall sprites, the player the designated spot
-            # print(self.get(Velocity))
-            # print(self.get(Position))
-            x = self.get(Velocity).dx * -1
-            y = self.get(Velocity).dy * -1
-            self.get(Position)+Velocity(x,y)
-            # print(self.get(Position))
-            self.movement()
-            
-            print(self.get(Position))
-        #checks for sprite overlap 
-        elif pg.sprite.spritecollide(self, self.game.monsters, False):
-            BattleMenu(self.game)
-        #
-        elif pg.sprite.spritecollide(self, self.game.doors, False):
-            self.game.load_map(FAFO_MAP)
+    
             
     @property
     def lvl(self):

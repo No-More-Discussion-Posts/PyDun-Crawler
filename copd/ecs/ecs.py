@@ -26,18 +26,20 @@ class System():
     Functions behind the components
     '''
     systems = []
-    entities = []
     database = {}
 
     def __init__(self) -> None:
+        self.entities = []
         if type(self) in System.database:
             raise Exception('Duplicate system types')
+        # print(f"New system initiated: {type(self)}")
         System.systems.append(self)
         System.database[type(self)] = self
 
     def add_entity(self,entity):
         if entity not in self.entities:
             self.entities.append(entity)
+            # print(f"{type(self)}: Added {entity}")
 
     @classmethod
     def update_all(cls):
