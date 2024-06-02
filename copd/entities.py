@@ -154,10 +154,14 @@ class Player(Entity):
         #checks for sprite overlap 
         elif pg.sprite.spritecollide(self, self.game.monsters, False):
             BattleMenu(self.game)
-        #
+        
         elif pg.sprite.spritecollide(self, self.game.doors, False):
-            #Generate_dun.load_room(self, map)
+            self.game.load_map(NachoCheese)
+        elif pg.sprite.spritecollide(self, self.game.treasure, True):
+            
             pass
+        
+            
             
     @property
     def lvl(self):
@@ -170,7 +174,7 @@ class Player(Entity):
         self.hp = self.max_hp
         self.atk = 2
 class Wall(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, color):
 
         self.game = game
         ###WALL SPECIFIC###
@@ -187,7 +191,7 @@ class Wall(pg.sprite.Sprite):
 
         self.image = pg.Surface([self.width, self.height])
         ###WALL SPECIFIC###
-        self.image.fill(BLUE)
+        self.image.fill(color)
         ###WALL SPECIFIC###
 
         self.rect = self.image.get_rect()
@@ -231,10 +235,25 @@ class Door(Entity):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+class Treasure(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.game = game
+        self._layer = Door_Layer
+        self.groups = self.game.Treasures
+        pg.sprite.Sprite.__init__(self, self.groups)
 
-class Treasure():
-    def __init__(self, game, x, y) -> None:
-        pass
+        self.x = x * TILE_SIZE
+        self.y = y * TILE_SIZE
+        self.width = TILE_SIZE
+        self.height = TILE_SIZE
+
+        self.image = pg.Surface([self.width, self.height])
+        self.image.fill(NachoCheese)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
 
 ###TYLER EXPERIMENTAL###
 def miss_hit(player_dex, enemy_dex):

@@ -22,7 +22,6 @@ class Engine:
         self.event_handler = EventHandler(self)
         self.handle_event = self.event_handler.handle_event
 
-
     def add_player(self,player = None)-> None:
         #initilize player object
         if player is None:
@@ -30,7 +29,7 @@ class Engine:
         else:
             self.player = player
 
-    def load_map(self, map = None)->None:
+    def load_map(self, color ,map = None)->None:
         # if no map is supplied in args
         if map is not None:
             map = map
@@ -38,25 +37,12 @@ class Engine:
             #load default starting map
             map = DEFAULT_MAP
         
-        #draws walls to dungeon(is temporary)
-        #Generate_dun.add_monster(self)
-        self.DrawWalls(map)
-        self.add_monster(self)
         
-    
-    def add_monster(self,monster = None):
-        if monster is not None:
-            self.monster = monster
-        else:
-            #initilizes random enemy sprite in room
-            num = random.randint(1, 3)
-            if num == 1:
-                self.monster = Goblin(self)
-            if num == 2:
-                self.monster = HobGoblin(self)
-            if num == 3:
-                self.monster = Ogre(self)
-    
+        self.DrawWalls(map, color)
+        self.add_monster(self)
+        self.add_treasure()
+        print("map loaded")
+
     def new_game(self):
         #initialize all sprite groups
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -64,6 +50,7 @@ class Engine:
         self.monsters = pygame.sprite.LayeredUpdates()
         self.players = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
+        self.treasures = pygame.sprite.LayeredUpdates()
         #create player character
 
     def update(self):
@@ -76,6 +63,7 @@ class Engine:
         self.blocks.update()
         self.monsters.update()
         self.doors.update()
+        self.treasures.update()
         self.draw()
 
     def draw(self):
@@ -121,21 +109,37 @@ class Engine:
         for y in range(0, 360, 20):
             pygame.draw.line(self.screen, (128, 128, 128), (0, y), (640, y))
 
-    def DrawWalls(self, map):
+    def DrawWalls(self, map, color):
         for x in map[0]:
             if x == 17:
                 self.door = Door(self, x, 0)
                 self.door = Door(self, x, 17)
             else:
-                self.wall = Wall(self, x, 0)
-                self.wall = Wall(self, x, 17)
+                self.wall = Wall(self, x, 0, color)
+                self.wall = Wall(self, x, 17, color)
         for y in map[1]:
             if y == 9:
                 self.door = Door(self, 0, y)
                 self.door = Door(self, 31, y)
             else:
-                self.wall = Wall(self, 0, y)
-                self.wall = Wall(self, 31, y)
+                self.wall = Wall(self, 0, y, color)
+                self.wall = Wall(self, 31, y, color)
         for x in range(1,31):
             for y in range(1,17):
                 self.bg = Background(self, x, y)
+
+    def add_monster(self,monster = None):
+        if monster is not None:
+            self.monster = monster
+        else:
+            #initilizes random enemy sprite in room
+            num = random.randint(1, 3)
+            if num == 1:
+                self.monster = Goblin(self)
+            if num == 2:
+                self.monster = HobGoblin(self)
+            if num == 3:
+                self.monster = Ogre(self)
+
+    def add_treasure(self, x, y):
+        self.treasure = Treasure(self, x, y)

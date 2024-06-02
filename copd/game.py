@@ -6,6 +6,7 @@
 import pygame
 import os
 import sys
+
 if 'copd' not in sys.modules:
     parent_dir_name = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     sys.path.append(parent_dir_name)
@@ -18,7 +19,7 @@ def main() -> None:
     #load all sprites groups
     game.new_game()
     #load default map
-    game.load_map()
+    game.load_map((0, 255, 0))
     #initilize player object
     game.add_player()
     #initilize monster object
