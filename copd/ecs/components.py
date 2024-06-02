@@ -30,19 +30,18 @@ class Velocity(Component):
         self.dy = dy
     
     def set_from_key(self,key):
-        match key:
-            case pygame.K_w:
-                self.dx = 0
-                self.dy = -1
-            case pygame.K_s:
-                self.dx = 0
-                self.dy = 1
-            case pygame.K_a:
-                self.dx = -1
-                self.dy = 0
-            case pygame.K_d:
-                self.dx = 1
-                self.dy = 0
+        if key == pygame.K_w:
+            self.dx = 0
+            self.dy = -1
+        elif key == pygame.K_s:
+            self.dx = 0
+            self.dy = 1
+        elif key ==  pygame.K_a:
+            self.dx = -1
+            self.dy = 0
+        elif key == pygame.K_d:
+            self.dx = 1
+            self.dy = 0
 
     def set(self,dx,dy):
         self.dx = dx
