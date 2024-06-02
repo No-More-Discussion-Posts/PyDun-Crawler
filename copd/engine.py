@@ -76,6 +76,7 @@ class Engine:
             if num == 3:
                 self.monster = Ogre(self)
         self.Movement.add_entity(self.monster)
+        self.Collision.add_entity(self.monster)
 
     def new_game(self):
         #initialize all sprite groups
