@@ -22,7 +22,7 @@ class Monster(Entity):
     def __init__(self, game):
         self.game = game
 
-    def sprite_gen(self):
+    def sprite_gen(self, color=None):
         #Sprite Generation Block
         self.groups = self.game.monsters
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -33,14 +33,14 @@ class Monster(Entity):
         self.width = TILE_SIZE
         self.height = TILE_SIZE
         self.image = pg.Surface([self.width, self.height])
-        self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        if color != None:
+            self.image.fill(color)
         #end sprite generation block
 
     def movement(self,player):
-        time.sleep(.5)
         self.game.update()
         self.player = player
         #enemy to player vector math here
@@ -76,7 +76,8 @@ class Goblin(Monster):
         self.hp = 10
         self.atk = 1
         self.item = items[random.randint(1, 4)]
-        self.sprite_gen()
+        self.sprite_gen(BLACK)
+        #self.image.fill(BLACK)
 
 class HobGoblin(Monster):
     def __init__(self, game):
@@ -88,7 +89,8 @@ class HobGoblin(Monster):
         self.hp = 15
         self.atk = 2
         self.item = items[random.randint(1, 4)]
-        self.sprite_gen()
+        self.sprite_gen(GREEN)
+        #self.image.fill(GREEN)
 
 class Ogre(Monster):
     def __init__(self, game):
@@ -100,7 +102,8 @@ class Ogre(Monster):
         self.hp = 20
         self.atk = 4
         self.item = items[random.randint(1, 4)]
-        self.sprite_gen()
+        self.sprite_gen(RED)
+        #self.image.fill(RED)
     
 class Player(Entity):
     def __init__(self, name, game, x, y):
@@ -157,9 +160,30 @@ class Player(Entity):
         
         elif pg.sprite.spritecollide(self, self.game.doors, False):
             self.game.load_map(NachoCheese)
+            #self.movement(x, y)
+            if self.rect.x == 0 * TILE_SIZE:
+                self.rect.x = 30 * TILE_SIZE
+                self.x = 30 * TILE_SIZE
+            elif self.rect.x == 31 * TILE_SIZE:
+                self.rect.x = 1 * TILE_SIZE
+                self.x = 1 * TILE_SIZE
+            elif self.rect.y == 0 * TILE_SIZE:
+                self.rect.y = 16 * TILE_SIZE
+                self.y = 16 * TILE_SIZE
+            elif self.rect.y == 17 * TILE_SIZE:
+                self.rect.y = 1 * TILE_SIZE
+                self.y = 1 * TILE_SIZE
+
+            #elif
+        
         elif pg.sprite.spritecollide(self, self.game.treasures, True):
-            
-            pass
+            if self.game.treasure.item != "Health Pot":
+                x = str(self.game.treasure.item.keys())
+                #Don't Look I just wanted it to fucking work okay....don't judge me -Tyler
+                x = x.strip('dict_keys([\'\'])')
+                self.equipped.equip_item(x,self.game.treasure.item[x])
+            elif self.game.treasure.item == "Health Pot":
+                self.inventory.update_item(self.game.treasure.item, 1)
         
             
             
@@ -198,6 +222,7 @@ class Wall(pg.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
         self.wall_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
+
 class Background(pg.sprite.Sprite):
     def __init__(self, game, x, y):
 
@@ -241,6 +266,8 @@ class Treasure(pg.sprite.Sprite):
         self._layer = Door_Layer
         self.groups = self.game.treasures
         pg.sprite.Sprite.__init__(self, self.groups)
+
+        self.item = items[random.randint(1, 4)]
 
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE

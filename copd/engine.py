@@ -21,6 +21,13 @@ class Engine:
         self.enemies = []
         self.event_handler = EventHandler(self)
         self.handle_event = self.event_handler.handle_event
+        self.all_sprites = pygame.sprite.LayeredUpdates()
+        self.blocks = pygame.sprite.LayeredUpdates()
+        self.monsters = pygame.sprite.LayeredUpdates()
+        self.players = pygame.sprite.LayeredUpdates()
+        self.doors = pygame.sprite.LayeredUpdates()
+        self.treasures = pygame.sprite.LayeredUpdates()
+
 
     def add_player(self,player = None)-> None:
         #initilize player object
@@ -29,29 +36,30 @@ class Engine:
         else:
             self.player = player
 
-    def load_map(self, color ,map = None)->None:
+    def load_start_map(self, color ,map = None)->None:
         # if no map is supplied in args
         if map is not None:
             map = map
         else:
             #load default starting map
             map = DEFAULT_MAP
-        
-        
+        self.add_player()
+        self.add_monster()
         self.DrawWalls(map, color)
-        self.add_monster(self)
         self.add_treasure(14, 10)
 
-    def new_game(self):
-        #initialize all sprite groups
-        self.all_sprites = pygame.sprite.LayeredUpdates()
-        self.blocks = pygame.sprite.LayeredUpdates()
-        self.monsters = pygame.sprite.LayeredUpdates()
-        self.players = pygame.sprite.LayeredUpdates()
-        self.doors = pygame.sprite.LayeredUpdates()
-        self.treasures = pygame.sprite.LayeredUpdates()
-        #create player character
-
+    def load_map(self, color, map = None)->None:
+        
+        if map is not None:
+            map = map
+        else:
+            map = DEFAULT_MAP
+        pygame.sprite.Group.empty(self.blocks)
+        self.monster.kill()
+        self.add_monster()
+        #self.DrawWalls(map, color)
+        self.add_treasure(14, 10)
+        
     def update(self):
         """Make updates every turn such as monster movement, etc.
         Initiated by player movement/action in battle.
@@ -73,7 +81,7 @@ class Engine:
         self.blocks.draw(self.screen)
         self.monsters.draw(self.screen)
         self.doors.draw(self.screen)
-        self.treasures.draw(self)
+        self.treasures.draw(self.screen)
         self.show_turn()
 
         pygame.display.update()
