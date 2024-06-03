@@ -1,3 +1,3 @@
-"""Small app to handle game initialization """
+"""Small app to handle game initialization"""
 
-# TODO: Write this
+# TODO: this
