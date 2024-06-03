@@ -265,8 +265,8 @@ class BattleMenu():
             # Button Testing
             fight = Button("Fight", self.game, 340, 210)
             fight.show()
-            defend = Button("Defend", self.game, 485, 210)
-            defend.show()
+            parry = Button("Parry", self.game, 485, 210)
+            parry.show()
             run = Button("Run", self.game, 485, 280)
             run.show()
             items = Button("Inventory", self.game, 340, 280)
@@ -276,9 +276,9 @@ class BattleMenu():
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     if fight.butt_rect.collidepoint(e.pos):
-                        self.combat(defend=False)
-                    if defend.butt_rect.collidepoint(e.pos):
-                        self.combat(defend=True)
+                        self.combat(parry=False)
+                    if parry.butt_rect.collidepoint(e.pos):
+                        self.combat(parry=True)
                     if run.butt_rect.collidepoint(e.pos):
                         #self.player.game.update()
                         self.running = False
@@ -286,16 +286,17 @@ class BattleMenu():
                         self.inventory_screen()
                 self.handle_input(e)
 
-    def combat(self, defend):
+    def combat(self, parry):
         # Just a basic Combat system can be better later
-        if defend == True:
-            self.player.hp = self.player.hp - int(self.monster.atk / 2)
-            parry_chance = randint(1, 2) 
-            if parry_chance == 2:
+        if parry == True:
+            #Parry Chance is calculated by miss_hit function in entities
+            parry_chance = self.miss_hit(self.player.dex, self.monster.dex)
+            if parry_chance == True:
+                self.monster.hp = self.monster.hp - (self.player.atk + self.monster.atk)
+            elif parry_chance == False:
                 self.monster.hp = self.monster.hp - self.player.atk
-            else:
-                pass
-        elif defend == False:
+                self.player.hp = self.player.hp - self.monster.atk
+        elif parry == False:
             self.monster.hp = self.monster.hp - self.player.atk
             self.player.hp = self.player.hp - self.monster.atk
         if self.player.hp <= 0:
@@ -306,15 +307,32 @@ class BattleMenu():
             if self.monster.item != "Health Pot":
                 x = str(self.monster.item.keys())
                 #Don't Look I just wanted it to fucking work okay....don't judge me -Tyler
-                x = x.strip('dict_keys')
-                x = x.strip('()')
-                x = x.strip('[]')
-                x = x.strip('\'\'')
+                x = x.strip('dict_keys([\'\'])')
                 self.player.equipped.equip_item(x,self.monster.item[x])
             elif self.monster.item == "Health Pot":
                 self.player.inventory.update_item(self.monster.item, 1)
             self.monster.kill()   #added this to remove monster from overworld after battle is won. -Roland
             self.running = False
+
+    ###TYLER EXPERIMENTAL###
+    def miss_hit(self, player_dex, enemy_dex):
+        pdex = player_dex
+        edex = enemy_dex
+        if edex > pdex:
+            miss_chance = int(100 - ((pdex / edex) * 100))
+        elif pdex <= edex:
+            miss_chance = 0
+        if miss_chance == 0:
+            return True
+        elif miss_chance >= 100:
+            return False
+        elif 100 > miss_chance > 0:
+            y = randint(1, 100)
+            if y > miss_chance:
+                return True
+            elif y < miss_chance:
+                return False
+    ###TYLER EXPERIMENTAL###
 
     def inventory_screen(self):
         self.running = True

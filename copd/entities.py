@@ -75,6 +75,7 @@ class Goblin(Monster):
         self.max_hp = 10
         self.hp = 10
         self.atk = 1
+        self.dex = 2
         self.item = items[random.randint(1, 4)]
         self.sprite_gen(BLACK)
         #self.image.fill(BLACK)
@@ -88,6 +89,7 @@ class HobGoblin(Monster):
         self.max_hp = 15
         self.hp = 15
         self.atk = 2
+        self.dex = 1
         self.item = items[random.randint(1, 4)]
         self.sprite_gen(GREEN)
         #self.image.fill(GREEN)
@@ -101,6 +103,7 @@ class Ogre(Monster):
         self.max_hp = 20
         self.hp = 20
         self.atk = 4
+        self.dex = 0
         self.item = items[random.randint(1, 4)]
         self.sprite_gen(RED)
         #self.image.fill(RED)
@@ -131,6 +134,9 @@ class Player(Entity):
         self.rect = self.image.get_rect()
         self.rect.x = x * TILE_SIZE
         self.rect.y = y * TILE_SIZE
+
+        self.overworldcoords = [1,1] #overworld coordinates. starts at 1,1
+        
     
     def movement(self, dx, dy):
         #updates sprite x and y coords
@@ -144,8 +150,9 @@ class Player(Entity):
         self.player_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
 
     def update(self):
-        self.lvl = int(self.game.turn * 0.4)
+        #self.lvl = int(self.game.turn * 0.4)
         self.atk = self.atk
+        self.dex = self.dex
         self.hp = self.hp
         self.max_hp = self.max_hp
     
@@ -164,15 +171,19 @@ class Player(Entity):
             if self.rect.x == 0 * TILE_SIZE:
                 self.rect.x = 30 * TILE_SIZE
                 self.x = 30 * TILE_SIZE
+                self.overworldcoords[0] = self.overworldcoords[0] - 1
             elif self.rect.x == 31 * TILE_SIZE:
                 self.rect.x = 1 * TILE_SIZE
                 self.x = 1 * TILE_SIZE
+                self.overworldcoords[0] = self.overworldcoords[0] + 1
             elif self.rect.y == 0 * TILE_SIZE:
                 self.rect.y = 16 * TILE_SIZE
                 self.y = 16 * TILE_SIZE
+                self.overworldcoords[1] = self.overworldcoords[1] - 1
             elif self.rect.y == 17 * TILE_SIZE:
                 self.rect.y = 1 * TILE_SIZE
                 self.y = 1 * TILE_SIZE
+                self.overworldcoords[1] = self.overworldcoords[1] + 1
 
             #elif
         
@@ -197,6 +208,7 @@ class Player(Entity):
         self.max_hp = 20
         self.hp = self.max_hp
         self.atk = 2
+        self.dex = 1
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y, color):
 
@@ -282,22 +294,3 @@ class Treasure(pg.sprite.Sprite):
         self.rect.y = self.y
 
 
-###TYLER EXPERIMENTAL###
-def miss_hit(player_dex, enemy_dex):
-    pdex = player_dex
-    edex = enemy_dex
-    if edex > pdex:
-        miss_chance = int(100 - ((pdex / edex) * 100))
-    elif pdex > edex:
-        miss_chance = 0
-    if miss_chance == 0:
-        return True
-    elif miss_chance >= 100:
-        return False
-    elif 100 > miss_chance > 0:
-        y = random.randint(1, 100)
-        if y > miss_chance:
-            return True
-        elif y < miss_chance:
-            return False
-###TYLER EXPERIMENTAL###
