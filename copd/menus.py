@@ -295,7 +295,7 @@ class BattleMenu():
         if parry == True:
             self.player.game.update()
             #Parry Chance is calculated by miss_hit function in entities
-            parry_chance = self.miss_hit(self.player.dex, self.monster.dex)
+            parry_chance = self.miss_hit(self.player.dex)
             if parry_chance == True:
                 self.monster.hp = self.monster.hp - (self.player.atk + self.monster.atk)
             elif parry_chance == False:
@@ -321,23 +321,12 @@ class BattleMenu():
             self.running = False
 
     ###TYLER EXPERIMENTAL###
-    def miss_hit(self, player_dex, enemy_dex):
+    def miss_hit(self, player_dex):
         pdex = player_dex
-        edex = enemy_dex
-        if edex > pdex:
-            miss_chance = int(100 - ((pdex / edex) * 100))
-        elif pdex <= edex:
-            miss_chance = 0
-        if miss_chance == 0:
+        chance_hit = random.randint(1,10)
+        if chance_hit <= pdex:
             return True
-        elif miss_chance >= 100:
-            return False
-        elif 100 > miss_chance > 0:
-            y = randint(1, 100)
-            if y > miss_chance:
-                return True
-            elif y < miss_chance:
-                return False
+        return False
     ###TYLER EXPERIMENTAL###
 
     def inventory_screen(self):

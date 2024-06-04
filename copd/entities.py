@@ -138,8 +138,10 @@ class Player(Entity):
         self.name = name
         #current running game
         self._layer = Player_Layer
-        # self.lvl = int(game.turn * 0.4)
-        # self.dex = 2 * lvl
+        self.max_hp = 20
+        self.hp = 20
+        self.atk = 2
+        self.dex = 2
         self.inventory = Inventory()
         self.equipped = Equipped()
 
@@ -157,27 +159,6 @@ class Player(Entity):
         self.rect.y = y * TILE_SIZE
 
         self.overworldcoords = [1,1] #overworld coordinates. starts at 1,1
-
-
-    def update(self):
-        #self.lvl = int(self.game.turn * 0.4)
-        self.atk = self.atk
-        self.dex = self.dex
-        self.hp = self.hp
-        self.max_hp = self.max_hp
-    
-
-    @property
-    def lvl(self):
-        return self._lvl
-
-    @lvl.setter
-    def lvl(self, value):
-        self._lvl = value
-        self.max_hp = 20
-        self.hp = self.max_hp
-        self.atk = 2
-        self.dex = 1
 
 class Wall(Entity):
     def __init__(self, game, x, y, color):
