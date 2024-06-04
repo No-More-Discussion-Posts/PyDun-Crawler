@@ -44,9 +44,13 @@ class Velocity(Component):
             self.dy = 0
 
     def set(self,dx,dy):
+        self.p_dx = self.dx
+        self.p_dy = self.dy
         self.dx = dx
         self.dy = dy
 
+    def previous(self):
+        return Velocity(self.p_dx,self.p_dy)
     def __str__(self):
         return f"Velocity - dx:{self.dx}, dy:{self.dy}"
     

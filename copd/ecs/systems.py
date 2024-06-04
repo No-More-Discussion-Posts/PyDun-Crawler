@@ -29,8 +29,8 @@ class Collision(System):
             #checks     player sprite(self) and and sprite in the blocks sprite group or overlap
             if pygame.sprite.spritecollide(entity, entity.game.blocks, False):
                 #if there is overlap between player and wall sprites, the player the designated spot
-                entity.get(Velocity).dx = entity.get(Velocity).dx * -1
-                entity.get(Velocity).dy = entity.get(Velocity).dy * -1
+                entity.get(Velocity).dx = entity.get(Velocity).p_dx * -1
+                entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1
                 # entity.get(Position)+entity.get(Velocity)
                 entity.game.Movement.update()
                 entity.movement()
