@@ -8,8 +8,8 @@ from .config import DEFAULT_MAP
 from .ecs.states import GameStates
 from .input_handlers import EventHandler
 #test
-from .ecs.systems import Movement, Collision
-from .ecs.components import Position,Velocity
+from .ecs.systems import Movement, Collision, Turn
+from .ecs.components import Position,Velocity, TurnCounter
 
 
 
@@ -18,7 +18,8 @@ from .ecs.components import Position,Velocity
 class Engine:
     
     def __init__(self):
-        self.turn = 0
+        self.components = {}
+        self.Turn = Turn()
         self.running = False
         self.state = GameStates.MAIN # will need to change this when changing between menus
         self.enemies = []
@@ -32,8 +33,14 @@ class Engine:
         self.treasures = pygame.sprite.LayeredUpdates()
         self.Movement = Movement()
         self.Collision = Collision()
+        self.Turn.add_entity(self)
+        self.add_component(TurnCounter())
 
-
+    def add_component(self,component):
+        self.components[type(component)] = component
+    
+    def get(self,component):
+        return self.components.get(component)
 
     def add_player(self,player = None)-> None:
         #initilize player object
@@ -71,7 +78,10 @@ class Engine:
         self.add_treasure(14, 10)
         
     def update(self):
-        self.turn += 1
+        pass
+        #self.Turn.update()
+        
+    #     self.turn += 1
     #     """Make updates every turn such as monster movement, etc.
     #     Initiated by player movement/action in battle.
     #     """
@@ -101,7 +111,7 @@ class Engine:
         #displays turn counter
         font = pygame.font.get_default_font()
         FONT = pygame.font.Font(font, TILE_SIZE)
-        turn = FONT.render(str(self.turn), False, "black")
+        turn = FONT.render(str(self.get(TurnCounter).turn), False, "black")
         self.screen.blit(turn, (20, 20))
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
     
