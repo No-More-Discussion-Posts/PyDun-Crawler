@@ -5,6 +5,7 @@ import pygame as pg  # TODO: make consistent
 from .config import *
 from .menus import BattleMenu
 import time
+from .ecs.components import Position,Velocity
 
 
 items = {1 : "Health Pot", 2 : {"Helm" : "Bronze Helmet"}, 3 : {"Armor" : "Bronze Armor"}, 4 : {"Weapon" : "Bronze Sword"}}
@@ -13,14 +14,52 @@ class immovable_entitiy(pg.sprite.Sprite):
     #class to initilize a sprite that is immovable
     pass
 class Entity(pg.sprite.Sprite):
+    def __init__(self,game,x=0,y=0):
+        super().__init__()
+        self.components = {}
+        self.add_component(Position(x,y))
+        self.add_component(Velocity())
+
+    @property
+    def x(self):
+        return self.get(Position).x
+    
+    @x.setter
+    def x(self,x):
+        self.get(Position).x = x
+
+    @property 
+    def y(self):
+        return self.get(Position).y
+    
+    @y.setter
+    def y(self,y):
+        self.get(Position).y = y
+        
     #class to initilize a sprite with movement and actions
     def update(self):
         """All entities need an update method to be called per game turn."""
         pass
 
+    def add_component(self,component):
+        self.components[type(component)] = component
+    
+    def get(self,component):
+        return self.components.get(component)
+    
+    def movement(self):
+        #updates sprite x and y coords
+        self.game.update()
+        dx = self.get(Velocity).dx * TILE_SIZE
+        dy = self.get(Velocity).dy * TILE_SIZE
+        self.rect.move_ip(dx,dy)
+
 class Monster(Entity):
-    def __init__(self, game):
-        self.game = game
+
+    def __init__(self, game, x=0, y=0):
+        super().__init__(game, x, y)
+        self.add_component(Position(x,y))
+        self.add_component(Velocity())
 
     def sprite_gen(self, color=None):
         #Sprite Generation Block
@@ -40,12 +79,11 @@ class Monster(Entity):
             self.image.fill(color)
         #end sprite generation block
 
-    def movement(self,player):
-        self.game.update()
-        self.player = player
+
+    def movement(self):
         #enemy to player vector math here
-        dx = self.player.rect.x - self.rect.x
-        dy = self.player.rect.y - self.rect.y
+        dx = self.game.player.rect.x - self.rect.x
+        dy = self.game.player.rect.y - self.rect.y
         if(abs(dx) < 100) and (abs(dy) < 100):
             if(abs(dx) > abs(dy)):
                 if(dx > 0):
@@ -61,13 +99,14 @@ class Monster(Entity):
                 elif(dy < 0):
                     dy = -1
                     self.y += dy * TILE_SIZE
-
+        # time.sleep(.5) if velocity > 0
         self.rect.x = self.x
         self.rect.y = self.y
         self.monster_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
 
 class Goblin(Monster):
     def __init__(self, game):
+        super().__init__(game)
         self.name = "Goblin"
         self.game = game
         self._layer = Player_Layer
@@ -82,6 +121,7 @@ class Goblin(Monster):
 
 class HobGoblin(Monster):
     def __init__(self, game):
+        super().__init__(game)
         self.name = "HobGoblin"
         self.game = game
         self._layer = Player_Layer
@@ -96,6 +136,7 @@ class HobGoblin(Monster):
 
 class Ogre(Monster):
     def __init__(self, game):
+        super().__init__(game)
         self.name = "Ogre"
         self.game = game
         self._layer = Player_Layer
@@ -110,6 +151,7 @@ class Ogre(Monster):
     
 class Player(Entity):
     def __init__(self, name, game, x, y):
+        super().__init__(game,x,y)
         #name of player
         self.name = name
         #current running game
@@ -138,16 +180,19 @@ class Player(Entity):
         self.overworldcoords = [1,1] #overworld coordinates. starts at 1,1
         
     
-    def movement(self, dx, dy):
+    def movement(self):
         #updates sprite x and y coords
         self.game.update()
         #transforms 1 pixel movements to tile based movements
-        self.x += dx * TILE_SIZE
-        self.y += dy * TILE_SIZE
+        self.x += self.get(Velocity).dx * TILE_SIZE
+        self.y += self.get(Velocity).dy * TILE_SIZE
         
         self.rect.x = self.x
         self.rect.y = self.y
         self.player_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
+       
+
+
 
     def update(self):
         #self.lvl = int(self.game.turn * 0.4)
@@ -156,47 +201,51 @@ class Player(Entity):
         self.hp = self.hp
         self.max_hp = self.max_hp
     
-    def check_collisions(self, x, y):
-        #checks the player sprite(self) and and sprite in the blocks sprite group or overlap
-        if pg.sprite.spritecollide(self, self.game.blocks, False):
-            #if there is overlap between player and wall sprites, the player the designated spot
-            self.movement(x, y)
-        #checks for sprite overlap 
-        elif pg.sprite.spritecollide(self, self.game.monsters, False):
-            BattleMenu(self.game)
+# <<<<<<< HEAD
+#     def check_collisions(self, x, y):
+#         #checks the player sprite(self) and and sprite in the blocks sprite group or overlap
+#         if pg.sprite.spritecollide(self, self.game.blocks, False):
+#             #if there is overlap between player and wall sprites, the player the designated spot
+#             self.movement(x, y)
+#         #checks for sprite overlap 
+#         elif pg.sprite.spritecollide(self, self.game.monsters, False):
+#             BattleMenu(self.game)
         
-        elif pg.sprite.spritecollide(self, self.game.doors, False):
-            self.game.load_map(NachoCheese)
-            #self.movement(x, y)
-            if self.rect.x == 0 * TILE_SIZE:
-                self.rect.x = 30 * TILE_SIZE
-                self.x = 30 * TILE_SIZE
-                self.overworldcoords[0] = self.overworldcoords[0] - 1
-            elif self.rect.x == 31 * TILE_SIZE:
-                self.rect.x = 1 * TILE_SIZE
-                self.x = 1 * TILE_SIZE
-                self.overworldcoords[0] = self.overworldcoords[0] + 1
-            elif self.rect.y == 0 * TILE_SIZE:
-                self.rect.y = 16 * TILE_SIZE
-                self.y = 16 * TILE_SIZE
-                self.overworldcoords[1] = self.overworldcoords[1] - 1
-            elif self.rect.y == 17 * TILE_SIZE:
-                self.rect.y = 1 * TILE_SIZE
-                self.y = 1 * TILE_SIZE
-                self.overworldcoords[1] = self.overworldcoords[1] + 1
+#         elif pg.sprite.spritecollide(self, self.game.doors, False):
+#             self.game.load_map(NachoCheese)
+#             #self.movement(x, y)
+#             if self.rect.x == 0 * TILE_SIZE:
+#                 self.rect.x = 30 * TILE_SIZE
+#                 self.x = 30 * TILE_SIZE
+#                 self.overworldcoords[0] = self.overworldcoords[0] - 1
+#             elif self.rect.x == 31 * TILE_SIZE:
+#                 self.rect.x = 1 * TILE_SIZE
+#                 self.x = 1 * TILE_SIZE
+#                 self.overworldcoords[0] = self.overworldcoords[0] + 1
+#             elif self.rect.y == 0 * TILE_SIZE:
+#                 self.rect.y = 16 * TILE_SIZE
+#                 self.y = 16 * TILE_SIZE
+#                 self.overworldcoords[1] = self.overworldcoords[1] - 1
+#             elif self.rect.y == 17 * TILE_SIZE:
+#                 self.rect.y = 1 * TILE_SIZE
+#                 self.y = 1 * TILE_SIZE
+#                 self.overworldcoords[1] = self.overworldcoords[1] + 1
 
-            #elif
+#             #elif
         
-        elif pg.sprite.spritecollide(self, self.game.treasures, True):
-            if self.game.treasure.item != "Health Pot":
-                x = str(self.game.treasure.item.keys())
-                #Don't Look I just wanted it to fucking work okay....don't judge me -Tyler
-                x = x.strip('dict_keys([\'\'])')
-                self.equipped.equip_item(x,self.game.treasure.item[x])
-            elif self.game.treasure.item == "Health Pot":
-                self.inventory.update_item(self.game.treasure.item, 1)
+#         elif pg.sprite.spritecollide(self, self.game.treasures, True):
+#             if self.game.treasure.item != "Health Pot":
+#                 x = str(self.game.treasure.item.keys())
+#                 #Don't Look I just wanted it to fucking work okay....don't judge me -Tyler
+#                 x = x.strip('dict_keys([\'\'])')
+#                 self.equipped.equip_item(x,self.game.treasure.item[x])
+#             elif self.game.treasure.item == "Health Pot":
+#                 self.inventory.update_item(self.game.treasure.item, 1)
         
             
+# =======
+    
+# >>>>>>> engine/ecs
             
     @property
     def lvl(self):
@@ -256,6 +305,7 @@ class Background(pg.sprite.Sprite):
         self.rect.y = self.y
 class Door(Entity): 
     def __init__(self, game, x, y):
+        super().__init__(game,x,y)
         self.game = game
         self._layer = Door_Layer
         self.groups = self.game.doors

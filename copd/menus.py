@@ -5,6 +5,8 @@ from .entities import *
 from .button import *
 from .engine import *
 from .menu_options import Option, MenuOption
+from .ecs.states import *
+#I push
 
 class Menu:
     def __init__(self, game, options):
@@ -81,6 +83,7 @@ class Menu:
             pygame.display.update()
             for e in pygame.event.get():
                 self.handle_input(e)
+        self.game.state = GameStates.MAIN
         pygame.display.set_caption(self.previous_caption)
 
 
@@ -280,15 +283,17 @@ class BattleMenu():
                     if parry.butt_rect.collidepoint(e.pos):
                         self.combat(parry=True)
                     if run.butt_rect.collidepoint(e.pos):
-                        #self.player.game.update()
                         self.running = False
                     if items.butt_rect.collidepoint(e.pos):
                         self.inventory_screen()
                 self.handle_input(e)
+        self.game.state = GameStates.MAIN
+        # del self
 
     def combat(self, parry):
         # Just a basic Combat system can be better later
         if parry == True:
+            self.player.game.update()
             #Parry Chance is calculated by miss_hit function in entities
             parry_chance = self.miss_hit(self.player.dex, self.monster.dex)
             if parry_chance == True:
@@ -297,6 +302,7 @@ class BattleMenu():
                 self.monster.hp = self.monster.hp - self.player.atk
                 self.player.hp = self.player.hp - self.monster.atk
         elif parry == False:
+            self.player.game.update()
             self.monster.hp = self.monster.hp - self.player.atk
             self.player.hp = self.player.hp - self.monster.atk
         if self.player.hp <= 0:

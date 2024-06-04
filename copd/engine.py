@@ -3,10 +3,13 @@ import random
 import sys
 
 from .entities import *
-# from .menus import PauseMenu, BattleMenu
+from .menus import PauseMenu, BattleMenu
 from .config import DEFAULT_MAP
-from .states import GameStates
+from .ecs.states import GameStates
 from .input_handlers import EventHandler
+#test
+from .ecs.systems import Movement, Collision
+from .ecs.components import Position,Velocity
 
 
 
@@ -27,14 +30,21 @@ class Engine:
         self.players = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
         self.treasures = pygame.sprite.LayeredUpdates()
+        self.Movement = Movement()
+        self.Collision = Collision()
+
 
 
     def add_player(self,player = None)-> None:
         #initilize player object
         if player is None:
             self.player = Player("Bilbo", self, 15, 9)
+            self.player.add_component(Position(15,9))
+            self.player.add_component(Velocity())
         else:
             self.player = player
+        self.Movement.add_entity(self.player)
+        self.Collision.add_entity(self.player)
 
     def load_start_map(self, color ,map = None)->None:
         # if no map is supplied in args
@@ -61,17 +71,17 @@ class Engine:
         self.add_treasure(14, 10)
         
     def update(self):
-        """Make updates every turn such as monster movement, etc.
-        Initiated by player movement/action in battle.
-        """
-        #updates all sprite object values
-        self.all_sprites.update()
-        self.players.update()
-        self.blocks.update()
-        self.monsters.update()
-        self.doors.update()
-        self.treasures.update()
-        self.draw()
+        self.turn += 1
+    #     """Make updates every turn such as monster movement, etc.
+    #     Initiated by player movement/action in battle.
+    #     """
+    #     #updates all sprite object values
+    #     self.all_sprites.update()
+    #     self.players.update()
+    #     # self.blocks.update()
+    #     self.monsters.update()
+    #     self.doors.update()
+    #     self.draw()
 
     def draw(self):
         """Draw to the screen"""
@@ -111,10 +121,11 @@ class Engine:
 
         self.running = True
         while self.running:
-            # SHOULD WAIT FOR INPUT
             for event in pygame.event.get():
                 self.handle_event(event)
-            #self.draw()
+            if self.state == GameStates.BATTLE:
+                BattleMenu(self)
+            self.draw()
         pygame.quit()
         sys.exit()
 

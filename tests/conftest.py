@@ -6,7 +6,7 @@ import os
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 pygame.init()
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def game():
     game = Engine()
     game.new_game()
