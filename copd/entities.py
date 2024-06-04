@@ -167,7 +167,7 @@ class Player(Entity):
         dy = self.get(Velocity).dy * TILE_SIZE
         
         self.rect.move_ip(dx,dy)
-
+    
 
 
     def update(self):

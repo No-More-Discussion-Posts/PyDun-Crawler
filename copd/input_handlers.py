@@ -18,8 +18,8 @@ class EventHandler:
                     self.game.draw()
                 if event.key in [pygame.K_w,pygame.K_a,pygame.K_s,pygame.K_d]:
                     self.game.player.get(Velocity).set_from_key(event.key)
-                    self.game.Movement.update_all()
+                    self.game.Movement.update()
                     self.game.player.movement()
                     self.game.monster.movement()
-                    self.game.Collision.update_all()
+                    self.game.Collision.update()
                     self.game.draw()
