@@ -52,6 +52,11 @@ class Velocity(Component):
     
     def __repr__(self):
         return f"Velocity - dx:{self.dx}, dy:{self.dy}"
+    
+
+class TurnCounter(Component):
+    def __init__(self):
+        self.turn = 0
 
 class HitPoints(Component):
     def __init__(self,max_hp=-1,hp=-1):

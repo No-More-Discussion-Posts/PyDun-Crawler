@@ -138,7 +138,7 @@ class Player(Entity):
         self.name = name
         #current running game
         self._layer = Player_Layer
-        self.lvl = int(game.turn * 0.4)
+        # self.lvl = int(game.turn * 0.4)
         # self.dex = 2 * lvl
         self.inventory = Inventory()
         self.equipped = Equipped()
@@ -189,6 +189,7 @@ class Player(Entity):
         self.hp = self.max_hp
         self.atk = 2
         self.dex = 1
+
 class Wall(Entity):
     def __init__(self, game, x, y, color):
         super().__init__(game,x,y)

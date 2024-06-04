@@ -1,6 +1,6 @@
 import pygame
 from .ecs import System
-from .components import Position,Velocity
+from .components import Position,Velocity, TurnCounter
 from ..entities import Player
 from ..config import *
 from .states import *
@@ -10,6 +10,16 @@ class Movement(System):
     def update(self):
         for entity in self.entities:
             entity.get(Position)+entity.get(Velocity)
+        print(self.entities[0])
+        
+        self.entities[0].game.Turn.update()
+
+class Turn(System):
+
+    def update(self):
+        for entity in self.entities:
+            entity.get(TurnCounter).turn = entity.get(TurnCounter).turn + 1
+    
             
 
 class Collision(System):
