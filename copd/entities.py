@@ -157,17 +157,6 @@ class Player(Entity):
         self.rect.y = y * TILE_SIZE
 
         self.overworldcoords = [1,1] #overworld coordinates. starts at 1,1
-        
-    
-    def movement(self):
-        #updates sprite x and y coords
-        self.game.update()
-        #transforms 1 pixel movements to tile based movements
-        dx = self.get(Velocity).dx * TILE_SIZE
-        dy = self.get(Velocity).dy * TILE_SIZE
-        
-        self.rect.move_ip(dx,dy)
-
 
 
     def update(self):
@@ -246,19 +235,17 @@ class Door(Entity):
         self.image.fill(Snugglepuss)
 
         self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-class Treasure(pg.sprite.Sprite):
+        self.rect.x = self.get(Position).x * TILE_SIZE
+        self.rect.y = self.get(Position).y * TILE_SIZE
+class Treasure(Entity):
     def __init__(self, game, x, y):
-        self.game = game
+        super().__init__(game,x,y)
         self._layer = Door_Layer
         self.groups = self.game.treasures
         pg.sprite.Sprite.__init__(self, self.groups)
 
         self.item = items[random.randint(1, 4)]
 
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
         self.width = TILE_SIZE
         self.height = TILE_SIZE
 
@@ -266,7 +253,7 @@ class Treasure(pg.sprite.Sprite):
         self.image.fill(NachoCheese)
 
         self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect.x = self.get(Position).x * TILE_SIZE
+        self.rect.y = self.get(Position).y * TILE_SIZE
 
 

@@ -8,8 +8,11 @@ from .states import *
 class Movement(System):
     
     def update(self):
+        
         for entity in self.entities:
             entity.get(Position)+entity.get(Velocity)
+            entity.movement()
+            entity.get(Velocity).set(0,0)
             
 
 class Collision(System):
@@ -21,7 +24,8 @@ class Collision(System):
                 #if there is overlap between player and wall sprites, the player the designated spot
                 entity.get(Velocity).dx = entity.get(Velocity).dx * -1
                 entity.get(Velocity).dy = entity.get(Velocity).dy * -1
-                entity.get(Position)+entity.get(Velocity)
+                # entity.get(Position)+entity.get(Velocity)
+                entity.game.Movement.update()
                 entity.movement()
             if isinstance(entity,Player): # should get rid of this eventually with better messaging/states/etc.
                 if pygame.sprite.spritecollide(entity, entity.game.monsters, False):
@@ -29,24 +33,21 @@ class Collision(System):
                         entity.game.state = GameStates.BATTLE
                 
                 elif pygame.sprite.spritecollide(entity, entity.game.doors, False):
-                            
                     entity.game.load_map(NachoCheese)
-                    #self.movement(x, y)
-                    print(entity.get(Position))
+                    
                     if entity.get(Position).x == 0:
-                        # entity.get(Position).x = 30 * TILE_SIZE
                         entity.get(Velocity).dx = 30
-                        entity.game.movement.update()
                         entity.overworldcoords[0] = entity.overworldcoords[0] - 1
-                    elif entity.rect.x == 31 * TILE_SIZE:
-                        entity.get(Position).x = 1 * TILE_SIZE
+                    elif entity.get(Position).x == 31:
+                        entity.get(Velocity).dx = -30
                         entity.overworldcoords[0] = entity.overworldcoords[0] + 1
-                    elif entity.rect.y == 0 * TILE_SIZE:
-                        entity.get(Position).y = 16 * TILE_SIZE
+                    elif entity.get(Position).y == 0 :
+                        entity.get(Velocity).dy = 16
                         entity.overworldcoords[1] = entity.overworldcoords[1] - 1
-                    elif entity.rect.y == 17 * TILE_SIZE:
-                        entity.get(Position).y = 1 * TILE_SIZE
+                    elif entity.get(Position).y == 17:
+                        entity.get(Velocity).dy = -16
                         entity.overworldcoords[1] = entity.overworldcoords[1] + 1
+                    entity.game.Movement.update()
                     entity.movement()
                 
                 # elif pygame.sprite.spritecollide(self, self.game.treasures, True):
