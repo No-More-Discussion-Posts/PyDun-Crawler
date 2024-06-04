@@ -31,7 +31,6 @@ class Collision(System):
                 #if there is overlap between player and wall sprites, the player the designated spot
                 entity.get(Velocity).dx = entity.get(Velocity).p_dx * -1
                 entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1
-                # entity.get(Position)+entity.get(Velocity)
                 entity.game.Movement.update()
                 entity.movement()
             if isinstance(entity,Player): # should get rid of this eventually with better messaging/states/etc.
@@ -57,12 +56,12 @@ class Collision(System):
                     entity.game.Movement.update()
                     entity.movement()
                 
-                # elif pygame.sprite.spritecollide(self, self.game.treasures, True):
-                #     if self.game.treasure.item != "Health Pot":
-                #         x = str(self.game.treasure.item.keys())
-                #         #Don't Look I just wanted it to fucking work okay....don't judge me -Tyler
-                #         x = x.strip('dict_keys([\'\'])')
-                #         self.equipped.equip_item(x,self.game.treasure.item[x])
-                #     elif self.game.treasure.item == "Health Pot":
-                #         self.inventory.update_item(self.game.treasure.item, 1)
+                elif pygame.sprite.spritecollide(entity, entity.game.treasures, True):
+                    if entity.game.treasure.item != "Health Pot":
+                        x = str(entity.game.treasure.item.keys())
+                        #Don't Look I just wanted it to fucking work okay....don't judge me -Tyler
+                        x = x.strip('dict_keys([\'\'])')
+                        entity.equipped.equip_item(x,entity.game.treasure.item[x])
+                    elif entity.game.treasure.item == "Health Pot":
+                        entity.inventory.update_item(entity.game.treasure.item, 1)
                 
