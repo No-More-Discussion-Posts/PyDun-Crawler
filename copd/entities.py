@@ -17,30 +17,14 @@ class Entity(pg.sprite.Sprite):
     def __init__(self,game,x=0,y=0):
         super().__init__()
         self.components = {}
+        self.game = game
         self.add_component(Position(x,y))
         self.add_component(Velocity())
-
-    @property
-    def x(self):
-        return self.get(Position).x
-    
-    @x.setter
-    def x(self,x):
-        self.get(Position).x = x
-
-    @property 
-    def y(self):
-        return self.get(Position).y
-    
-    @y.setter
-    def y(self,y):
-        self.get(Position).y = y
         
     #class to initilize a sprite with movement and actions
     def update(self):
         """All entities need an update method to be called per game turn."""
         pass
-
     def add_component(self,component):
         self.components[type(component)] = component
     
@@ -58,8 +42,6 @@ class Monster(Entity):
 
     def __init__(self, game, x=0, y=0):
         super().__init__(game, x, y)
-        self.add_component(Position(x,y))
-        self.add_component(Velocity())
 
     def sprite_gen(self, color=None):
         #Sprite Generation Block
@@ -155,7 +137,6 @@ class Player(Entity):
         #name of player
         self.name = name
         #current running game
-        self.game = game
         self._layer = Player_Layer
         self.lvl = int(game.turn * 0.4)
         # self.dex = 2 * lvl
@@ -164,9 +145,7 @@ class Player(Entity):
 
         self.groups = self.game.players
         pg.sprite.Sprite.__init__(self, self.groups)
-        #
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
+        
         self.width = TILE_SIZE
         self.height = TILE_SIZE
 
@@ -184,13 +163,10 @@ class Player(Entity):
         #updates sprite x and y coords
         self.game.update()
         #transforms 1 pixel movements to tile based movements
-        self.x += self.get(Velocity).dx * TILE_SIZE
-        self.y += self.get(Velocity).dy * TILE_SIZE
+        dx = self.get(Velocity).dx * TILE_SIZE
+        dy = self.get(Velocity).dy * TILE_SIZE
         
-        self.rect.x = self.x
-        self.rect.y = self.y
-        self.player_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
-       
+        self.rect.move_ip(dx,dy)
 
 
 
@@ -201,52 +177,7 @@ class Player(Entity):
         self.hp = self.hp
         self.max_hp = self.max_hp
     
-# <<<<<<< HEAD
-#     def check_collisions(self, x, y):
-#         #checks the player sprite(self) and and sprite in the blocks sprite group or overlap
-#         if pg.sprite.spritecollide(self, self.game.blocks, False):
-#             #if there is overlap between player and wall sprites, the player the designated spot
-#             self.movement(x, y)
-#         #checks for sprite overlap 
-#         elif pg.sprite.spritecollide(self, self.game.monsters, False):
-#             BattleMenu(self.game)
-        
-#         elif pg.sprite.spritecollide(self, self.game.doors, False):
-#             self.game.load_map(NachoCheese)
-#             #self.movement(x, y)
-#             if self.rect.x == 0 * TILE_SIZE:
-#                 self.rect.x = 30 * TILE_SIZE
-#                 self.x = 30 * TILE_SIZE
-#                 self.overworldcoords[0] = self.overworldcoords[0] - 1
-#             elif self.rect.x == 31 * TILE_SIZE:
-#                 self.rect.x = 1 * TILE_SIZE
-#                 self.x = 1 * TILE_SIZE
-#                 self.overworldcoords[0] = self.overworldcoords[0] + 1
-#             elif self.rect.y == 0 * TILE_SIZE:
-#                 self.rect.y = 16 * TILE_SIZE
-#                 self.y = 16 * TILE_SIZE
-#                 self.overworldcoords[1] = self.overworldcoords[1] - 1
-#             elif self.rect.y == 17 * TILE_SIZE:
-#                 self.rect.y = 1 * TILE_SIZE
-#                 self.y = 1 * TILE_SIZE
-#                 self.overworldcoords[1] = self.overworldcoords[1] + 1
 
-#             #elif
-        
-#         elif pg.sprite.spritecollide(self, self.game.treasures, True):
-#             if self.game.treasure.item != "Health Pot":
-#                 x = str(self.game.treasure.item.keys())
-#                 #Don't Look I just wanted it to fucking work okay....don't judge me -Tyler
-#                 x = x.strip('dict_keys([\'\'])')
-#                 self.equipped.equip_item(x,self.game.treasure.item[x])
-#             elif self.game.treasure.item == "Health Pot":
-#                 self.inventory.update_item(self.game.treasure.item, 1)
-        
-            
-# =======
-    
-# >>>>>>> engine/ecs
-            
     @property
     def lvl(self):
         return self._lvl
@@ -258,10 +189,9 @@ class Player(Entity):
         self.hp = self.max_hp
         self.atk = 2
         self.dex = 1
-class Wall(pg.sprite.Sprite):
+class Wall(Entity):
     def __init__(self, game, x, y, color):
-
-        self.game = game
+        super().__init__(game,x,y)
         ###WALL SPECIFIC###
         self._layer = Tile_Layer
         self.groups = self.game.blocks
@@ -269,8 +199,6 @@ class Wall(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
 
         #sprite size(used for referencing the sprite)
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
         self.width = TILE_SIZE
         self.height = TILE_SIZE
 
@@ -280,20 +208,18 @@ class Wall(pg.sprite.Sprite):
         ###WALL SPECIFIC###
 
         self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect.x = self.get(Position).x * TILE_SIZE
+        self.rect.y = self.get(Position).y * TILE_SIZE
         self.wall_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
 
-class Background(pg.sprite.Sprite):
+class Background(Entity):
     def __init__(self, game, x, y):
-
-        self.game = game
+        super().__init__(game,x,y)
         self._layer = Tile_Layer
         self.groups = self.game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
 
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
+        self.add_component(Position(x,y))
         self.width = TILE_SIZE
         self.height = TILE_SIZE
 
@@ -301,8 +227,8 @@ class Background(pg.sprite.Sprite):
         self.image.fill(MasterChief)
 
         self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect.x = self.get(Position).x * TILE_SIZE
+        self.rect.y = self.get(Position).y * TILE_SIZE
 class Door(Entity): 
     def __init__(self, game, x, y):
         super().__init__(game,x,y)

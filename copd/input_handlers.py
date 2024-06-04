@@ -9,9 +9,9 @@ class EventHandler:
         self.game = game
 
     def handle_event(self,event):
-        if self.game.state == GameStates.MAIN:
-            if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT:
                 self.game.running = False
+        if self.game.state == GameStates.MAIN:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     PauseMenu(self.game)
