@@ -324,20 +324,7 @@ class BattleMenu():
     def miss_hit(self, player_dex, enemy_dex):
         pdex = player_dex
         edex = enemy_dex
-        if edex > pdex:
-            miss_chance = int(100 - ((pdex / edex) * 100))
-        elif pdex <= edex:
-            miss_chance = 0
-        if miss_chance == 0:
-            return True
-        elif miss_chance >= 100:
-            return False
-        elif 100 > miss_chance > 0:
-            y = randint(1, 100)
-            if y > miss_chance:
-                return True
-            elif y < miss_chance:
-                return False
+        
     ###TYLER EXPERIMENTAL###
 
     def inventory_screen(self):
