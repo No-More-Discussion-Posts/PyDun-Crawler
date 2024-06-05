@@ -20,11 +20,10 @@ class Entity(pg.sprite.Sprite):
         self.game = game
         self.add_component(Position(x,y))
         self.add_component(Velocity())
+        self.stun = 0
         
     #class to initilize a sprite with movement and actions
-    def update(self):
-        """All entities need an update method to be called per game turn."""
-        pass
+
     def add_component(self,component):
         self.components[type(component)] = component
     
@@ -33,7 +32,7 @@ class Entity(pg.sprite.Sprite):
     
     def movement(self):
         #updates sprite x and y coords
-        self.game.update()
+
         dx = self.get(Velocity).dx * TILE_SIZE
         dy = self.get(Velocity).dy * TILE_SIZE
         self.rect.move_ip(dx,dy)
@@ -42,7 +41,7 @@ class Monster(Entity):
 
     def __init__(self, game, x=0, y=0):
         super().__init__(game, x, y)
-
+        self.stun = 0
     def sprite_gen(self, color=None):
         #Sprite Generation Block
         self.groups = self.game.monsters
@@ -130,6 +129,7 @@ class Ogre(Monster):
         self.item = items[random.randint(1, 4)]
         self.sprite_gen(RED)
         #self.image.fill(RED)
+        
     
 class Player(Entity):
     def __init__(self, name, game, x, y):

@@ -20,6 +20,9 @@ class EventHandler:
                     self.game.player.get(Velocity).set_from_key(event.key)
                     self.game.Movement.update()
                     self.game.player.movement()
-                    self.game.monster.movement()
+                    if self.game.monster.stun > 0:
+                         self.game.monster.stun -= 1
+                    else:
+                        self.game.monster.movement()
                     self.game.Collision.update()
                     self.game.draw()

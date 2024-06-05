@@ -182,7 +182,6 @@ class Engine:
         pass
     """
 
-
     def DoorOrWalls(self):
         """
         overworld_map:

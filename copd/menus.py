@@ -283,6 +283,7 @@ class BattleMenu():
                     if parry.butt_rect.collidepoint(e.pos):
                         self.combat(parry=True)
                     if run.butt_rect.collidepoint(e.pos):
+                        self.monster.stun = 2
                         self.running = False
                     if items.butt_rect.collidepoint(e.pos):
                         self.inventory_screen()
