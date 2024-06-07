@@ -2,8 +2,7 @@ import pygame
 from copd.config import * 
 from math import sqrt
 from  copd.ecs.components import *
-# from flaky import flaky
-# @flaky
+
 def test_move_up(game):
     player = game.player
     print(f"{player}: {player.get(Position)}")
