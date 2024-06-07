@@ -26,7 +26,6 @@ jobs:
         python -m pip install flake8 pytest
         pip install -r requirements.txt
         pip install pytest
-        python -m pip install .
         pip freeze
     - name: Test with pytest
       run: |
