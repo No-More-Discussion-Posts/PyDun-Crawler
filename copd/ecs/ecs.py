@@ -40,6 +40,10 @@ class System():
         if entity not in self.entities:
             self.entities.append(entity)
 
+    def remove_entity(self,entity):
+        if entity in self.entities:
+            self.entities.remove(entity)
+
     @classmethod
     def update_all(cls):
         for system in cls.systems:

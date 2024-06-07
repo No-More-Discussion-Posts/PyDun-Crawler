@@ -27,4 +27,3 @@ def game():
     yield mygame
     
     
-    
