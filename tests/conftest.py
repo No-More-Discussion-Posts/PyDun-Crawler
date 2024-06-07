@@ -9,10 +9,11 @@ pygame.init()
 @pytest.fixture(scope="session")
 def game():
     game = Engine()
-    game.new_game()
-    game.load_map()
-    game.add_player()
-    game.add_monster()
+ 
+    game.load_start_map((0, 0, 255))
+
+    # game.run()
+
     game.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 
     return game
