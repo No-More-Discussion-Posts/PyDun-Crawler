@@ -19,6 +19,7 @@ class Engine:
     
     def __init__(self):
         self.components = {}
+        self.debug = True
         self.Turn = Turn()
         self.running = False
         self.state = GameStates.MAIN # will need to change this when changing between menus
@@ -53,6 +54,7 @@ class Engine:
         self.Movement.add_entity(self.player)
         self.Collision.add_entity(self.player)
 
+
     def load_start_map(self, color ,map = None)->None:
         # if no map is supplied in args
         if map is not None:
@@ -72,7 +74,6 @@ class Engine:
         else:
             map = DEFAULT_MAP
         pygame.sprite.Group.empty(self.blocks)
-        pygame.sprite.Group.empty(self.doors)
         self.monster.kill()
         self.add_monster()
         self.DrawWalls(map, color)
@@ -121,7 +122,7 @@ class Engine:
         font = pygame.font.get_default_font()
         FONT = pygame.font.Font(font, TILE_SIZE)
         coords = FONT.render(str(self.player.overworldcoords), False, "black")
-        self.screen.blit(coords, (28 * TILE_SIZE, 20))
+        self.screen.blit(coords, (29 * TILE_SIZE, 20))
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
     def run(self):
@@ -147,6 +148,7 @@ class Engine:
         # draw lines vertically
         for y in range(0, 360, 20):
             pygame.draw.line(self.screen, (128, 128, 128), (0, y), (640, y))
+
 
     def add_monster(self,monster = None):
         if monster is not None:
@@ -181,52 +183,20 @@ class Engine:
     def SouthWall(self, map, color):
         pass
     """
-
-    def DoorOrWalls(self):
-        """
-        overworld_map:
-        [0, 0], [1, 0], [2, 0]
-        [0, 1], [1, 1], [2, 1]
-        [0, 2], [1, 2], [2, 2]
-        """
-
-        #up and down
-        if self.player.overworldcoords[1] == 0: #if north border
-            self.wall = Wall(self, 17, 0, BLUE) #draw wall at north door
-        else:
-            self.door = Door(self, 17, 0) #draw north door
-        
-        if self.player.overworldcoords[1] == 2: #if south border
-            self.wall = Wall(self, 17, 17, BLUE) #draw wall at south door
-        else:
-            self.door = Door(self, 17, 17) #draw south door
-
-        #left and right
-        if self.player.overworldcoords[0] == 0: #if nwest border
-            self.wall = Wall(self, 0, 9, BLUE) #draw wall at west door
-        else:
-            self.door = Door(self, 0, 9) #draw west door
-        
-        if self.player.overworldcoords[0] == 2: #if east border
-            self.wall = Wall(self, 31, 9, BLUE) #draw wall at east door
-        else:
-            self.door = Door(self, 31, 9) #draw east door
     
     def DrawWalls(self, map, color):
         for x in map[0]:
             if x == 17:
-                #perform check here instead
-                #self.door = Door(self, x, 0) #draw north door
-                #self.door = Door(self, x, 17) #draw south door
-                self.DoorOrWalls()
+                #if map[0] 
+                self.door = Door(self, x, 0) #draw north door
+                self.door = Door(self, x, 17) #draw south door
             else:
                 self.wall = Wall(self, x, 0, color) #draw north wall
                 self.wall = Wall(self, x, 17, color) #draw south wall
         for y in map[1]:
             if y == 9:
-                #self.door = Door(self, 0, y) #draw west door
-                #self.door = Door(self, 31, y) #draw east door
-                self.DoorOrWalls()
+                self.door = Door(self, 0, y) #draw west door
+                self.door = Door(self, 31, y) #draw east door
             else:
                 self.wall = Wall(self, 0, y, color) #draw west wall
                 self.wall = Wall(self, 31, y, color) #draw east wall

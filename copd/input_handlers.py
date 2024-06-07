@@ -25,4 +25,7 @@ class EventHandler:
                     else:
                         self.game.monster.movement()
                     self.game.Collision.update()
+                    if self.game.debug:
+                         print("Movement:")
+                         print(f"{self.game.player}: {self.game.player.get(Position)}")
                     self.game.draw()

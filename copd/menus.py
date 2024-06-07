@@ -6,7 +6,6 @@ from .button import *
 from .engine import *
 from .menu_options import Option, MenuOption
 from .ecs.states import *
-#I push
 
 class Menu:
     def __init__(self, game, options):

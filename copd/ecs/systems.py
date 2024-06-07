@@ -15,6 +15,8 @@ class Movement(System):
             entity.get(Velocity).set(0,0)     
             if entity == self.entities[0]:
                 self.entities[0].game.Turn.update()
+            if entity.game.debug:
+                print(f"{entity}: {entity.get(Position)}")
 
 class Turn(System):
 
@@ -32,6 +34,8 @@ class Collision(System):
         for entity in self.entities:
             #checks     player sprite(self) and and sprite in the blocks sprite group or overlap
             if pygame.sprite.spritecollide(entity, entity.game.blocks, False):
+                if entity.game.debug:
+                    print(f"{entity}: Collision with wall")
                 #if there is overlap between player and wall sprites, the player the designated spot
                 entity.get(Velocity).dx = entity.get(Velocity).p_dx * -1
                 entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1

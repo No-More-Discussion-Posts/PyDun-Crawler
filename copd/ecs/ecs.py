@@ -18,9 +18,10 @@ class Entity():
 
 
 class Component:
-    pass
-
-
+    def __eq__(self,c):
+        if type(self) == type(c):
+            return self.__dict__ == c.__dict__
+        
 class System():
     '''
     Functions behind the components

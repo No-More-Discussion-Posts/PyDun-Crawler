@@ -2,10 +2,17 @@ import pygame
 from copd.config import * 
 from math import sqrt
 from  copd.ecs.components import *
-
+# from flaky import flaky
+# @flaky
 def test_move_up(game):
-    
     player = game.player
+    print(f"{player}: {player.get(Position)}")
+
+    y = player.get(Position).y
+    # make player isn't against a wall
+    if y == 1:
+        movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_s))
+        game.handle_event(movement)
     y = player.get(Position).y
     movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_w))
     game.handle_event(movement)
@@ -14,11 +21,14 @@ def test_move_up(game):
 
 def test_move_down(game):
     player = game.player
-    x = player.get(Position).x
+    y = player.get(Position).y
+    # make player isn't against a wall
+    if y == 15:
+        movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_w))
+        game.handle_event(movement)
     y = player.get(Position).y
     movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_s))
     game.handle_event(movement)
-    new_x = player.get(Position).x
     new_y = player.get(Position).y
     assert new_y == (y+1)
 
