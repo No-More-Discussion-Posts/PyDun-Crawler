@@ -56,3 +56,6 @@ venv.bak/
 
 # VSCode Settings
 .vscode
+
+# Tests
+.coverage
