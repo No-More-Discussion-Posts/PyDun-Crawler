@@ -1,14 +1,13 @@
 import pytest
 import pygame
 from copd.ecs.components import Position,Velocity
+from copd.engine import Engine
 from .helpers import *
 
-def test_collide_wall_n(game):
+
+@no_monster()
+def test_collide_wall_n(game: Engine):
     player = game.player
-    monster = game.monster
-    # Set Monster Position away from player
-    monster.get(Position).x = 1
-    monster.get(Position).y = 1
 
     # Move up into the wall
     for i in range(20):
@@ -20,9 +19,9 @@ def test_collide_wall_n(game):
     assert (x,y) == (15,1)
     
 
-
+@no_monster()
 @reset_player()
-def test_collide_wall_s(game):
+def test_collide_wall_s(game: Engine):
     player = game.player #should be brand new
 
     for i in range(20):
@@ -32,3 +31,33 @@ def test_collide_wall_s(game):
     y = player.get(Position).y
     print(player.get(Position))
     assert (x,y) == (15,16)
+
+@no_monster()
+@reset_player()
+def test_collide_wall_e(game: Engine):
+    player = game.player #should be brand new
+    # move out of door path
+    movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_w))
+    game.handle_event(movement)
+    for i in range(20):
+        movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_d))
+        game.handle_event(movement)
+    x = player.get(Position).x
+    y = player.get(Position).y
+    print(player.get(Position))
+    assert (x,y) == (30,8)
+
+@no_monster()
+@reset_player()
+def test_collide_wall_w(game: Engine):
+    player = game.player #should be brand new
+    # move out of door path
+    movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_w))
+    game.handle_event(movement)
+    for i in range(20):
+        movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_a))
+        game.handle_event(movement)
+    x = player.get(Position).x
+    y = player.get(Position).y
+    print(player.get(Position))
+    assert (x,y) == (1,8)

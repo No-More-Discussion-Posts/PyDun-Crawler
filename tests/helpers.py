@@ -11,3 +11,12 @@ def reset_player():
             func(game)
         return wrapper
     return wrap
+
+
+def no_monster():
+    def wrap(func):
+        def wrapper(game):
+            game.monster.kill()
+            func(game)
+        return wrapper
+    return wrap
