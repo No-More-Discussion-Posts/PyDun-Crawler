@@ -21,7 +21,6 @@ def test_collide_wall_n(game):
     
 
 
-@reset_player()
 def test_collide_wall_s(game):
     player = game.player #should be brand new
 
