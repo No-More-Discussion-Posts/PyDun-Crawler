@@ -20,8 +20,8 @@ class Position(Component):
     def __str__(self):
         return f"Position - x:{self.x}, y:{self.y}"
     
-    def __repr__(self):
-        return f"Position - x:{self.x}, y:{self.y}"
+    # def __repr__(self):
+    #     return (self.x,self.y)
 
 class Velocity(Component):
     
@@ -52,9 +52,6 @@ class Velocity(Component):
     def previous(self):
         return Velocity(self.p_dx,self.p_dy)
     def __str__(self):
-        return f"Velocity - dx:{self.dx}, dy:{self.dy}"
-    
-    def __repr__(self):
         return f"Velocity - dx:{self.dx}, dy:{self.dy}"
     
 

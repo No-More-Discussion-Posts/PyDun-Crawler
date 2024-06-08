@@ -2,7 +2,9 @@ import pygame
 from copd.config import * 
 from math import sqrt
 from  copd.ecs.components import *
+from .helpers import reset_player
 
+# @reset_player()
 def test_move_up(game):
     player = game.player
     print(f"{player}: {player.get(Position)}")

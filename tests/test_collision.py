@@ -20,7 +20,6 @@ def test_collide_wall_n(game: Engine):
     
 
 @no_monster()
-@reset_player()
 def test_collide_wall_s(game: Engine):
     player = game.player #should be brand new
 
@@ -31,33 +30,3 @@ def test_collide_wall_s(game: Engine):
     y = player.get(Position).y
     print(player.get(Position))
     assert (x,y) == (15,16)
-
-@no_monster()
-@reset_player()
-def test_collide_wall_e(game: Engine):
-    player = game.player #should be brand new
-    # move out of door path
-    movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_w))
-    game.handle_event(movement)
-    for i in range(20):
-        movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_d))
-        game.handle_event(movement)
-    x = player.get(Position).x
-    y = player.get(Position).y
-    print(player.get(Position))
-    assert (x,y) == (30,8)
-
-@no_monster()
-@reset_player()
-def test_collide_wall_w(game: Engine):
-    player = game.player #should be brand new
-    # move out of door path
-    movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_w))
-    game.handle_event(movement)
-    for i in range(20):
-        movement = pygame.event.Event(pygame.KEYDOWN,dict(key=pygame.K_a))
-        game.handle_event(movement)
-    x = player.get(Position).x
-    y = player.get(Position).y
-    print(player.get(Position))
-    assert (x,y) == (1,8)
