@@ -24,7 +24,7 @@ class Base(DeclarativeBase):
 
 class GameEntity(Base):
     __tablename__ = "game_entity"
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     name: Mapped[str] = mapped_column(String(64))
     
     def __repr__(self) -> str:
@@ -110,6 +110,11 @@ class RoomDoor(Base):
         return f"RoomDoor(id={self.id!r}, room_wall_id={self.room_wall_id!r}, door_id={self.door_id!r})"
 
 
-if __name__ == "__main__":
+
+def main() -> None:
     Base.metadata.create_all(engine)
 
+
+
+if __name__ == "__main__":
+    main()

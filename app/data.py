@@ -43,6 +43,8 @@ class DungeonData(Data):
         pass
 
     # TODO: Write CRUD methods for each table
+
+    
     # Create
     def create_game_entity(self, id, name):
         with Session(db.engine) as session:
@@ -136,15 +138,15 @@ class DungeonData(Data):
         pass
     def update_inventory_item(self):
         pass
-    def update_room_walls():
+    def update_room_walls(self):
         pass
-    def update_dungeon():
+    def update_dungeon(self):
         pass
-    def update_room():
+    def update_room(self):
         pass
-    def update_door():
+    def update_door(self):
         pass
-    def update_room_door():
+    def update_room_door(self):
         pass
 
     # Delete
@@ -156,15 +158,15 @@ class DungeonData(Data):
         pass
     def delete_inventory_item(self):
         pass
-    def delete_room_walls():
+    def delete_room_walls(self):
         pass
-    def delete_dungeon():
+    def delete_dungeon(self):
         pass
-    def delete_room():
+    def delete_room(self):
         pass
-    def delete_door():
+    def delete_door(self):
         pass
-    def delete_room_door():
+    def delete_room_door(self):
         pass
 
 
