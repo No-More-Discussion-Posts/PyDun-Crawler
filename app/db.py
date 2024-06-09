@@ -8,7 +8,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, Session
 
 
 engine = create_engine("sqlite://", echo=True)
@@ -110,10 +110,163 @@ class RoomDoor(Base):
         return f"RoomDoor(id={self.id!r}, room_wall_id={self.room_wall_id!r}, door_id={self.door_id!r})"
 
 
+# TODO: write CRUD operations
+# CRUD Operations
+# Create
+def create_game_entity(id, name):
+        with Session(engine) as session:
+            game_entity = GameEntity(id = id, name = name)
+        session.add(game_entity)
+        session.commit()
+
+def create_item(id, name):
+        with Session(engine) as session:
+            item = Item(id = id, name = name)
+        session.add(item)
+        session.commit()
+
+def create_inventory(id, entity_id):
+        with Session(engine) as session:
+            inventory = Inventory(id = id, entity_id = entity_id)
+        session.add(inventory)
+        session.commit()
+
+def create_inventory_item(inventory_id, item_id):
+        with Session(engine) as session:
+            inventory_item = InventoryItem(id = id, inventory_id = inventory_id, item_id = item_id)
+        session.add(inventory_item)
+        session.commit()
+
+def create_room_walls():
+    """Hardcoded room_wall values"""
+    with Session(engine) as session:
+        north = RoomWall(id = 0, side = "north", pair = 2)
+        east = RoomWall(id = 1, side = "east", pair = 3)
+        south = RoomWall(id = 2, side = "south", pair = 0)
+        west = RoomWall(id = 3, side = "west", pair = 1)
+    session.add_all([north, east, south, west])
+    session.commit()
+
+def create_dungeon_tile(id, room_id):
+    """Insert new dungeon with arguments"""
+    with Session(engine) as session:
+        tile = DungeonTile(id = id, room_id = room_id)
+    session.add(tile)
+    session.commit()
+
+def create_room(id, x, y):
+    with Session(engine) as session:
+        room = Room(id = id, x = x, y = y)
+    session.add(room)
+    session.commit()
+
+def create_door(id, room_id):
+    with Session(engine) as session:
+        door = Door(id=id, room_id = room_id)
+    session.add(door)
+    session.commit()
+
+def create_room_door(id, room_wall_id, door_id):
+    with Session(db.engine) as session:
+        room_door = RoomDoor(id=id, room_id = room_wall_id, door_id = door_id)
+    session.add(room_door)
+    session.commit()
+
 
 def main() -> None:
     Base.metadata.create_all(engine)
+    create_item(id=0, name="Robe")
+    create_item(id=1, name="Wizard Hat")
 
+# Read
+def read_game_entity():
+    pass
+
+def read_item():
+    pass
+
+def read_inventory():
+    pass
+
+def read_inventory_item():
+    pass
+
+def read_room_walls():
+    '''
+    walls = []
+    with Session(db.engine) as session:
+        stmt = select(RoomWall).distinct()
+    return session.execute(stmt)
+    '''
+    pass
+
+def read_dungeon():
+    pass
+
+def read_room():
+    pass
+
+def read_door():
+    pass
+
+def read_room_door():
+    pass
+
+# Update
+def update_game_entity():
+    pass
+
+def update_item():
+    pass
+
+def update_inventory():
+    pass
+
+def update_inventory_item():
+    pass
+
+def update_room_walls():
+    pass
+
+def update_dungeon():
+    pass
+
+def update_room():
+    pass
+
+def update_door():
+    pass
+
+def update_room_door():
+    pass
+
+# Delete
+def delete_game_entity():
+    pass
+
+def delete_item():
+    pass
+
+def delete_inventory():
+    pass
+
+def delete_inventory_item():
+    pass
+
+def delete_room_walls():
+    pass
+
+def delete_dungeon():
+    pass
+
+def delete_room():
+    pass
+
+def delete_door():
+    pass
+
+def delete_room_door():
+    pass
 
 
 if __name__ == "__main__":
