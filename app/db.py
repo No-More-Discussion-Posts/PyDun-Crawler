@@ -20,8 +20,7 @@ class DB:
 class Base(DeclarativeBase):
     pass
 
-# Entity (player, mob, item, etc) and related tables
-
+# Entity (player, mob, item, etc)
 class GameEntity(Base):
     __tablename__ = "game_entity"
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
@@ -30,6 +29,22 @@ class GameEntity(Base):
     def __repr__(self) -> str:
         return f"RoomWall(id={self.id!r}, name={self.name!r})"
 
+def create_game_entity(id, name):
+        with Session(engine) as session:
+            game_entity = GameEntity(id = id, name = name)
+        session.add(game_entity)
+        session.commit()
+
+def read_game_entity():
+    pass
+
+def update_game_entity():
+    pass
+
+def delete_game_entity():
+    pass
+
+# Item
 class Item(Base):
     """Lookup table for in game items"""
     __tablename__ = "item"
@@ -39,6 +54,22 @@ class Item(Base):
     def __repr__(self) -> str:
         return f"RoomWall(id={self.id!r}, name={self.name!r})"
 
+def create_item(id, name):
+        with Session(engine) as session:
+            item = Item(id = id, name = name)
+        session.add(item)
+        session.commit()
+
+def read_item():
+    pass
+
+def update_item():
+    pass
+
+def delete_item():
+    pass
+
+# Inventory
 class Inventory(Base):
     __tablename__ = "inventory"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -46,7 +77,23 @@ class Inventory(Base):
     
     def __repr__(self) -> str:
         return f"RoomWall(id={self.id!r}, entity_id={self.entity_id!r})"
+    
+def create_inventory(id, entity_id):
+        with Session(engine) as session:
+            inventory = Inventory(id = id, entity_id = entity_id)
+        session.add(inventory)
+        session.commit()
 
+def read_inventory():
+    pass
+
+def update_inventory():
+    pass
+
+def delete_inventory():
+    pass
+
+# Inventory-Item
 class InventoryItem(Base):
     """Junction table between inventories and items"""
     __tablename__ = "inventory_item"
@@ -57,8 +104,22 @@ class InventoryItem(Base):
     def __repr__(self) -> str:
         return f"RoomWall(inventory_id={self.inventory_id!r}, item_id={self.item_id!r}, count={self.count!r})"
 
-# Room/Door tables
+def create_inventory_item(inventory_id, item_id):
+        with Session(engine) as session:
+            inventory_item = InventoryItem(id = id, inventory_id = inventory_id, item_id = item_id)
+        session.add(inventory_item)
+        session.commit()
 
+def read_inventory_item():
+    pass
+
+def update_inventory_item():
+    pass
+
+def delete_inventory_item():
+    pass
+
+# Room-Wall
 class RoomWall(Base):
     """Static table to help with wall naming/pairing"""
     __tablename__ = "room_wall"
@@ -70,73 +131,6 @@ class RoomWall(Base):
     def __repr__(self) -> str:
         return f"RoomWall(id={self.id!r}, side={self.side!r}, pair={self.pair!r})"
 
-class DungeonTile(Base):
-    """Dungeon Tile class"""
-    __tablename__ = "dungeon_tile"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    room_id: Mapped[int] = mapped_column()
-
-    def __repr__(self) -> str:
-        return f"Dungeon(id={self.id!r}, room_id={self.room_id!r})"
-
-class Room(Base):
-    __tablename__ = "room"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    x: Mapped[int] = mapped_column()
-    y: Mapped[int] = mapped_column()
-
-    def __repr__(self) -> str:
-        return f"Room(id={self.id!r}, x={self.x!r}, y={self.y!r})"
-    
-class Door(Base):
-    __tablename__ = "door"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    room_id: Mapped[int] = mapped_column()
-
-    def __repr__(self) -> str:
-        return f"Door(id={self.id!r}, room_id={self.room_id!r})"
-
-class RoomDoor(Base):
-    __tablename__ = "room_door"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    room_wall_id: Mapped[int] = mapped_column() # TODO: make this second PK
-    door_id: Mapped[int] = mapped_column()
-
-    def __repr__(self) -> str:
-        return f"RoomDoor(id={self.id!r}, room_wall_id={self.room_wall_id!r}, door_id={self.door_id!r})"
-
-
-# TODO: write CRUD operations
-# CRUD Operations
-# Create
-def create_game_entity(id, name):
-        with Session(engine) as session:
-            game_entity = GameEntity(id = id, name = name)
-        session.add(game_entity)
-        session.commit()
-
-def create_item(id, name):
-        with Session(engine) as session:
-            item = Item(id = id, name = name)
-        session.add(item)
-        session.commit()
-
-def create_inventory(id, entity_id):
-        with Session(engine) as session:
-            inventory = Inventory(id = id, entity_id = entity_id)
-        session.add(inventory)
-        session.commit()
-
-def create_inventory_item(inventory_id, item_id):
-        with Session(engine) as session:
-            inventory_item = InventoryItem(id = id, inventory_id = inventory_id, item_id = item_id)
-        session.add(inventory_item)
-        session.commit()
-
 def create_room_walls():
     """Hardcoded room_wall values"""
     with Session(engine) as session:
@@ -147,50 +141,6 @@ def create_room_walls():
     session.add_all([north, east, south, west])
     session.commit()
 
-def create_dungeon_tile(id, room_id):
-    """Insert new dungeon with arguments"""
-    with Session(engine) as session:
-        tile = DungeonTile(id = id, room_id = room_id)
-    session.add(tile)
-    session.commit()
-
-def create_room(id, x, y):
-    with Session(engine) as session:
-        room = Room(id = id, x = x, y = y)
-    session.add(room)
-    session.commit()
-
-def create_door(id, room_id):
-    with Session(engine) as session:
-        door = Door(id=id, room_id = room_id)
-    session.add(door)
-    session.commit()
-
-def create_room_door(id, room_wall_id, door_id):
-    with Session(db.engine) as session:
-        room_door = RoomDoor(id=id, room_id = room_wall_id, door_id = door_id)
-    session.add(room_door)
-    session.commit()
-
-
-def main() -> None:
-    Base.metadata.create_all(engine)
-    create_item(id=0, name="Robe")
-    create_item(id=1, name="Wizard Hat")
-
-# Read
-def read_game_entity():
-    pass
-
-def read_item():
-    pass
-
-def read_inventory():
-    pass
-
-def read_inventory_item():
-    pass
-
 def read_room_walls():
     '''
     walls = []
@@ -200,74 +150,123 @@ def read_room_walls():
     '''
     pass
 
-def read_dungeon():
-    pass
-
-def read_room():
-    pass
-
-def read_door():
-    pass
-
-def read_room_door():
-    pass
-
-# Update
-def update_game_entity():
-    pass
-
-def update_item():
-    pass
-
-def update_inventory():
-    pass
-
-def update_inventory_item():
-    pass
-
 def update_room_walls():
-    pass
-
-def update_dungeon():
-    pass
-
-def update_room():
-    pass
-
-def update_door():
-    pass
-
-def update_room_door():
-    pass
-
-# Delete
-def delete_game_entity():
-    pass
-
-def delete_item():
-    pass
-
-def delete_inventory():
-    pass
-
-def delete_inventory_item():
     pass
 
 def delete_room_walls():
     pass
 
+# TODO: Refactor this into Tile class
+# DungeonTile
+class DungeonTile(Base):
+    """Dungeon Tile class"""
+    __tablename__ = "dungeon_tile"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    room_id: Mapped[int] = mapped_column()
+
+    def __repr__(self) -> str:
+        return f"Dungeon(id={self.id!r}, room_id={self.room_id!r})"
+
+def create_dungeon_tile(id, room_id):
+    """Insert new dungeon with arguments"""
+    with Session(engine) as session:
+        tile = DungeonTile(id = id, room_id = room_id)
+    session.add(tile)
+    session.commit()
+
+def read_dungeon_Tile():
+    pass
+
+def update_dungeon():
+    pass
+
 def delete_dungeon():
+    pass
+
+# Room
+class Room(Base):
+    __tablename__ = "room"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    x: Mapped[int] = mapped_column()
+    y: Mapped[int] = mapped_column()
+
+    def __repr__(self) -> str:
+        return f"Room(id={self.id!r}, x={self.x!r}, y={self.y!r})"
+    
+def create_room(id, x, y):
+    with Session(engine) as session:
+        room = Room(id = id, x = x, y = y)
+    session.add(room)
+    session.commit()
+
+def read_room():
+    pass
+
+def update_room():
     pass
 
 def delete_room():
     pass
 
+# Door
+class Door(Base):
+    __tablename__ = "door"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    room_id: Mapped[int] = mapped_column()
+
+    def __repr__(self) -> str:
+        return f"Door(id={self.id!r}, room_id={self.room_id!r})"
+
+def create_door(id, room_id):
+    with Session(engine) as session:
+        door = Door(id=id, room_id = room_id)
+    session.add(door)
+    session.commit()
+
+def read_door():
+    pass
+
+def update_door():
+    pass
+
 def delete_door():
+    pass
+
+# Room-Door
+class RoomDoor(Base):
+    __tablename__ = "room_door"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    room_wall_id: Mapped[int] = mapped_column() # TODO: make this second PK
+    door_id: Mapped[int] = mapped_column()
+
+    def __repr__(self) -> str:
+        return f"RoomDoor(id={self.id!r}, room_wall_id={self.room_wall_id!r}, door_id={self.door_id!r})"
+
+def create_room_door(id, room_wall_id, door_id):
+    with Session(engine) as session:
+        room_door = RoomDoor(id=id, room_id = room_wall_id, door_id = door_id)
+    session.add(room_door)
+    session.commit()
+
+def read_room_door():
+    pass
+
+def update_room_door():
     pass
 
 def delete_room_door():
     pass
 
+
+# The usual
+def main() -> None:
+    Base.metadata.create_all(engine)
+    create_item(id=0, name="Robe")
+    create_item(id=1, name="Wizard Hat")
 
 if __name__ == "__main__":
     main()
