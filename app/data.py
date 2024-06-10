@@ -2,7 +2,7 @@
 import db
 import random
 from db import GameEntity, Item, Inventory, InventoryItem
-from db import Base, RoomWall, DungeonTile, Room, Door, RoomDoor
+from db import Base, RoomWall, Tile, Room, Door, RoomDoor
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 

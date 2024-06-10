@@ -3,7 +3,7 @@ import sqlalchemy
 from typing import List
 from typing import Optional
 from sqlalchemy import create_engine
-from sqlalchemy import Integer, String
+from sqlalchemy import Integer, String, Boolean
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -20,14 +20,23 @@ class DB:
 class Base(DeclarativeBase):
     pass
 
-# Entity (player, mob, item, etc)
+# Settings
+class Settings(Base):
+    __tablename__ = "settings"
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
+    yaml_file: Mapped[str] = mapped_column(String(64))
+    
+    def __repr__(self) -> str:
+        return f"Settings(id={self.id!r}, yaml_file={self.yaml_file!r})"
+    
+# GameEntity (player, mob, item, etc)
 class GameEntity(Base):
     __tablename__ = "game_entity"
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     name: Mapped[str] = mapped_column(String(64))
     
     def __repr__(self) -> str:
-        return f"RoomWall(id={self.id!r}, name={self.name!r})"
+        return f"GameEntity(id={self.id!r}, name={self.name!r})"
 
 def create_game_entity(id, name):
         with Session(engine) as session:
@@ -44,15 +53,34 @@ def update_game_entity():
 def delete_game_entity():
     pass
 
+# FilePath
+
+# Sprite
+
+# SpriteSet
+
+# Character
+
+# Player
+
+# Monster
+
 # Item
 class Item(Base):
     """Lookup table for in game items"""
     __tablename__ = "item"
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     name: Mapped[str] = mapped_column(String(64))
 
     def __repr__(self) -> str:
-        return f"RoomWall(id={self.id!r}, name={self.name!r})"
+        return f"Item(id={self.id!r}, name={self.name!r})"
+    '''
+    def create(id, name):
+        with Session(engine) as session:
+            item = Item(id = id, name = name)
+        session.add(item)
+        session.commit()
+    '''
 
 def create_item(id, name):
         with Session(engine) as session:
@@ -72,11 +100,11 @@ def delete_item():
 # Inventory
 class Inventory(Base):
     __tablename__ = "inventory"
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     entity_id = mapped_column(ForeignKey("game_entity.id"))
     
     def __repr__(self) -> str:
-        return f"RoomWall(id={self.id!r}, entity_id={self.entity_id!r})"
+        return f"Inventory(id={self.id!r}, entity_id={self.entity_id!r})"
     
 def create_inventory(id, entity_id):
         with Session(engine) as session:
@@ -97,12 +125,13 @@ def delete_inventory():
 class InventoryItem(Base):
     """Junction table between inventories and items"""
     __tablename__ = "inventory_item"
+
     inventory_id = mapped_column(ForeignKey("inventory.id"), primary_key=True)
     item_id = mapped_column(ForeignKey("item.id"), primary_key=True)
     count: Mapped[int] = mapped_column()
 
     def __repr__(self) -> str:
-        return f"RoomWall(inventory_id={self.inventory_id!r}, item_id={self.item_id!r}, count={self.count!r})"
+        return f"IntentoryItem(inventory_id={self.inventory_id!r}, item_id={self.item_id!r}, count={self.count!r})"
 
 def create_inventory_item(inventory_id, item_id):
         with Session(engine) as session:
@@ -119,12 +148,43 @@ def update_inventory_item():
 def delete_inventory_item():
     pass
 
+# Equipment
+class Equipment(Base):
+    __tablename__ = "equipment"
+
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
+    name: Mapped[str] = mapped_column(String(64), unique=True)
+    description: Mapped[str] = mapped_column(String(256))
+
+    def __repr__(self) -> str:
+        return f"Equipment(id={self.id!r}, name={self.name!r}, description={self.description!r})"
+    
+# Dungeon
+class Dungeon(Base):
+    __tablename__ = "dungeon"
+
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
+    level_id: Mapped[int] = mapped_column(ForeignKey("level.id"))
+    
+    def __repr__(self) -> str:
+        return f"Dungeon(id={self.id!r}, level_id={self.level_id!r})"
+
+#Level
+class Level(Base):
+    __tablename__ = "level"
+
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
+
+    def __repr__(self) -> str:
+        return f"Dungeon(id={self.id!r}, level_id={self.level_id!r})"
+
+
 # Room-Wall
 class RoomWall(Base):
     """Static table to help with wall naming/pairing"""
     __tablename__ = "room_wall"
     
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     side: Mapped[str] = mapped_column(String(5)) # north, east, south, west
     pair: Mapped[int] = mapped_column()        
         
@@ -158,31 +218,57 @@ def delete_room_walls():
 
 # TODO: Refactor this into Tile class
 # DungeonTile
-class DungeonTile(Base):
-    """Dungeon Tile class"""
-    __tablename__ = "dungeon_tile"
+class Tile(Base):
+    """Tile class"""
+    __tablename__ = "tile"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     room_id: Mapped[int] = mapped_column()
 
     def __repr__(self) -> str:
-        return f"Dungeon(id={self.id!r}, room_id={self.room_id!r})"
+        return f"Tile(id={self.id!r}, room_id={self.room_id!r})"
 
-def create_dungeon_tile(id, room_id):
-    """Insert new dungeon with arguments"""
+def create_tile(id, room_id):
+    """Insert new tile with arguments"""
     with Session(engine) as session:
-        tile = DungeonTile(id = id, room_id = room_id)
+        tile = Tile(id = id, room_id = room_id)
     session.add(tile)
     session.commit()
 
-def read_dungeon_Tile():
+def read_tile():
     pass
 
-def update_dungeon():
+def update_tile():
     pass
 
-def delete_dungeon():
+def delete_tile():
     pass
+
+# TileType
+class TileType(Base):
+    # TODO name, description, can_be_occupied, sprite_id
+    __tablename__ = "tile_type"
+
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
+    name: Mapped[str] = mapped_column(String(64), unique=True)
+    description: Mapped[str] = mapped_column(String(256))
+    can_be_occupied: Mapped[Boolean] = mapped_column(Boolean)
+    #sprite_id: Mapped[int] = mapped_column(ForeignKey("sprite.id"))
+    
+    def __repr__(self) -> str:
+        return f"TileType(id={self.id!r}, name={self.name!r}, description={self.description!r})"
+
+
+
+# Treasure
+class Treasure(Base):
+    # TODO tile_id
+    __tablename__ = "treasure"
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
+    tile_id: Mapped[int] = mapped_column (unique=True)
+    
+    def __repr__(self) -> str:
+        return f"TileType(id={self.id!r}, tile_id={self.tile_id!r})"
 
 # Room
 class Room(Base):
