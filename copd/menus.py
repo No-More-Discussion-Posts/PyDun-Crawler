@@ -1,11 +1,11 @@
 import pygame
 import sys
 from random import randint
-from .entities import *
+# from .entities import *
 from .button import *
-from .engine import *
+# from .engine import *
 from .menu_options import Option, MenuOption
-from .ecs.states import *
+from .ecs.states import GameStates
 
 class Menu:
     def __init__(self, game, options):
@@ -225,7 +225,7 @@ class BattleMenu():
         self.DEFAULT_FONT = pygame.font.get_default_font()
         self.player = game.player
         self.monster = game.monster #added since enemy is generated in overworld. -Roland
-        self.run()
+        # self.run()
         
     def run(self):
         self.running = True

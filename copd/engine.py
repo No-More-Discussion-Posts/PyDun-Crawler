@@ -6,6 +6,7 @@ from .entities import *
 from .menus import PauseMenu, BattleMenu
 from .config import DEFAULT_MAP
 from .ecs.states import GameStates
+from .ecs.ecs import Component
 from .input_handlers import EventHandler
 #test
 from .ecs.systems import Movement, Collision, Turn
@@ -18,6 +19,8 @@ from .ecs.components import Position,Velocity, TurnCounter
 class Engine:
     
     def __init__(self):
+        """Main Game Engine
+        """        
         self.components = {}
         self.debug = True
         self.Turn = Turn()
@@ -37,7 +40,14 @@ class Engine:
         self.Turn.add_entity(self)
         self.add_component(TurnCounter())
 
-    def add_component(self,component):
+    def add_component(self,component:Component):
+        """_summary_
+
+        Parameters
+        ----------
+        component : Component
+            Component to be added to the Engine
+        """        
         self.components[type(component)] = component
     
     def get(self,component):
@@ -136,7 +146,7 @@ class Engine:
             for event in pygame.event.get():
                 self.handle_event(event)
             if self.state == GameStates.BATTLE:
-                BattleMenu(self)
+                BattleMenu(self).run()
             self.draw()
         pygame.quit()
         sys.exit()
