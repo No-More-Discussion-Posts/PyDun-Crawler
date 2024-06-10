@@ -56,7 +56,6 @@ def delete_game_entity():
 # FilePath
 class FilePath(Base):
     __tablename__ = "file_path"
-
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     file_name: Mapped[str] = mapped_column(String(256))
     extension: Mapped[str] = mapped_column(String(32))
@@ -67,7 +66,6 @@ class FilePath(Base):
 # Sprite
 class Sprite(Base):
     __tablename__ = "sprite"
-
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     file_path_id: Mapped[int] = mapped_column(ForeignKey("file_path.id"))
     
@@ -77,7 +75,6 @@ class Sprite(Base):
 # SpriteSet
 class SpriteSet(Base):
     __tablename__ = "sprite_set"
-
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     file_path_id: Mapped[int] = mapped_column(ForeignKey("file_path.id"))
     subsheets_start: Mapped[int] = mapped_column()
@@ -89,7 +86,6 @@ class SpriteSet(Base):
 # Character
 class Character(Base):
     __tablename__ = "character"
-
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     game_entity_id: Mapped[int] = mapped_column(ForeignKey("game_entity.id"))
     sprite_set_id: Mapped[int] = mapped_column(ForeignKey("sprite_set.id"))
@@ -97,7 +93,6 @@ class Character(Base):
     max_hp: Mapped[int] = mapped_column()
     atk: Mapped[int] = mapped_column()
     dex: Mapped[int] = mapped_column()
-    inventory_id: Mapped[int] = mapped_column(ForeignKey("inventory.id"))
 
     def __repr__(self) -> str:
         return f"Item(id={self.id!r}, name={self.name!r}) ..."
@@ -105,22 +100,22 @@ class Character(Base):
 # Player
 class Player(Base):
     __tablename__ = "player"
-
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     player_color: Mapped[str] = mapped_column(String(32))
+    character_id: Mapped[int] = mapped_column(ForeignKey("character.id"))
 
     def __repr__(self) -> str:
-        return f"Item(id={self.id!r}, player_color={self.player_color!r})"
+        return f"Item(id={self.id!r}, character_id={self.character_id!r})"
 
 # Monster
 class Monster(Base):
     __tablename__ = "monster"
-
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     monster_color: Mapped[str] = mapped_column(String(32))
+    character_id: Mapped[int] = mapped_column(ForeignKey("character.id"))
 
     def __repr__(self) -> str:
-        return f"Item(id={self.id!r}, monster_color={self.monster_color!r})"
+        return f"Item(id={self.id!r}, character_id={self.character_id!r})"
 
 # Item
 class Item(Base):
@@ -131,13 +126,6 @@ class Item(Base):
 
     def __repr__(self) -> str:
         return f"Item(id={self.id!r}, name={self.name!r})"
-    '''
-    def create(id, name):
-        with Session(engine) as session:
-            item = Item(id = id, name = name)
-        session.add(item)
-        session.commit()
-    '''
 
 def create_item(id, name):
         with Session(engine) as session:
@@ -158,8 +146,8 @@ def delete_item():
 class Inventory(Base):
     __tablename__ = "inventory"
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
-    entity_id = mapped_column(ForeignKey("game_entity.id"))
-    
+    character_id = mapped_column(ForeignKey("character.id"))
+
     def __repr__(self) -> str:
         return f"Inventory(id={self.id!r}, entity_id={self.entity_id!r})"
     
@@ -182,7 +170,6 @@ def delete_inventory():
 class InventoryItem(Base):
     """Junction table between inventories and items"""
     __tablename__ = "inventory_item"
-
     inventory_id = mapped_column(ForeignKey("inventory.id"), primary_key=True)
     item_id = mapped_column(ForeignKey("item.id"), primary_key=True)
     count: Mapped[int] = mapped_column()
@@ -208,10 +195,10 @@ def delete_inventory_item():
 # Equipment
 class Equipment(Base):
     __tablename__ = "equipment"
-
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     name: Mapped[str] = mapped_column(String(64), unique=True)
     description: Mapped[str] = mapped_column(String(256))
+    character_id: Mapped[int] = mapped_column(ForeignKey("character.id"))
 
     def __repr__(self) -> str:
         return f"Equipment(id={self.id!r}, name={self.name!r}, description={self.description!r})"
@@ -219,28 +206,27 @@ class Equipment(Base):
 # Dungeon
 class Dungeon(Base):
     __tablename__ = "dungeon"
-
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
-    level_id: Mapped[int] = mapped_column(ForeignKey("level.id"))
-    
+    settings_id: Mapped[int] = mapped_column(ForeignKey("settings.id"))
+  
+
     def __repr__(self) -> str:
-        return f"Dungeon(id={self.id!r}, level_id={self.level_id!r})"
+        return f"Dungeon(id={self.id!r}, settings_id={self.settings_id!r})"
 
 #Level
 class Level(Base):
     __tablename__ = "level"
-
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
+    dungeon_id: Mapped[int] = mapped_column(ForeignKey("dungeon.id"))
 
     def __repr__(self) -> str:
-        return f"Dungeon(id={self.id!r}, level_id={self.level_id!r})"
+        return f"Dungeon(id={self.id!r}, dungeon_id={self.dungeon_id!r})"
 
 
 # Room-Wall
 class RoomWall(Base):
     """Static table to help with wall naming/pairing"""
     __tablename__ = "room_wall"
-    
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     side: Mapped[str] = mapped_column(String(5)) # north, east, south, west
     pair: Mapped[int] = mapped_column()        
@@ -278,9 +264,11 @@ def delete_room_walls():
 class Tile(Base):
     """Tile class"""
     __tablename__ = "tile"
-
     id: Mapped[int] = mapped_column(primary_key=True)
-    room_id: Mapped[int] = mapped_column()
+    room_id: Mapped[int] = mapped_column(ForeignKey("room.id"))
+    sprite_id: Mapped[int] = mapped_column(ForeignKey("sprite.id"))
+    tile_type_id: Mapped[int] = mapped_column(ForeignKey("tile_type.id"))
+    treasure_id: Mapped[int] = mapped_column(ForeignKey("treasure.id"))
 
     def __repr__(self) -> str:
         return f"Tile(id={self.id!r}, room_id={self.room_id!r})"
@@ -305,7 +293,6 @@ def delete_tile():
 class TileType(Base):
     # TODO name, description, can_be_occupied, sprite_id
     __tablename__ = "tile_type"
-
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     name: Mapped[str] = mapped_column(String(64), unique=True)
     description: Mapped[str] = mapped_column(String(256))
@@ -322,7 +309,8 @@ class Treasure(Base):
     # TODO tile_id
     __tablename__ = "treasure"
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
-    tile_id: Mapped[int] = mapped_column (unique=True)
+    item_id: Mapped[int] = mapped_column(ForeignKey("item.id"), nullable=True)
+    equipment_id: Mapped[int] = mapped_column(ForeignKey("equipment.id"), nullable=True)
     
     def __repr__(self) -> str:
         return f"TileType(id={self.id!r}, tile_id={self.tile_id!r})"
@@ -330,10 +318,11 @@ class Treasure(Base):
 # Room
 class Room(Base):
     __tablename__ = "room"
-
     id: Mapped[int] = mapped_column(primary_key=True)
+    # TODO rename this (they should reflect level grid pos_x/y)
     x: Mapped[int] = mapped_column()
     y: Mapped[int] = mapped_column()
+    level_id: Mapped[int] = mapped_column(ForeignKey("level.id"))
 
     def __repr__(self) -> str:
         return f"Room(id={self.id!r}, x={self.x!r}, y={self.y!r})"
@@ -356,9 +345,9 @@ def delete_room():
 # Door
 class Door(Base):
     __tablename__ = "door"
-
     id: Mapped[int] = mapped_column(primary_key=True)
-    room_id: Mapped[int] = mapped_column()
+    # room_id = The room to which the door leads
+    room_id: Mapped[int] = mapped_column() 
 
     def __repr__(self) -> str:
         return f"Door(id={self.id!r}, room_id={self.room_id!r})"
@@ -381,7 +370,6 @@ def delete_door():
 # Room-Door
 class RoomDoor(Base):
     __tablename__ = "room_door"
-
     id: Mapped[int] = mapped_column(primary_key=True)
     room_wall_id: Mapped[int] = mapped_column() # TODO: make this second PK
     door_id: Mapped[int] = mapped_column()
@@ -405,11 +393,12 @@ def delete_room_door():
     pass
 
 
-# The usual
+# Testing stuff
 def main() -> None:
     Base.metadata.create_all(engine)
     create_item(id=0, name="Robe")
-    create_item(id=1, name="Wizard Hat")
+    create_item(id=1, name="Wizard Hat") 
+
 
 if __name__ == "__main__":
     main()
