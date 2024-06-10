@@ -54,16 +54,73 @@ def delete_game_entity():
     pass
 
 # FilePath
+class FilePath(Base):
+    __tablename__ = "file_path"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
+    file_name: Mapped[str] = mapped_column(String(256))
+    extension: Mapped[str] = mapped_column(String(32))
+
+    def __repr__(self) -> str:
+        return f"FilePath(id={self.id!r}, file_name={self.file_name!r}, extension={self.extension!r})"
 
 # Sprite
+class Sprite(Base):
+    __tablename__ = "sprite"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
+    file_path_id: Mapped[int] = mapped_column(ForeignKey("file_path.id"))
+    
+    def __repr__(self) -> str:
+        return f"Sprite(id={self.id!r}, file_path_id={self.file_path_id!r})"
 
 # SpriteSet
+class SpriteSet(Base):
+    __tablename__ = "sprite_set"
 
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
+    file_path_id: Mapped[int] = mapped_column(ForeignKey("file_path.id"))
+    subsheets_start: Mapped[int] = mapped_column()
+    subsheets_end: Mapped[int] = mapped_column()
+
+    def __repr__(self) -> str:
+        return f"SpriteSet(id={self.id!r}, file_path_id={self.file_path_id!r})"
+    
 # Character
+class Character(Base):
+    __tablename__ = "character"
 
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
+    game_entity_id: Mapped[int] = mapped_column(ForeignKey("game_entity.id"))
+    sprite_set_id: Mapped[int] = mapped_column(ForeignKey("sprite_set.id"))
+    name: Mapped[str] = mapped_column(String(64))
+    max_hp: Mapped[int] = mapped_column()
+    atk: Mapped[int] = mapped_column()
+    dex: Mapped[int] = mapped_column()
+    inventory_id: Mapped[int] = mapped_column(ForeignKey("inventory.id"))
+
+    def __repr__(self) -> str:
+        return f"Item(id={self.id!r}, name={self.name!r}) ..."
+    
 # Player
+class Player(Base):
+    __tablename__ = "player"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
+    player_color: Mapped[str] = mapped_column(String(32))
+
+    def __repr__(self) -> str:
+        return f"Item(id={self.id!r}, player_color={self.player_color!r})"
 
 # Monster
+class Monster(Base):
+    __tablename__ = "monster"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
+    monster_color: Mapped[str] = mapped_column(String(32))
+
+    def __repr__(self) -> str:
+        return f"Item(id={self.id!r}, monster_color={self.monster_color!r})"
 
 # Item
 class Item(Base):
