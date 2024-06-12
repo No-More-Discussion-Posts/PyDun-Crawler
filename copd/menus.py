@@ -311,7 +311,6 @@ class BattleMenu:
     def combat(self, parry):
         # Just a basic Combat system can be better later
         if parry == True:
-            self.player.game.update()
             # Parry Chance is calculated by miss_hit function in entities
             parry_chance = self.miss_hit(self.player.dex)
             if parry_chance == True:
@@ -320,14 +319,12 @@ class BattleMenu:
                 self.monster.hp = self.monster.hp - self.player.atk
                 self.player.hp = self.player.hp - self.monster.atk
         elif parry == False:
-            self.player.game.update()
             self.monster.hp = self.monster.hp - self.player.atk
             self.player.hp = self.player.hp - self.monster.atk
         if self.player.hp <= 0:
             pygame.quit()
             sys.exit()
         elif self.monster.hp <= 0:
-            self.player.game.update()
             if self.monster.item != "Health Pot":
                 x = str(self.monster.item.keys())
                 x = x.strip("dict_keys([''])")
