@@ -8,7 +8,6 @@ from copd.button import *
 # from .engine import *
 from copd.config import Option, MenuOption
 from copd.engine.states import GameStates
-from copd.engine.systems import combat #temp test function
 
 class Menu:
     def __init__(self, game, options):
@@ -296,14 +295,27 @@ class BattleMenu:
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     if fight.butt_rect.collidepoint(e.pos):
-                        self.running = combat(self.game,parry=False)
+                        # self.running = combat(self.game,parry=False)
+                        self.game.Combat.complete = False
+                        self.game.player.in_combat.state = True
+                        self.game.monster.in_combat.state = True
+                        self.game.Combat.update()
+                        self.running = not self.game.Combat.complete
                     if parry.butt_rect.collidepoint(e.pos):
-                        self.running = combat(self.game,parry=True)
+                        self.game.Combat.complete = False
+                        self.game.player.in_combat.state = True
+                        self.game.monster.in_combat.state = True
+                        self.game.Combat.update()
+                        self.running = not self.game.Combat.complete
+                        # self.running = combat(self.game,parry=True)
                     if run.butt_rect.collidepoint(e.pos):
                         self.monster.stun = 2
+                        self.game.Combat.end()
                         self.running = False
                     if items.butt_rect.collidepoint(e.pos):
                         self.inventory_screen()
+                    self.game.Combat.update()
+                    self.running = not self.game.Combat.complete
                 self.handle_input(e)
         self.game.state = GameStates.MAIN
        

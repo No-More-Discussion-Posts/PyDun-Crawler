@@ -10,7 +10,7 @@ from copd.engine.ecs import Component
 from copd.input_handlers import EventHandler
 
 # test
-from copd.engine.systems import Movement, Collision, Turn
+from copd.engine.systems import Movement, Collision, Turn, Combat
 from copd.engine.components import Position, Velocity, TurnCounter
 
 
@@ -36,6 +36,7 @@ class Engine:
         self.treasures = pygame.sprite.LayeredUpdates()
         self.Movement = Movement()
         self.Collision = Collision()
+        self.Combat = Combat()
         self.Turn.add_entity(self)
         self.add_component(TurnCounter())
 
@@ -66,6 +67,7 @@ class Engine:
             self.player = player
         self.Movement.add_entity(self.player)
         self.Collision.add_entity(self.player)
+        self.Combat.add_entity(self.player)
 
     def load_start_map(self, color, map=None) -> None:
         """
@@ -86,6 +88,7 @@ class Engine:
         self.add_player()
         # add monster sprite to game
         self.add_monster()
+        # self.Combat.add_entity()
         # add wall sprites around perimiter of map
         self.create_walls(map, color)
         # add treasure sprite to game

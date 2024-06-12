@@ -4,7 +4,7 @@ from copd.inventory import Inventory, Equipped
 import pygame as pg  # TODO: make consistent
 from copd.config import *
 import time
-from copd.engine.components import Position, Velocity
+from copd.engine.components import Position, Velocity, Flag
 
 
 items = {
@@ -49,6 +49,7 @@ class Monster(Entity):
 
     def __init__(self, game, x=0, y=0):
         super().__init__(game, x, y)
+        self.in_combat = Flag(False)
         self.stun = 0
 
     def sprite_gen(self, color=None):
@@ -145,6 +146,7 @@ class Ogre(Monster):
 class Player(Entity):
     def __init__(self, name, game, x, y):
         super().__init__(game, x, y)
+        self.in_combat = Flag(False)
         # name of player
         self.name = name
         # current running game
