@@ -337,7 +337,7 @@ class BattleMenu:
     ###TYLER EXPERIMENTAL###
     def miss_hit(self, player_dex):
         pdex = player_dex
-        chance_hit = random.randint(1, 10)
+        chance_hit = randint(1, 10)
         if chance_hit <= pdex:
             return True
         return False
