@@ -20,7 +20,7 @@ class Engine:
     def __init__(self):
         """Main Game Engine"""
         self.components = {}
-        self.debug = True
+        self.debug = False
         self.Turn = Turn()
         self.running = False
         self.state = (

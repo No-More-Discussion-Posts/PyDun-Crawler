@@ -9,6 +9,9 @@ class EventHandler:
         self.game = game
 
     def handle_event(self, event):
+        if self.game.debug:
+            print(f"New Event: {event}")
+            print(f"Game State: {self.game.state}")
         if event.type == pygame.QUIT:
             self.game.running = False
         if self.game.state == GameStates.MAIN:
