@@ -3,7 +3,7 @@ import sys
 from random import randint
 
 # from .entities import *
-from copd.button import *
+from copd.ui.button import *
 
 # from .engine import *
 from copd.config import Option, MenuOption
@@ -309,8 +309,7 @@ class BattleMenu:
                         self.running = False
                     if items.butt_rect.collidepoint(e.pos):
                         self.inventory_screen()
-                    self.game.Combat.update()
-                    self.running = not self.game.Combat.complete
+                    # self.running = not self.game.Combat.complete
                 self.handle_input(e)
         self.game.state = GameStates.MAIN
        
@@ -408,36 +407,3 @@ class BattleMenu:
             sys.exit()
 
 
-# class InfoBox:
-#     def __init__(self,screen,position:Tuple[int,int],height:int=-1,width:int=-1):
-#         self.game.screen = screen
-#         self.x, self.y  = position
-#         self.FONT_STYLE = pygame.font.get_default_font()
-#         self.text = []
-#         # self.static_height = True if height != -1 else False
-#         # self.static_width = True if width != -1 else False
-#         # self.height = 20 if height == -1 else height # 10 px on each side default
-#         # self.width = 20 if width == -1 else width # 10 px on each side default
-#         self.height = height
-#         self.width = width
-#         self.text_buffer = 5
-#         self.border_buffer = 10
-
-
-#     def add_text(self,text:str,size : int = 20,color: str = "black") -> None:
-#         FONT = pygame.font.Font(self.DEFAULT_FONT,size)
-#         new_text = FONT.render(text,False,color)
-#         h = new_text.get_height()
-#         w = new_text.get_width()
-#         # self.height += h + 5 # 5px buffer between text items
-#         # self.width = max(self.width, w+20) # Expand width depending on max text size
-#         self.text.append(dict(text=new_text,size=(h,w)))
-
-#     def display(self):
-#         border = pygame.draw.rect(self.game.screen, "black", [self.x,self.y, self.width, self.height], 3,border_radius = 15)
-#         x = self.x + self.border_buffer
-#         y = self.y + self.border_buffer
-#         for text in self.text:
-#             self.game.screen.blit(text['text'],(x,y))
-#             self.game.screen.blit(FONT.render(f"{monster.hp}/{monster.max_hp}",False,"black"),(20,45))
-#             x+=text.

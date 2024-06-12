@@ -1,7 +1,7 @@
 import pygame
-from .menus import PauseMenu
-from .engine.states import GameStates
-from .engine.components import Velocity, Position
+from ..ui.menus import PauseMenu
+from .states import GameStates
+from .components import Velocity, Position
 
 
 class EventHandler:
