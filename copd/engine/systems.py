@@ -91,7 +91,7 @@ class Collision(System):
                     # resets turn timer
                     self.entities[0].game.Turn.undo()
                     # calls load map to draw new room
-                    entity.game.load_map(BLUE)
+                    entity.game.load_map(Colors.BLUE)
 
                 # if player overlaps with treasure, TRUE = delete treasure after collsion
                 elif pygame.sprite.spritecollide(entity, entity.game.treasures, True):
@@ -105,3 +105,6 @@ class Collision(System):
                     elif entity.game.treasure.item == "Health Pot":
                         # adds health pot to player inventory
                         entity.inventory.update_item(entity.game.treasure.item, 1)
+
+# class Combat(System):
+#     ...

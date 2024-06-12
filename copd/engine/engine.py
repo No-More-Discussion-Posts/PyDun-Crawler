@@ -218,22 +218,22 @@ class Engine:
 
         # up and down
         if self.player.overworldcoords[1] == 0:  # if north border
-            Wall(self, 17, 0, BLUE)  # draw wall at north door
+            Wall(self, 17, 0, Colors.BLUE)  # draw wall at north door
         else:
             Door(self, 17, 0)  # draw north door
         if self.player.overworldcoords[1] == 2:  # if south border
-            Wall(self, 17, 17, BLUE)  # draw wall at south door
+            Wall(self, 17, 17, Colors.BLUE)  # draw wall at south door
         else:
             Door(self, 17, 17)  # draw south door
 
         # left and right
         if self.player.overworldcoords[0] == 0:  # if nwest border
-            Wall(self, 0, 9, BLUE)  # draw wall at west door
+            Wall(self, 0, 9, Colors.BLUE)  # draw wall at west door
         else:
             Door(self, 0, 9)  # draw west door
 
         if self.player.overworldcoords[0] == 2:  # if east border
-            Wall(self, 31, 9, BLUE)  # draw wall at east door
+            Wall(self, 31, 9, Colors.BLUE)  # draw wall at east door
         else:
             Door(self, 31, 9)  # draw east door
 

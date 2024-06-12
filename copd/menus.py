@@ -114,7 +114,7 @@ class PauseMenu(Menu):
         # self.run()
         self.running = True
         while self.running:
-            self.game.screen.fill(Cyantology)
+            self.game.screen.fill(Colors.Cyantology)
             self.run_opts()
 
             # Creating Buttons
@@ -144,7 +144,7 @@ class PauseMenu(Menu):
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
         while self.running:
-            self.game.screen.fill(Cyantology)
+            self.game.screen.fill(Colors.Cyantology)
             self.run_opts()
             place_holder = 1
             for item in self.game.player.inventory.inventory:
@@ -176,7 +176,7 @@ class PauseMenu(Menu):
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
         while self.running:
-            self.game.screen.fill(Cyantology)
+            self.game.screen.fill(Colors.Cyantology)
             self.run_opts()
             place_holder = 1
             for item in self.game.player.equipped.equipped:
@@ -252,7 +252,7 @@ class BattleMenu:
         # self.start_combat()  #commented out for testing random enemy generation on overworld. -Roland
 
         while self.running:
-            self.game.screen.fill(Snugglepuss)
+            self.game.screen.fill(Colors.Snugglepuss)
             height = self.game.screen.get_height()
             width = self.game.screen.get_width()
             # Create info areas
@@ -369,7 +369,7 @@ class BattleMenu:
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
         while self.running:
-            self.game.screen.fill(Snugglepuss)
+            self.game.screen.fill(Colors.Snugglepuss)
             height = self.game.screen.get_height()
             width = self.game.screen.get_width()
             # Create info areas
