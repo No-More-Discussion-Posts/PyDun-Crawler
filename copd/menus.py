@@ -6,8 +6,8 @@ from random import randint
 from .button import *
 
 # from .engine import *
-from .menu_options import Option, MenuOption
-from .engine.states import GameStates
+from copd.config import Option, MenuOption
+from copd.engine.states import GameStates
 
 
 class Menu:

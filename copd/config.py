@@ -1,5 +1,6 @@
 from enum import Enum,IntEnum
 from dataclasses import dataclass
+from typing import Dict
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 360
 TILE_SIZE = 20
@@ -76,3 +77,14 @@ class Colors():
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
     GREY = (128, 128, 128)
+
+class MenuOption(Enum):
+    CAPTION = 1
+    PRINT = 2
+    HANDLER = 3
+
+
+@dataclass
+class Option:
+    type: MenuOption
+    data: Dict
