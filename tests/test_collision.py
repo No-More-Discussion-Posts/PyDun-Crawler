@@ -1,7 +1,7 @@
 import pytest
 import pygame
-from copd.ecs.components import Position, Velocity
-from copd.engine import Engine
+from copd.engine.components import Position, Velocity
+from copd.engine.engine import Engine
 from .helpers import *
 
 

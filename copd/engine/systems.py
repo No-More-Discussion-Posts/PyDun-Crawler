@@ -1,8 +1,8 @@
 import pygame
 from .ecs import System
 from .components import Position, Velocity, TurnCounter
-from ..entities import Player
-from ..config import *
+from copd.engine.entities import Player
+from copd.config import *
 from .states import *
 
 

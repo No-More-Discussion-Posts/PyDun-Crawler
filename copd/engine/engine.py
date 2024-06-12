@@ -2,16 +2,16 @@ import pygame
 import random
 import sys
 
-from .entities import *
-from .menus import PauseMenu, BattleMenu
-from .config import DEFAULT_MAP
-from .ecs.states import GameStates
-from .ecs.ecs import Component
-from .input_handlers import EventHandler
+from copd.engine.entities import *
+from copd.menus import PauseMenu, BattleMenu
+from copd.config import DEFAULT_MAP
+from copd.engine.states import GameStates
+from copd.engine.ecs import Component
+from copd.input_handlers import EventHandler
 
 # test
-from .ecs.systems import Movement, Collision, Turn
-from .ecs.components import Position, Velocity, TurnCounter
+from copd.engine.systems import Movement, Collision, Turn
+from copd.engine.components import Position, Velocity, TurnCounter
 
 
 # test

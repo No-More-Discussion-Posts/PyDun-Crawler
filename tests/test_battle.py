@@ -1,7 +1,7 @@
 import pytest
 import pygame
 import os
-from copd.ecs.states import GameStates
+from copd.engine.states import GameStates
 from copd.menus import BattleMenu
 from .helpers import reset_player, reset_monster
 

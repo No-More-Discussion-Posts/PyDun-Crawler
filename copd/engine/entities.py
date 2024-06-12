@@ -1,11 +1,11 @@
 import random
 import math
-from .inventory import Inventory, Equipped
+from copd.inventory import Inventory, Equipped
 import pygame as pg  # TODO: make consistent
-from .config import *
-from .menus import BattleMenu
+from copd.config import *
+from copd.menus import BattleMenu
 import time
-from .ecs.components import Position, Velocity
+from copd.engine.components import Position, Velocity
 
 
 items = {

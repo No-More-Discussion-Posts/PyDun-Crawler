@@ -1,7 +1,7 @@
 import pygame
 from copd.config import *
 from math import sqrt
-from copd.ecs.components import *
+from copd.engine.components import *
 from .helpers import reset_player
 
 

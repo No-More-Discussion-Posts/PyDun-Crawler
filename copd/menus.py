@@ -7,7 +7,7 @@ from .button import *
 
 # from .engine import *
 from .menu_options import Option, MenuOption
-from .ecs.states import GameStates
+from .engine.states import GameStates
 
 
 class Menu:
