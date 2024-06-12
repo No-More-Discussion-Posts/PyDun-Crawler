@@ -36,7 +36,7 @@ class Engine:
         self.treasures = pygame.sprite.LayeredUpdates()
         self.Movement = Movement()
         self.Collision = Collision()
-        self.Combat = Combat()
+        self.Combat = Combat(self)
         self.Turn.add_entity(self)
         self.add_component(TurnCounter())
 

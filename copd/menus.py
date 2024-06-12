@@ -294,19 +294,14 @@ class BattleMenu:
             pygame.display.flip()
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
-                    if fight.butt_rect.collidepoint(e.pos):
-                        # self.running = combat(self.game,parry=False)
-                        self.game.Combat.complete = False
-                        self.game.player.in_combat.state = True
-                        self.game.monster.in_combat.state = True
+                    if fight.butt_rect.collidepoint(e.pos) or parry.butt_rect.collidepoint(e.pos):
+                        parrying = False
+                        if parry.butt_rect.collidepoint(e.pos):
+                            parrying = True
+                        self.game.Combat.setup(parry = parrying)
                         self.game.Combat.update()
                         self.running = not self.game.Combat.complete
-                    if parry.butt_rect.collidepoint(e.pos):
-                        self.game.Combat.complete = False
-                        self.game.player.in_combat.state = True
-                        self.game.monster.in_combat.state = True
-                        self.game.Combat.update()
-                        self.running = not self.game.Combat.complete
+                    
                         # self.running = combat(self.game,parry=True)
                     if run.butt_rect.collidepoint(e.pos):
                         self.monster.stun = 2

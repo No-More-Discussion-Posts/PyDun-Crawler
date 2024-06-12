@@ -2,7 +2,6 @@ import pytest
 import pygame
 import os
 from copd.engine.states import GameStates
-from copd.engine.systems import combat,calc_parry
 from .helpers import reset_player, reset_monster
 
 
@@ -13,7 +12,8 @@ def test_fight(game):
     player_hp = game.player.hp
     monster_hp = game.monster.hp
 
-    combat(game,parry=False)
+    game.Combat.setup()
+    game.Combat.update()
 
     assert game.player.hp == player_hp - game.monster.atk
     assert game.monster.hp == monster_hp - game.player.atk
@@ -23,11 +23,12 @@ def test_parry(game):
     game.state = GameStates.BATTLE
     player_hp = game.player.hp
     monster_hp = game.player.hp
-
+    game.Combat.setup()
+    # game.Combat.update()
     
     parried = False
     for i in range(100):
-        parried = calc_parry(game)
+        parried = game.Combat.calc_parry(game)
         if parried:
             break
         elif game.player.hp <= 0:

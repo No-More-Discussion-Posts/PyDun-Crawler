@@ -110,18 +110,25 @@ class Collision(System):
 
 class Combat(System):
 
-    def __init__(self):
+    def __init__(self,game):
         super().__init__()
         self.complete = True
+        self.game = game
     def end(self):
         try:
-            self.player.in_combat.state = False
-            self.monster.in_combat.state = True
+            self.game.player.in_combat.state = False
+            self.game.monster.in_combat.state = False
             self.complete = True
         except Exception as e:
             print("Problem in Combat.end")
             print(e)
-            
+
+    def setup(self,parry= False):
+        self.complete = False
+        self.parry = parry
+        self.game.player.in_combat.state = True
+        self.game.monster.in_combat.state = True
+
     def update(self):
         try:
             self.player = self.entities[0].game.player
@@ -174,7 +181,7 @@ class Combat(System):
             False - Failed to parry
         """
         # Parry Chance is calculated by miss_hit function in entities
-        parry_chance = miss_hit(game.player.dex)
+        parry_chance = self.miss_hit(game.player.dex)
         if parry_chance == True:
             game.monster.hp = game.monster.hp - (game.player.atk + game.monster.atk)
         elif parry_chance == False:
