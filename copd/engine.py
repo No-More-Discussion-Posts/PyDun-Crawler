@@ -88,7 +88,7 @@ class Engine:
         # add monster sprite to game
         self.add_monster()
         # add wall sprites around perimiter of map
-        self.DrawWalls(map, color)
+        self.create_walls(map, color)
         # add treasure sprite to game
         self.add_treasure(14, 10)
 
@@ -114,7 +114,7 @@ class Engine:
         # add monster to game
         self.add_monster()
         # add walls to border
-        self.DrawWalls(map, color)
+        self.create_walls(map, color)
         # add treasure for room
         self.add_treasure(14, 10)
 
@@ -209,54 +209,55 @@ class Engine:
         """
         self.treasure = Treasure(self, x, y)
 
-    def DoorOrWalls(self):
+    def door_or_walls(self):
         """
         overworld_map:
         [0, 0], [1, 0], [2, 0]
         [0, 1], [1, 1], [2, 1]
         [0, 2], [1, 2], [2, 2]
         """
-
+        
         #up and down
         if self.player.overworldcoords[1] == 0: #if north border
-            self.wall = Wall(self, 17, 0, BLUE) #draw wall at north door
+            Wall(self, 17, 0, BLUE) #draw wall at north door
         else:
-            self.door = Door(self, 17, 0) #draw north door
-        
+            Door(self, 17, 0) #draw north door
         if self.player.overworldcoords[1] == 2: #if south border
-            self.wall = Wall(self, 17, 17, BLUE) #draw wall at south door
+            Wall(self, 17, 17, BLUE) #draw wall at south door
         else:
-            self.door = Door(self, 17, 17) #draw south door
+            Door(self, 17, 17) #draw south door
 
         #left and right
         if self.player.overworldcoords[0] == 0: #if nwest border
-            self.wall = Wall(self, 0, 9, BLUE) #draw wall at west door
+            Wall(self, 0, 9, BLUE) #draw wall at west door
         else:
-            self.door = Door(self, 0, 9) #draw west door
+            Door(self, 0, 9) #draw west door
         
         if self.player.overworldcoords[0] == 2: #if east border
-            self.wall = Wall(self, 31, 9, BLUE) #draw wall at east door
+            Wall(self, 31, 9, BLUE) #draw wall at east door
         else:
-            self.door = Door(self, 31, 9) #draw east door
+            Door(self, 31, 9) #draw east door
     
-    def DrawWalls(self, map, color):
+    def create_walls(self, map, color):
+        self.doors.empty()
+        self.blocks.empty()
         for x in map[0]:
             if x == 17:
                 #perform check here instead
-                #self.door = Door(self, x, 0) #draw north door
-                #self.door = Door(self, x, 17) #draw south door
-                self.DoorOrWalls()
+                #Door(self, x, 0) #draw north door
+                #Door(self, x, 17) #draw south door
+                self.door_or_walls()
             else:
-                self.wall = Wall(self, x, 0, color) #draw north wall
-                self.wall = Wall(self, x, 17, color) #draw south wall
+                Wall(self, x, 0, color) #draw north wall
+                Wall(self, x, 17, color) #draw south wall
         for y in map[1]:
             if y == 9:
-                #self.door = Door(self, 0, y) #draw west door
-                #self.door = Door(self, 31, y) #draw east door
-                self.DoorOrWalls()
+                #Door(self, 0, y) #draw west door
+                #Door(self, 31, y) #draw east door
+                self.door_or_walls()
             else:
-                self.wall = Wall(self, 0, y, color) #draw west wall
-                self.wall = Wall(self, 31, y, color) #draw east wall
+                Wall(self, 0, y, color) #draw west wall
+                Wall(self, 31, y, color) #draw east wall
         for x in range(1,31):
             for y in range(1,17):
                 self.bg = Background(self, x, y)
