@@ -3,7 +3,6 @@ import math
 from copd.inventory import Inventory, Equipped
 import pygame as pg  # TODO: make consistent
 from copd.config import *
-from copd.menus import BattleMenu
 import time
 from copd.engine.components import Position, Velocity
 

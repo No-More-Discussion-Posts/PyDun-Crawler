@@ -1,9 +1,11 @@
 import pygame
-from .ecs import System
-from .components import Position, Velocity, TurnCounter
+import sys
+from random import randint
+from copd.engine.ecs import System
+from copd.engine.components import Position, Velocity, TurnCounter
 from copd.engine.entities import Player
 from copd.config import *
-from .states import *
+from copd.engine.states import *
 
 
 class Movement(System):
@@ -107,4 +109,59 @@ class Collision(System):
                         entity.inventory.update_item(entity.game.treasure.item, 1)
 
 # class Combat(System):
-#     ...
+def combat(game, parry):
+    running = True
+    # Just a basic Combat system can be better later
+    if game.debug:
+        print("-----Battle Start-----")
+        print(f"Player HP: {game.player.hp}")
+        print(f"Monster HP: {game.monster.hp}")
+    if parry == True:
+        calc_parry(game)
+    elif parry == False:
+        game.monster.hp = game.monster.hp - game.player.atk
+        game.player.hp = game.player.hp - game.monster.atk
+
+    if game.debug:
+        print("-----Battle Complete-----")
+        print(f"Player HP: {game.player.hp}")
+        print(f"Monster HP: {game.monster.hp}")
+    if game.player.hp <= 0:
+        pygame.quit()
+        sys.exit()
+    elif game.monster.hp <= 0:
+        if game.monster.item != "Health Pot":
+            x = str(game.monster.item.keys())
+            x = x.strip("dict_keys([''])")
+            game.player.equipped.equip_item(x, game.monster.item[x])
+        elif game.monster.item == "Health Pot":
+            game.player.inventory.update_item(game.monster.item, 1)
+        game.monster.kill()  # added this to remove monster from overworld after battle is won. -Roland
+        running = False
+    return running
+def calc_parry(game) -> bool:
+    """Parry attack: Chance to deal extra damage and take no damage
+
+    Returns
+    -------
+    bool
+        True - Successfully parried
+        False - Failed to parry
+    """
+    # Parry Chance is calculated by miss_hit function in entities
+    parry_chance = miss_hit(game.player.dex)
+    if parry_chance == True:
+        game.monster.hp = game.monster.hp - (game.player.atk + game.monster.atk)
+    elif parry_chance == False:
+        game.monster.hp = game.monster.hp - game.player.atk
+        game.player.hp = game.player.hp - game.monster.atk
+    return parry_chance
+
+###TYLER EXPERIMENTAL###
+def miss_hit(player_dex):
+    pdex = player_dex
+    chance_hit = randint(1, 10)
+    if chance_hit <= pdex:
+        return True
+    return False
+
