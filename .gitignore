@@ -53,3 +53,9 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
+
+# VSCode Settings
+.vscode
+
+# Tests
+.coverage
