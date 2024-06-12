@@ -5,11 +5,8 @@ from .config import *
 import random
 
 
+class Generate_dun:
 
-
-class Generate_dun():
-
-    
     def DrawWalls(self, map):
         for x in map[0]:
             if x == 17:
@@ -25,7 +22,6 @@ class Generate_dun():
             else:
                 self.wall = Wall(self, 0, y)
                 self.wall = Wall(self, 31, y)
-        for x in range(1,31):
-            for y in range(1,17):
+        for x in range(1, 31):
+            for y in range(1, 17):
                 self.bg = Background(self, x, y)
-

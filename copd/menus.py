@@ -1,11 +1,14 @@
 import pygame
 import sys
 from random import randint
+
 # from .entities import *
 from .button import *
+
 # from .engine import *
 from .menu_options import Option, MenuOption
 from .ecs.states import GameStates
+
 
 class Menu:
     def __init__(self, game, options):
@@ -88,7 +91,7 @@ class Menu:
 
 class PauseMenu(Menu):
     def __init__(self, game, options=[]):
-        #Pause is now fixed
+        # Pause is now fixed
         super().__init__(game, options)
         self.player = game.player
         self.options = options
@@ -108,22 +111,21 @@ class PauseMenu(Menu):
         )
 
         self.handle_options()
-        #self.run()
+        # self.run()
         self.running = True
         while self.running:
             self.game.screen.fill(Cyantology)
             self.run_opts()
-            
-            #Creating Buttons
+
+            # Creating Buttons
             inventory = Button("Inventory", self.game, 242, 70)
             equip = Button("Equipment", self.game, 242, 140)
             close_pause = Button("Close", self.game, 242, 280)
 
-            #Making Buttons Show up
+            # Making Buttons Show up
             inventory.show()
             equip.show()
             close_pause.show()
-            
 
             pygame.display.update()
             for e in pygame.event.get():
@@ -183,21 +185,36 @@ class PauseMenu(Menu):
                     item1 = Button(f"{item}", self.game, 172, 70)
                     item1.show()
                     item1_item_text = f"{self.game.player.equipped.equipped[item]}"
-                    item1_item = Button(f"{self.game.player.equipped.equipped[item]}", self.game, 312, 70)
+                    item1_item = Button(
+                        f"{self.game.player.equipped.equipped[item]}",
+                        self.game,
+                        312,
+                        70,
+                    )
                     item1_item.show()
                 if place_holder == 2:
                     item2_text = f"{item}"
                     item2 = Button(f"{item}", self.game, 172, 140)
                     item2.show()
                     item2_item_text = f"{self.game.player.equipped.equipped[item]}"
-                    item2_item = Button(f"{self.game.player.equipped.equipped[item]}", self.game, 312, 140)
+                    item2_item = Button(
+                        f"{self.game.player.equipped.equipped[item]}",
+                        self.game,
+                        312,
+                        140,
+                    )
                     item2_item.show()
                 if place_holder == 3:
                     item3_text = f"{item}"
                     item3 = Button(f"{item}", self.game, 172, 210)
                     item3.show()
                     item3_item_text = f"{self.game.player.equipped.equipped[item]}"
-                    item3_item = Button(f"{self.game.player.equipped.equipped[item]}", self.game, 312, 210)
+                    item3_item = Button(
+                        f"{self.game.player.equipped.equipped[item]}",
+                        self.game,
+                        312,
+                        210,
+                    )
                     item3_item.show()
                 place_holder += 1
             close_item = Button("Close", self.game, 242, 280)
@@ -212,8 +229,7 @@ class PauseMenu(Menu):
                     self.handle_input(e)
 
 
-
-class BattleMenu():
+class BattleMenu:
     # New enemy global variable to randomly assign which enemy type is created
     # Fill in the details
     # Defining which enemy class to populate based of the psuedo random number generated
@@ -224,14 +240,16 @@ class BattleMenu():
         self.options = options
         self.DEFAULT_FONT = pygame.font.get_default_font()
         self.player = game.player
-        self.monster = game.monster #added since enemy is generated in overworld. -Roland
+        self.monster = (
+            game.monster
+        )  # added since enemy is generated in overworld. -Roland
         # self.run()
-        
+
     def run(self):
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
 
-        #self.start_combat()  #commented out for testing random enemy generation on overworld. -Roland
+        # self.start_combat()  #commented out for testing random enemy generation on overworld. -Roland
 
         while self.running:
             self.game.screen.fill(Snugglepuss)
@@ -294,7 +312,7 @@ class BattleMenu():
         # Just a basic Combat system can be better later
         if parry == True:
             self.player.game.update()
-            #Parry Chance is calculated by miss_hit function in entities
+            # Parry Chance is calculated by miss_hit function in entities
             parry_chance = self.miss_hit(self.player.dex)
             if parry_chance == True:
                 self.monster.hp = self.monster.hp - (self.player.atk + self.monster.atk)
@@ -312,20 +330,21 @@ class BattleMenu():
             self.player.game.update()
             if self.monster.item != "Health Pot":
                 x = str(self.monster.item.keys())
-                x = x.strip('dict_keys([\'\'])')
-                self.player.equipped.equip_item(x,self.monster.item[x])
+                x = x.strip("dict_keys([''])")
+                self.player.equipped.equip_item(x, self.monster.item[x])
             elif self.monster.item == "Health Pot":
                 self.player.inventory.update_item(self.monster.item, 1)
-            self.monster.kill()   #added this to remove monster from overworld after battle is won. -Roland
+            self.monster.kill()  # added this to remove monster from overworld after battle is won. -Roland
             self.running = False
 
     ###TYLER EXPERIMENTAL###
     def miss_hit(self, player_dex):
         pdex = player_dex
-        chance_hit = random.randint(1,10)
+        chance_hit = random.randint(1, 10)
         if chance_hit <= pdex:
             return True
         return False
+
     ###TYLER EXPERIMENTAL###
 
     def inventory_screen(self):

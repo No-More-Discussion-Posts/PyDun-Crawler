@@ -2,15 +2,7 @@ SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 360
 TILE_SIZE = 20
 
-OVERWORLD_MAP = [
-    [
-        0,
-        1,
-        2
-    ],
-        [0, 1, 2
-]
-]
+OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
 
 DEFAULT_MAP = [
     [
@@ -61,17 +53,17 @@ Player_Layer = 3
 NachoCheese = (255, 208, 108)
 DaytonaPeach = (253, 221, 200)
 DeadSalmon = (170, 148, 135)
-Snugglepuss = (158,149,188)
-SafetyGreen = (242,253,1)
-BreastCancerAwareness = (255,109,148)
-Cyantology = (122,169,199)
-MasterChief = (130,149,86)
+Snugglepuss = (158, 149, 188)
+SafetyGreen = (242, 253, 1)
+BreastCancerAwareness = (255, 109, 148)
+Cyantology = (122, 169, 199)
+MasterChief = (130, 149, 86)
 
-Common = (128,128,128)
-Uncommon = (0,127,14)
-Rare = (0,127,14)
-Epic = (156,0,255)
-Legendary = (156,0,255)
+Common = (128, 128, 128)
+Uncommon = (0, 127, 14)
+Rare = (0, 127, 14)
+Epic = (156, 0, 255)
+Legendary = (156, 0, 255)
 
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)

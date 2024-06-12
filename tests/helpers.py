@@ -1,4 +1,5 @@
-import pytest 
+import pytest
+
 
 def reset_player():
     def wrap(func):
@@ -7,9 +8,11 @@ def reset_player():
             game.Movement.remove_entity(player)
             game.Collision.remove_entity(player)
             game.add_player()
-            player = game.player #should be brand new
+            player = game.player  # should be brand new
             func(game)
+
         return wrapper
+
     return wrap
 
 
@@ -18,5 +21,7 @@ def no_monster():
         def wrapper(game):
             game.monster.kill()
             func(game)
+
         return wrapper
+
     return wrap
