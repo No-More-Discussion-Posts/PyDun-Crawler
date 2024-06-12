@@ -54,7 +54,11 @@ class Engine:
         return self.components.get(component)
 
     def add_player(self,player = None)-> None:
-        #initilize player object
+        """
+        adds the player entitity 
+        to game, only called on game start
+
+        """
         if player is None:
             self.player = Player("Bilbo", self, 15, 9)
             self.player.add_component(Position(15,9))
@@ -64,50 +68,61 @@ class Engine:
         self.Movement.add_entity(self.player)
         self.Collision.add_entity(self.player)
 
-
     def load_start_map(self, color ,map = None)->None:
-        # if no map is supplied in args
+        """
+        loads starting map
+        Parameters
+        ----------
+        color: Type: List, RGB value of wall color
+        map: Type: Array, x and y coordinates of map tiles 
+        """        
         if map is not None:
+            #accepts alternate map
             map = map
         else:
             #load default starting map
             map = DEFAULT_MAP
+        
+        #add player to game
         self.add_player()
+        #add monster sprite to game
         self.add_monster()
+        #add wall sprites around perimiter of map
         self.DrawWalls(map, color)
+        #add treasure sprite to game
         self.add_treasure(14, 10)
 
     def load_map(self, color, map = None)->None:
-        
+        """
+        Kills all sprite groups and loads a new map
+        when the player collides with a door
+
+        Parameters
+        ----------
+        color: Type: List, RGB value of wall color
+        map: Type: Array, x and y coordinates of map tiles 
+        """
+        #loads specififc map from args
         if map is not None:
             map = map
+        #loads default map
         else:
             map = DEFAULT_MAP
+        #kills all non-player sprites
         pygame.sprite.Group.empty(self.blocks)
         self.monster.kill()
+        #add monster to game
         self.add_monster()
+        #add walls to border
         self.DrawWalls(map, color)
+        #add treasure for room
         self.add_treasure(14, 10)
-        
-    def update(self):
-        pass
-        #self.Turn.update()
-        
-    #     self.turn += 1
-    #     """Make updates every turn such as monster movement, etc.
-    #     Initiated by player movement/action in battle.
-    #     """
-    #     #updates all sprite object values
-    #     self.all_sprites.update()
-    #     self.players.update()
-    #     # self.blocks.update()
-    #     self.monsters.update()
-    #     self.doors.update()
-    #     self.draw()
 
     def draw(self):
-        """Draw to the screen"""
-        #draws all aprite groups to screen
+        """
+        Draws all sprites, minimap, 
+        and turn counter to screen
+        """
         self.all_sprites.draw(self.screen)
         self.players.draw(self.screen)
         self.blocks.draw(self.screen)
@@ -152,18 +167,25 @@ class Engine:
         sys.exit()
 
     def Test_Grid(self):
-
+        """
+        draws 20 x 20 squares across game screen
+        """
         for x in range(0, 640, 20):
             pygame.draw.line(self.screen, (128, 128, 128), (x, 0), (x, 360))
         # draw lines vertically
         for y in range(0, 360, 20):
             pygame.draw.line(self.screen, (128, 128, 128), (0, y), (640, y))
 
-
     def add_monster(self,monster = None):
+        """
+        Creates a random, or specific
+        entity monster sprite
+        """        
+        #allows selection of specific monsters(BOSSES)
         if monster is not None:
             self.monster = monster
         else:
+            #if no monster is supplied
             #initilizes random enemy sprite in room
             num = random.randint(1, 3)
             if num == 1:
@@ -174,42 +196,55 @@ class Engine:
                 self.monster = Ogre(self)
 
     def add_treasure(self, x, y):
-        self.treasure = Treasure(self, x, y)
-    """ 
-    def WestWall(self, map, color):
-        for y in map[1]:
-            if y == 9:
-                self.door = Door(self, 0, y) #draw west door
-            
-    
-    def EastWall(self, map, color):
-        for y in map[1]:
-            if y == 9:
-                self.door = Door(self, 31, y) #draw east door
+        """
+        creates a treasure sprite at coords
+        ###TEST FUNCTION###
 
-    def NorthWall(self, map, color):
-        pass
-    
-    def SouthWall(self, map, color):
-        pass
-    """
-    
+        Parameters
+        ----------
+        x : INT
+        x tile position
+        y : INT
+        y tile position
+        """
+        self.treasure = Treasure(self, x, y)
+
     def DrawWalls(self, map, color):
+        """
+        ###TESTING FUNCTION ONLY, WILL BE REPLACED###
+
+        This function places wall and door type sprites
+        around the perimiter of the room. created a generic
+        starting room
+
+        Parameters
+        ----------
+        map : 2-dimensional array of tile locations as an int
+        color : .config pre-defined RGB value
+        """
+        #loops through x axis list in 2D array
         for x in map[0]:
+            #checks if current tile in loop is center of wall
             if x == 17:
-                #if map[0] 
+                #draws doors
                 self.door = Door(self, x, 0) #draw north door
                 self.door = Door(self, x, 17) #draw south door
             else:
+                #Draws walls 
                 self.wall = Wall(self, x, 0, color) #draw north wall
                 self.wall = Wall(self, x, 17, color) #draw south wall
+        #loops through y Axis list in 2D array
         for y in map[1]:
+            #checks if current tile is center of wall
             if y == 9:
+                #draws door
                 self.door = Door(self, 0, y) #draw west door
                 self.door = Door(self, 31, y) #draw east door
             else:
+                #draws wall
                 self.wall = Wall(self, 0, y, color) #draw west wall
                 self.wall = Wall(self, 31, y, color) #draw east wall
+        #this loops though all tiles in 2D array
         for x in range(1,31):
             for y in range(1,17):
                 self.bg = Background(self, x, y)

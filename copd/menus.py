@@ -312,7 +312,6 @@ class BattleMenu():
             self.player.game.update()
             if self.monster.item != "Health Pot":
                 x = str(self.monster.item.keys())
-                #Don't Look I just wanted it to fucking work okay....don't judge me -Tyler
                 x = x.strip('dict_keys([\'\'])')
                 self.player.equipped.equip_item(x,self.monster.item[x])
             elif self.monster.item == "Health Pot":
