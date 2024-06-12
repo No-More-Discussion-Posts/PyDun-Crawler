@@ -310,17 +310,20 @@ class BattleMenu:
 
     def combat(self, parry):
         # Just a basic Combat system can be better later
+        if self.game.debug:
+            print("-----Battle Start-----")
+            print(f"Player HP: {self.player.hp}")
+            print(f"Monster HP: {self.monster.hp}")
         if parry == True:
-            # Parry Chance is calculated by miss_hit function in entities
-            parry_chance = self.miss_hit(self.player.dex)
-            if parry_chance == True:
-                self.monster.hp = self.monster.hp - (self.player.atk + self.monster.atk)
-            elif parry_chance == False:
-                self.monster.hp = self.monster.hp - self.player.atk
-                self.player.hp = self.player.hp - self.monster.atk
+            self.parry()
         elif parry == False:
             self.monster.hp = self.monster.hp - self.player.atk
             self.player.hp = self.player.hp - self.monster.atk
+
+        if self.game.debug:
+            print("-----Battle Complete-----")
+            print(f"Player HP: {self.player.hp}")
+            print(f"Monster HP: {self.monster.hp}")
         if self.player.hp <= 0:
             pygame.quit()
             sys.exit()
@@ -334,6 +337,23 @@ class BattleMenu:
             self.monster.kill()  # added this to remove monster from overworld after battle is won. -Roland
             self.running = False
 
+    def parry(self)-> bool:
+        """Parry attack: Chance to deal extra damage and take no damage
+
+        Returns
+        -------
+        bool
+            True - Successfully parried
+            False - Failed to parry
+        """        
+         # Parry Chance is calculated by miss_hit function in entities
+        parry_chance = self.miss_hit(self.player.dex)
+        if parry_chance == True:
+            self.monster.hp = self.monster.hp - (self.player.atk + self.monster.atk)
+        elif parry_chance == False:
+            self.monster.hp = self.monster.hp - self.player.atk
+            self.player.hp = self.player.hp - self.monster.atk
+        return parry_chance
     ###TYLER EXPERIMENTAL###
     def miss_hit(self, player_dex):
         pdex = player_dex

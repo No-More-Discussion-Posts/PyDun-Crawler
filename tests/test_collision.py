@@ -44,16 +44,16 @@ def test_collide_wall_e(game):
     print(player.get(Position))
     assert (x, y) == (30, 8)
 
-
+@reset_player()
 def test_collide_wall_w(game):
     player = game.player  # should be brand new
     movement = pygame.event.Event(pygame.KEYDOWN, dict(key=pygame.K_w))
     game.handle_event(movement)
 
     for i in range(20):
+        print(f"Move {i}")
         movement = pygame.event.Event(pygame.KEYDOWN, dict(key=pygame.K_a))
         game.handle_event(movement)
     x = player.get(Position).x
     y = player.get(Position).y
-    print(player.get(Position))
     assert (x, y) == (1, 8)

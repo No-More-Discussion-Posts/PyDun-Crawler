@@ -11,7 +11,7 @@ if "copd" not in sys.modules:
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 
-@pytest.fixture()
+@pytest.fixture(scope='function')
 def game():
     from copd.engine import Engine
     from copd.config import SCREEN_HEIGHT, SCREEN_WIDTH
