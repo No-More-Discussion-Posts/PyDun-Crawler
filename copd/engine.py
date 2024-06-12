@@ -23,9 +23,8 @@ class Engine:
         self.debug = False
         self.Turn = Turn()
         self.running = False
-        self.state = (
-            GameStates.MAIN
-        )  # will need to change this when changing between menus
+        # will need to change state when changing between menus
+        self.state = GameStates.MAIN
         self.enemies = []
         self.event_handler = EventHandler(self)
         self.handle_event = self.event_handler.handle_event
@@ -216,49 +215,48 @@ class Engine:
         [0, 1], [1, 1], [2, 1]
         [0, 2], [1, 2], [2, 2]
         """
-        
-        #up and down
-        if self.player.overworldcoords[1] == 0: #if north border
-            Wall(self, 17, 0, BLUE) #draw wall at north door
-        else:
-            Door(self, 17, 0) #draw north door
-        if self.player.overworldcoords[1] == 2: #if south border
-            Wall(self, 17, 17, BLUE) #draw wall at south door
-        else:
-            Door(self, 17, 17) #draw south door
 
-        #left and right
-        if self.player.overworldcoords[0] == 0: #if nwest border
-            Wall(self, 0, 9, BLUE) #draw wall at west door
+        # up and down
+        if self.player.overworldcoords[1] == 0:  # if north border
+            Wall(self, 17, 0, BLUE)  # draw wall at north door
         else:
-            Door(self, 0, 9) #draw west door
-        
-        if self.player.overworldcoords[0] == 2: #if east border
-            Wall(self, 31, 9, BLUE) #draw wall at east door
+            Door(self, 17, 0)  # draw north door
+        if self.player.overworldcoords[1] == 2:  # if south border
+            Wall(self, 17, 17, BLUE)  # draw wall at south door
         else:
-            Door(self, 31, 9) #draw east door
-    
+            Door(self, 17, 17)  # draw south door
+
+        # left and right
+        if self.player.overworldcoords[0] == 0:  # if nwest border
+            Wall(self, 0, 9, BLUE)  # draw wall at west door
+        else:
+            Door(self, 0, 9)  # draw west door
+
+        if self.player.overworldcoords[0] == 2:  # if east border
+            Wall(self, 31, 9, BLUE)  # draw wall at east door
+        else:
+            Door(self, 31, 9)  # draw east door
+
     def create_walls(self, map, color):
         self.doors.empty()
         self.blocks.empty()
         for x in map[0]:
             if x == 17:
-                #perform check here instead
-                #Door(self, x, 0) #draw north door
-                #Door(self, x, 17) #draw south door
+                # perform check here instead
+                # Door(self, x, 0) #draw north door
+                # Door(self, x, 17) #draw south door
                 self.door_or_walls()
             else:
-                Wall(self, x, 0, color) #draw north wall
-                Wall(self, x, 17, color) #draw south wall
+                Wall(self, x, 0, color)  # draw north wall
+                Wall(self, x, 17, color)  # draw south wall
         for y in map[1]:
             if y == 9:
-                #Door(self, 0, y) #draw west door
-                #Door(self, 31, y) #draw east door
+                # Door(self, 0, y) #draw west door
+                # Door(self, 31, y) #draw east door
                 self.door_or_walls()
             else:
-                Wall(self, 0, y, color) #draw west wall
-                Wall(self, 31, y, color) #draw east wall
-        for x in range(1,31):
-            for y in range(1,17):
+                Wall(self, 0, y, color)  # draw west wall
+                Wall(self, 31, y, color)  # draw east wall
+        for x in range(1, 31):
+            for y in range(1, 17):
                 self.bg = Background(self, x, y)
-    

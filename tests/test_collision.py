@@ -19,6 +19,7 @@ def test_collide_wall_n(game: Engine):
     print(player.get(Position))
     assert (x, y) == (15, 1)
 
+
 @reset_player()
 @no_monster()
 def test_collide_wall_s(game: Engine):
@@ -31,6 +32,7 @@ def test_collide_wall_s(game: Engine):
     y = player.get(Position).y
     print(player.get(Position))
     assert (x, y) == (15, 16)
+
 
 @reset_player()
 @no_monster()
@@ -45,6 +47,7 @@ def test_collide_wall_e(game):
     y = player.get(Position).y
     print(player.get(Position))
     assert (x, y) == (30, 8)
+
 
 @reset_player()
 @no_monster()

@@ -15,6 +15,7 @@ def reset_player():
 
     return wrap
 
+
 def reset_monster():
     def wrap(func):
         def wrapper(game):
@@ -26,6 +27,7 @@ def reset_monster():
         return wrapper
 
     return wrap
+
 
 def no_monster():
     def wrap(func):

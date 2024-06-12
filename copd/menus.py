@@ -337,7 +337,7 @@ class BattleMenu:
             self.monster.kill()  # added this to remove monster from overworld after battle is won. -Roland
             self.running = False
 
-    def parry(self)-> bool:
+    def parry(self) -> bool:
         """Parry attack: Chance to deal extra damage and take no damage
 
         Returns
@@ -345,8 +345,8 @@ class BattleMenu:
         bool
             True - Successfully parried
             False - Failed to parry
-        """        
-         # Parry Chance is calculated by miss_hit function in entities
+        """
+        # Parry Chance is calculated by miss_hit function in entities
         parry_chance = self.miss_hit(self.player.dex)
         if parry_chance == True:
             self.monster.hp = self.monster.hp - (self.player.atk + self.monster.atk)
@@ -354,6 +354,7 @@ class BattleMenu:
             self.monster.hp = self.monster.hp - self.player.atk
             self.player.hp = self.player.hp - self.monster.atk
         return parry_chance
+
     ###TYLER EXPERIMENTAL###
     def miss_hit(self, player_dex):
         pdex = player_dex
