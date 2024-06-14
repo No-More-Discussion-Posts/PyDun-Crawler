@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+from pathlib import Path
 
 from copd.engine.entities import *
 from copd.ui.menus import PauseMenu, BattleMenu
@@ -19,6 +20,9 @@ class Engine:
 
     def __init__(self):
         """Main Game Engine"""
+        pygame.init()
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption(GAME_CAPTION)
         self.components = {}
         self.debug = False
         self.Turn = Turn()
@@ -60,9 +64,10 @@ class Engine:
 
         """
         if player is None:
-            self.player = Player("Bilbo", self, 15, 9)
+            self.player = Player("Bilbo", self, 15, 9,"./copd/engine/player.png")
             self.player.add_component(Position(15, 9))
             self.player.add_component(Velocity())
+            self.player.draw()
         else:
             self.player = player
         self.Movement.add_entity(self.player)
@@ -77,22 +82,24 @@ class Engine:
         color: Type: List, RGB value of wall color
         map: Type: Array, x and y coordinates of map tiles
         """
-        if map is not None:
-            # accepts alternate map
-            map = map
-        else:
-            # load default starting map
-            map = DEFAULT_MAP
-
+        # if map is not None:
+        #     # accepts alternate map
+        #     map = map
+        # else:
+        #     # load default starting map
+        #     map = DEFAULT_MAP
+        
+        map = TileMap(self,'./copd/engine/map.csv')
+        map.load_tiles()
         # add player to game
         self.add_player()
         # add monster sprite to game
         self.add_monster()
         # self.Combat.add_entity()
         # add wall sprites around perimiter of map
-        self.create_walls(map, color)
+        # self.create_walls(map, color)
         # add treasure sprite to game
-        self.add_treasure(14, 10)
+        # self.add_treasure(14, 10)
 
     def load_map(self, color, map=None) -> None:
         """
@@ -126,9 +133,9 @@ class Engine:
         and turn counter to screen
         """
         self.all_sprites.draw(self.screen)
-        self.players.draw(self.screen)
         self.blocks.draw(self.screen)
         self.monsters.draw(self.screen)
+        self.players.draw(self.screen)
         self.doors.draw(self.screen)
         self.treasures.draw(self.screen)
         self.show_turn()
@@ -153,9 +160,8 @@ class Engine:
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
     def run(self):
-        pygame.init()
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption(GAME_CAPTION)
+        
+       
         self.draw()
 
         self.running = True
@@ -189,13 +195,14 @@ class Engine:
         else:
             # if no monster is supplied
             # initilizes random enemy sprite in room
-            num = random.randint(1, 3)
-            if num == 1:
-                self.monster = Goblin(self)
-            if num == 2:
-                self.monster = HobGoblin(self)
-            if num == 3:
-                self.monster = Ogre(self)
+            # num = random.randint(1, 3)
+            # if num == 1:
+            #     self.monster = Goblin(self)
+            # if num == 2:
+            #     self.monster = HobGoblin(self)
+            # if num == 3:
+            #     self.monster = Ogre(self)
+            self.monster = Ogre(self)
 
     def add_treasure(self, x, y):
         """

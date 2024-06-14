@@ -1,9 +1,9 @@
 from enum import Enum,IntEnum
 from dataclasses import dataclass
 from typing import Dict
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 360
-TILE_SIZE = 20
+SCREEN_WIDTH = 512 # 32 blocks wide
+SCREEN_HEIGHT = 288 # 18 blocks tall
+TILE_SIZE = 16
 
 OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
 

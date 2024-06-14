@@ -1,5 +1,7 @@
 import random
 import math
+import os
+import csv
 from copd.engine.inventory import Inventory, Equipped
 import pygame as pg  # TODO: make consistent
 from copd.config import *
@@ -19,15 +21,49 @@ class immovable_entitiy(pg.sprite.Sprite):
     # class to initilize a sprite that is immovable
     pass
 
-
 class Entity(pg.sprite.Sprite):
-    def __init__(self, game, x=0, y=0):
+    def __init__(self, game, x=0, y=0,group=None,filename=None):
         super().__init__()
         self.components = {}
+
         self.game = game
         self.add_component(Position(x, y))
         self.add_component(Velocity())
         self.stun = 0
+        self.image = pg.Surface((TILE_SIZE,TILE_SIZE)) 
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        
+        if filename is not None:
+            img = pg.image.load(filename).convert_alpha()
+            self.image.blit(img,(0,0))
+            
+           
+        if group is not None:
+            pg.sprite.Sprite.__init__(self, group)
+        
+
+    @property
+    def x(self):
+        return self.rect.x
+    
+    @property
+    def y(self):
+        return self.rect.y
+    
+    @x.setter
+    def x(self,x):
+        self.rect.x = x
+
+    @y.setter
+    def y(self,y):
+        self.rect.y = y
+    def update(self):
+        self.draw()
+
+    def draw(self):
+        self.game.screen.blit(self.image,(self.x,self.y))
 
     # class to initilize a sprite with movement and actions
 
@@ -44,28 +80,55 @@ class Entity(pg.sprite.Sprite):
         dy = self.get(Velocity).dy * TILE_SIZE
         self.rect.move_ip(dx, dy)
 
+class TileMap:
+    def __init__(self,game,filename,spritesheet=None):
+        self.game = game
+        self.start_x = 0
+        self.start_y = 0
+        self.spritesheet = spritesheet
+        self.filename = filename
+
+    def read_csv(self):
+        map = []
+        with open(os.path.join(self.filename)) as data:
+            data = csv.reader(data,delimiter=',')
+            for row in data:
+                map.append(list(row))
+        return map
+
+    def load_tiles(self):
+        map = self.read_csv()
+        x,y = 0,0
+        for row in map:
+            x = 0
+            for tile in row:
+                if tile == '1':
+                    Entity(self.game,x*TILE_SIZE, y*TILE_SIZE,self.game.blocks,"./copd/engine/floor.png").draw()
+                
+                x+=1
+            y += 1
 
 class Monster(Entity):
 
-    def __init__(self, game, x=0, y=0):
-        super().__init__(game, x, y)
+    def __init__(self, game, x=0, y=0,image=None):
+        super().__init__(game, x, y,game.monsters,image)
         self.in_combat = Flag(False)
         self.stun = 0
 
     def sprite_gen(self, color=None):
         # Sprite Generation Block
-        self.groups = self.game.monsters
-        pg.sprite.Sprite.__init__(self, self.groups)
-        # random location on grid
+        # self.groups = self.game.monsters
+        # pg.sprite.Sprite.__init__(self, self.groups)
+        # # random location on grid
         self.x = random.randint(1, 30) * TILE_SIZE
         self.y = random.randint(1, 16) * TILE_SIZE
         # rest of sprite generation block
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-        self.image = pg.Surface([self.width, self.height])
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+        # self.width = TILE_SIZE
+        # self.height = TILE_SIZE
+        # self.image = pg.Surface([self.width, self.height])
+        # self.rect = self.image.get_rect()
+        # self.rect.x = self.x
+        # self.rect.y = self.y
         if color != None:
             self.image.fill(color)
         # end sprite generation block
@@ -128,8 +191,8 @@ class HobGoblin(Monster):
 
 
 class Ogre(Monster):
-    def __init__(self, game):
-        super().__init__(game)
+    def __init__(self, game,image=None):
+        super().__init__(game,image=image)
         self.name = "Ogre"
         self.game = game
         self._layer = Layers.Player_Layer
@@ -144,8 +207,8 @@ class Ogre(Monster):
 
 
 class Player(Entity):
-    def __init__(self, name, game, x, y):
-        super().__init__(game, x, y)
+    def __init__(self, name, game, x, y,filename):
+        super().__init__(game, x*TILE_SIZE, y*TILE_SIZE,game.players,filename)
         self.in_combat = Flag(False)
         # name of player
         self.name = name
@@ -157,19 +220,19 @@ class Player(Entity):
         self.dex = 2
         self.inventory = Inventory()
         self.equipped = Equipped()
+        print(f"Player at: {self.x},{self.y}")
+        # self.groups = self.game.players
+        # pg.sprite.Sprite.__init__(self, self.groups)
 
-        self.groups = self.game.players
-        pg.sprite.Sprite.__init__(self, self.groups)
+        # self.width = TILE_SIZE
+        # self.height = TILE_SIZE
 
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
+        # self.image = pg.Surface([self.width, self.height])
+        # self.image.fill(Colors.BreastCancerAwareness)
 
-        self.image = pg.Surface([self.width, self.height])
-        self.image.fill(Colors.BreastCancerAwareness)
-
-        self.rect = self.image.get_rect()
-        self.rect.x = x * TILE_SIZE
-        self.rect.y = y * TILE_SIZE
+        # self.rect = self.image.get_rect()
+        # self.rect.x = x * TILE_SIZE
+        # self.rect.y = y * TILE_SIZE
 
         self.overworldcoords = [1, 1]  # overworld coordinates. starts at 1,1
 
