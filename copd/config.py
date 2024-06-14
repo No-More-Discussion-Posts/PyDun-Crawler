@@ -2,8 +2,10 @@ from enum import Enum,IntEnum
 from dataclasses import dataclass
 from typing import Dict
 TILE_SIZE = 16
-SCREEN_WIDTH = 40 * TILE_SIZE# 32 blocks wide
-SCREEN_HEIGHT = 20 * TILE_SIZE # 18 blocks tall
+X_TILES = 64
+Y_TILES = 36
+SCREEN_WIDTH = X_TILES * TILE_SIZE # 32 blocks wide
+SCREEN_HEIGHT = Y_TILES * TILE_SIZE  # 18 blocks tall
 
 
 OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
