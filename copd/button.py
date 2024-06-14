@@ -1,5 +1,5 @@
 import pygame
-from .config import *
+from copd.config import *
 
 
 class Button:
@@ -17,7 +17,7 @@ class Button:
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
         self.game = game
         self.button_surface = pygame.Surface((135, 60))
-        self.text = FONT.render(name, True, WHITE)
+        self.text = FONT.render(name, True, Colors.WHITE)
         self.rect = self.text.get_rect(
             center=(
                 self.button_surface.get_width() / 2,

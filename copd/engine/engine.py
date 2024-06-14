@@ -2,16 +2,16 @@ import pygame
 import random
 import sys
 
-from .entities import *
-from .menus import PauseMenu, BattleMenu
-from .config import DEFAULT_MAP
-from .ecs.states import GameStates
-from .ecs.ecs import Component
-from .input_handlers import EventHandler
+from copd.engine.entities import *
+from copd.menus import PauseMenu, BattleMenu
+from copd.config import DEFAULT_MAP
+from copd.engine.states import GameStates
+from copd.engine.ecs import Component
+from copd.input_handlers import EventHandler
 
 # test
-from .ecs.systems import Movement, Collision, Turn
-from .ecs.components import Position, Velocity, TurnCounter
+from copd.engine.systems import Movement, Collision, Turn, Combat
+from copd.engine.components import Position, Velocity, TurnCounter
 
 
 # test
@@ -36,6 +36,7 @@ class Engine:
         self.treasures = pygame.sprite.LayeredUpdates()
         self.Movement = Movement()
         self.Collision = Collision()
+        self.Combat = Combat(self)
         self.Turn.add_entity(self)
         self.add_component(TurnCounter())
 
@@ -66,6 +67,7 @@ class Engine:
             self.player = player
         self.Movement.add_entity(self.player)
         self.Collision.add_entity(self.player)
+        self.Combat.add_entity(self.player)
 
     def load_start_map(self, color, map=None) -> None:
         """
@@ -86,6 +88,7 @@ class Engine:
         self.add_player()
         # add monster sprite to game
         self.add_monster()
+        # self.Combat.add_entity()
         # add wall sprites around perimiter of map
         self.create_walls(map, color)
         # add treasure sprite to game
@@ -218,22 +221,22 @@ class Engine:
 
         # up and down
         if self.player.overworldcoords[1] == 0:  # if north border
-            Wall(self, 17, 0, BLUE)  # draw wall at north door
+            Wall(self, 17, 0, Colors.BLUE)  # draw wall at north door
         else:
             Door(self, 17, 0)  # draw north door
         if self.player.overworldcoords[1] == 2:  # if south border
-            Wall(self, 17, 17, BLUE)  # draw wall at south door
+            Wall(self, 17, 17, Colors.BLUE)  # draw wall at south door
         else:
             Door(self, 17, 17)  # draw south door
 
         # left and right
         if self.player.overworldcoords[0] == 0:  # if nwest border
-            Wall(self, 0, 9, BLUE)  # draw wall at west door
+            Wall(self, 0, 9, Colors.BLUE)  # draw wall at west door
         else:
             Door(self, 0, 9)  # draw west door
 
         if self.player.overworldcoords[0] == 2:  # if east border
-            Wall(self, 31, 9, BLUE)  # draw wall at east door
+            Wall(self, 31, 9, Colors.BLUE)  # draw wall at east door
         else:
             Door(self, 31, 9)  # draw east door
 

@@ -1,5 +1,5 @@
 import pytest
-from copd.ecs.components import *
+from copd.engine.components import *
 
 
 def test_create_position():

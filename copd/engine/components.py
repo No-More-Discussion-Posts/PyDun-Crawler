@@ -1,6 +1,10 @@
 import pygame
 from .ecs import Component
 
+class Flag(Component):
+    def __init__(self,state = False):
+        super().__init__()
+        self.state = state
 
 class Position(Component):
     def __init__(self, x: int, y: int):

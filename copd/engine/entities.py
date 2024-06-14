@@ -1,11 +1,10 @@
 import random
 import math
-from .inventory import Inventory, Equipped
+from copd.inventory import Inventory, Equipped
 import pygame as pg  # TODO: make consistent
-from .config import *
-from .menus import BattleMenu
+from copd.config import *
 import time
-from .ecs.components import Position, Velocity
+from copd.engine.components import Position, Velocity, Flag
 
 
 items = {
@@ -50,6 +49,7 @@ class Monster(Entity):
 
     def __init__(self, game, x=0, y=0):
         super().__init__(game, x, y)
+        self.in_combat = Flag(False)
         self.stun = 0
 
     def sprite_gen(self, color=None):
@@ -100,15 +100,15 @@ class Goblin(Monster):
         super().__init__(game)
         self.name = "Goblin"
         self.game = game
-        self._layer = Player_Layer
+        self._layer = Layers.Player_Layer
         # self.lvl = int(game.turn * .25)
         self.max_hp = 10
         self.hp = 10
         self.atk = 1
         self.dex = 2
         self.item = items[random.randint(1, 4)]
-        self.sprite_gen(BLACK)
-        # self.image.fill(BLACK)
+        self.sprite_gen(Colors.BLACK)
+        # self.image.fill(Colors.BLACK)
 
 
 class HobGoblin(Monster):
@@ -116,15 +116,15 @@ class HobGoblin(Monster):
         super().__init__(game)
         self.name = "HobGoblin"
         self.game = game
-        self._layer = Player_Layer
+        self._layer = Layers.Player_Layer
         # self.lvl = int(game.turn * .25)
         self.max_hp = 15
         self.hp = 15
         self.atk = 2
         self.dex = 1
         self.item = items[random.randint(1, 4)]
-        self.sprite_gen(GREEN)
-        # self.image.fill(GREEN)
+        self.sprite_gen(Colors.GREEN)
+        # self.image.fill(Colors.GREEN)
 
 
 class Ogre(Monster):
@@ -132,24 +132,25 @@ class Ogre(Monster):
         super().__init__(game)
         self.name = "Ogre"
         self.game = game
-        self._layer = Player_Layer
+        self._layer = Layers.Player_Layer
         # self.lvl = int(game.turn * .25)
         self.max_hp = 20
         self.hp = 20
         self.atk = 4
         self.dex = 0
         self.item = items[random.randint(1, 4)]
-        self.sprite_gen(RED)
-        # self.image.fill(RED)
+        self.sprite_gen(Colors.RED)
+        # self.image.fill(Colors.RED)
 
 
 class Player(Entity):
     def __init__(self, name, game, x, y):
         super().__init__(game, x, y)
+        self.in_combat = Flag(False)
         # name of player
         self.name = name
         # current running game
-        self._layer = Player_Layer
+        self._layer = Layers.Player_Layer
         self.max_hp = 20
         self.hp = 20
         self.atk = 2
@@ -164,7 +165,7 @@ class Player(Entity):
         self.height = TILE_SIZE
 
         self.image = pg.Surface([self.width, self.height])
-        self.image.fill(BreastCancerAwareness)
+        self.image.fill(Colors.BreastCancerAwareness)
 
         self.rect = self.image.get_rect()
         self.rect.x = x * TILE_SIZE
@@ -177,7 +178,7 @@ class Wall(Entity):
     def __init__(self, game, x, y, color):
         super().__init__(game, x, y)
         ###WALL SPECIFIC###
-        self._layer = Tile_Layer
+        self._layer = Layers.Tile_Layer
         self.groups = self.game.blocks
         ###WALL SPECIFIC###
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -200,7 +201,7 @@ class Wall(Entity):
 class Background(Entity):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
-        self._layer = Tile_Layer
+        self._layer = Layers.Tile_Layer
         self.groups = self.game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
 
@@ -209,7 +210,7 @@ class Background(Entity):
         self.height = TILE_SIZE
 
         self.image = pg.Surface([self.width, self.height])
-        self.image.fill(MasterChief)
+        self.image.fill(Colors.MasterChief)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.get(Position).x * TILE_SIZE
@@ -220,7 +221,7 @@ class Door(Entity):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
         self.game = game
-        self._layer = Door_Layer
+        self._layer = Layers.Door_Layer
         self.groups = self.game.doors
         pg.sprite.Sprite.__init__(self, self.groups)
 
@@ -230,7 +231,7 @@ class Door(Entity):
         self.height = TILE_SIZE
 
         self.image = pg.Surface([self.width, self.height])
-        self.image.fill(Snugglepuss)
+        self.image.fill(Colors.Snugglepuss)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.get(Position).x * TILE_SIZE
@@ -240,7 +241,7 @@ class Door(Entity):
 class Treasure(Entity):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
-        self._layer = Door_Layer
+        self._layer = Layers.Door_Layer
         self.groups = self.game.treasures
         pg.sprite.Sprite.__init__(self, self.groups)
 
@@ -250,7 +251,7 @@ class Treasure(Entity):
         self.height = TILE_SIZE
 
         self.image = pg.Surface([self.width, self.height])
-        self.image.fill(NachoCheese)
+        self.image.fill(Colors.NachoCheese)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.get(Position).x * TILE_SIZE
