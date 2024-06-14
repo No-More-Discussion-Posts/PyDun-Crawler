@@ -1,8 +1,7 @@
 import pytest
 import pygame
 import os
-from copd.ecs.states import GameStates
-from copd.menus import BattleMenu
+from copd.engine.states import GameStates
 from .helpers import reset_player, reset_monster
 
 
@@ -13,8 +12,8 @@ def test_fight(game):
     player_hp = game.player.hp
     monster_hp = game.monster.hp
 
-    battle_menu = BattleMenu(game)
-    battle_menu.combat(parry=False)
+    game.Combat.setup()
+    game.Combat.update()
 
     assert game.player.hp == player_hp - game.monster.atk
     assert game.monster.hp == monster_hp - game.player.atk
@@ -24,11 +23,12 @@ def test_parry(game):
     game.state = GameStates.BATTLE
     player_hp = game.player.hp
     monster_hp = game.player.hp
-
-    battle_menu = BattleMenu(game)
+    game.Combat.setup()
+    # game.Combat.update()
+    
     parried = False
     for i in range(100):
-        parried = battle_menu.parry()
+        parried = game.Combat.calc_parry(game)
         if parried:
             break
         elif game.player.hp <= 0:
@@ -41,11 +41,21 @@ def test_parry(game):
     # TODO: Add check for parry
 
 
-# def test_run(game):
-#     pass
+def test_player_death(game):
+    with pytest.raises(SystemExit) as game_status:
+        game.state = GameStates.BATTLE
+        # Setup monster for a quick death
+        game.player.hp = 1
+        game.Combat.setup()
+        game.Combat.update()
+    assert game_status.type == SystemExit
+   
 
-# def test_player_death(game):
-#     pass
-
-# def test_monster_death(game):
-#     pass
+def test_monster_death(game):
+    game.state = GameStates.BATTLE
+    # Setup monster for a quick death
+    game.monster.hp = 1
+    game.Combat.setup()
+    game.Combat.update()
+    # Check for monster death
+    assert game.monster not in game.monsters

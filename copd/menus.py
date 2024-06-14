@@ -3,12 +3,11 @@ import sys
 from random import randint
 
 # from .entities import *
-from .button import *
+from copd.button import *
 
 # from .engine import *
-from .menu_options import Option, MenuOption
-from .ecs.states import GameStates
-
+from copd.config import Option, MenuOption
+from copd.engine.states import GameStates
 
 class Menu:
     def __init__(self, game, options):
@@ -114,7 +113,7 @@ class PauseMenu(Menu):
         # self.run()
         self.running = True
         while self.running:
-            self.game.screen.fill(Cyantology)
+            self.game.screen.fill(Colors.Cyantology)
             self.run_opts()
 
             # Creating Buttons
@@ -144,7 +143,7 @@ class PauseMenu(Menu):
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
         while self.running:
-            self.game.screen.fill(Cyantology)
+            self.game.screen.fill(Colors.Cyantology)
             self.run_opts()
             place_holder = 1
             for item in self.game.player.inventory.inventory:
@@ -176,7 +175,7 @@ class PauseMenu(Menu):
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
         while self.running:
-            self.game.screen.fill(Cyantology)
+            self.game.screen.fill(Colors.Cyantology)
             self.run_opts()
             place_holder = 1
             for item in self.game.player.equipped.equipped:
@@ -252,7 +251,7 @@ class BattleMenu:
         # self.start_combat()  #commented out for testing random enemy generation on overworld. -Roland
 
         while self.running:
-            self.game.screen.fill(Snugglepuss)
+            self.game.screen.fill(Colors.Snugglepuss)
             height = self.game.screen.get_height()
             width = self.game.screen.get_width()
             # Create info areas
@@ -295,81 +294,35 @@ class BattleMenu:
             pygame.display.flip()
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
-                    if fight.butt_rect.collidepoint(e.pos):
-                        self.combat(parry=False)
-                    if parry.butt_rect.collidepoint(e.pos):
-                        self.combat(parry=True)
+                    if fight.butt_rect.collidepoint(e.pos) or parry.butt_rect.collidepoint(e.pos):
+                        parrying = False
+                        if parry.butt_rect.collidepoint(e.pos):
+                            parrying = True
+                        self.game.Combat.setup(parry = parrying)
+                        self.game.Combat.update()
+                        self.running = not self.game.Combat.complete
+                    
+                        # self.running = combat(self.game,parry=True)
                     if run.butt_rect.collidepoint(e.pos):
                         self.monster.stun = 2
+                        self.game.Combat.end()
                         self.running = False
                     if items.butt_rect.collidepoint(e.pos):
                         self.inventory_screen()
+                    self.game.Combat.update()
+                    self.running = not self.game.Combat.complete
                 self.handle_input(e)
         self.game.state = GameStates.MAIN
-        # del self
+       
 
-    def combat(self, parry):
-        # Just a basic Combat system can be better later
-        if self.game.debug:
-            print("-----Battle Start-----")
-            print(f"Player HP: {self.player.hp}")
-            print(f"Monster HP: {self.monster.hp}")
-        if parry == True:
-            self.parry()
-        elif parry == False:
-            self.monster.hp = self.monster.hp - self.player.atk
-            self.player.hp = self.player.hp - self.monster.atk
-
-        if self.game.debug:
-            print("-----Battle Complete-----")
-            print(f"Player HP: {self.player.hp}")
-            print(f"Monster HP: {self.monster.hp}")
-        if self.player.hp <= 0:
-            pygame.quit()
-            sys.exit()
-        elif self.monster.hp <= 0:
-            if self.monster.item != "Health Pot":
-                x = str(self.monster.item.keys())
-                x = x.strip("dict_keys([''])")
-                self.player.equipped.equip_item(x, self.monster.item[x])
-            elif self.monster.item == "Health Pot":
-                self.player.inventory.update_item(self.monster.item, 1)
-            self.monster.kill()  # added this to remove monster from overworld after battle is won. -Roland
-            self.running = False
-
-    def parry(self) -> bool:
-        """Parry attack: Chance to deal extra damage and take no damage
-
-        Returns
-        -------
-        bool
-            True - Successfully parried
-            False - Failed to parry
-        """
-        # Parry Chance is calculated by miss_hit function in entities
-        parry_chance = self.miss_hit(self.player.dex)
-        if parry_chance == True:
-            self.monster.hp = self.monster.hp - (self.player.atk + self.monster.atk)
-        elif parry_chance == False:
-            self.monster.hp = self.monster.hp - self.player.atk
-            self.player.hp = self.player.hp - self.monster.atk
-        return parry_chance
-
-    ###TYLER EXPERIMENTAL###
-    def miss_hit(self, player_dex):
-        pdex = player_dex
-        chance_hit = randint(1, 10)
-        if chance_hit <= pdex:
-            return True
-        return False
-
+    
     ###TYLER EXPERIMENTAL###
 
     def inventory_screen(self):
         self.running = True
         FONT = pygame.font.Font(self.DEFAULT_FONT, 20)
         while self.running:
-            self.game.screen.fill(Snugglepuss)
+            self.game.screen.fill(Colors.Snugglepuss)
             height = self.game.screen.get_height()
             width = self.game.screen.get_width()
             # Create info areas
