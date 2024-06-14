@@ -24,7 +24,7 @@ class Engine:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption(GAME_CAPTION)
         self.components = {}
-        self.debug = False
+        self.debug = True
         self.Turn = Turn()
         self.running = False
         # will need to change state when changing between menus

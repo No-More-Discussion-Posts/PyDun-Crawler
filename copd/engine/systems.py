@@ -56,15 +56,16 @@ class Collision(System):
             # checks all entities in system for collision with sprites
             # in the wall group of sprites
             if pygame.sprite.spritecollide(entity, entity.game.blocks, False):
-                if entity.game.debug:
-                    print(f"{entity}: Collision with wall")
-                # return sprite to original position
-                entity.get(Velocity).dx = entity.get(Velocity).p_dx * -1
-                entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1
-                entity.game.Movement.update()
-                # remove turn counter after returning sprite
-                self.entities[0].game.Turn.undo()
-                entity.movement()
+                if entity.solid:
+                    if entity.game.debug:
+                        print(f"{entity}: Collision with wall")
+                    # return sprite to original position
+                    entity.get(Velocity).dx = entity.get(Velocity).p_dx * -1
+                    entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1
+                    entity.game.Movement.update()
+                    # remove turn counter after returning sprite
+                    self.entities[0].game.Turn.undo()
+                    entity.movement()
 
             ###PLAYER SPECIFIC COLLISION###
             if isinstance(entity, Player):

@@ -30,6 +30,7 @@ class Entity(pg.sprite.Sprite):
         self.add_component(Position(x, y))
         self.add_component(Velocity())
         self.stun = 0
+        self.solid = False
         self.image = pg.Surface((TILE_SIZE,TILE_SIZE)) 
         self.rect = self.image.get_rect()
         self.x = x
