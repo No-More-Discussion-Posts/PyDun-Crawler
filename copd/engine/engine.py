@@ -34,6 +34,7 @@ class Engine:
         self.handle_event = self.event_handler.handle_event
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
+        self.solid_blocks = pygame.sprite.LayeredUpdates()
         self.monsters = pygame.sprite.LayeredUpdates()
         self.players = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
@@ -64,7 +65,7 @@ class Engine:
 
         """
         if player is None:
-            self.player = Player("Bilbo", self, 15, 9,"./copd/engine/player.png")
+            self.player = Player("Bilbo", self, 15, 9,filename="./copd/ui/assets/player.png")
             self.player.add_component(Position(15, 9))
             self.player.add_component(Velocity())
             self.player.draw()
@@ -89,7 +90,7 @@ class Engine:
         #     # load default starting map
         #     map = DEFAULT_MAP
         
-        map = TileMap(self,'./copd/engine/map.csv')
+        map = TileMap(self,'./copd/ui/assets/map.csv')
         map.load_tiles()
         # add player to game
         self.add_player()

@@ -22,7 +22,7 @@ class immovable_entitiy(pg.sprite.Sprite):
     pass
 
 class Entity(pg.sprite.Sprite):
-    def __init__(self, game, x=0, y=0,group=None,filename=None):
+    def __init__(self, game, x=0, y=0,group=None,solid=False,filename=None):
         super().__init__()
         self.components = {}
 
@@ -30,7 +30,7 @@ class Entity(pg.sprite.Sprite):
         self.add_component(Position(x, y))
         self.add_component(Velocity())
         self.stun = 0
-        self.solid = False
+        self.solid = solid
         self.image = pg.Surface((TILE_SIZE,TILE_SIZE)) 
         self.rect = self.image.get_rect()
         self.x = x
@@ -103,16 +103,25 @@ class TileMap:
         for row in map:
             x = 0
             for tile in row:
-                if tile == '1':
-                    Entity(self.game,x*TILE_SIZE, y*TILE_SIZE,self.game.blocks,"./copd/engine/floor.png").draw()
-                
+                solid = False
+                if tile == '0':
+                    group=self.game.solid_blocks
+                    filename = "./copd/ui/assets/wall.png"
+                elif tile == '1':
+                    group = self.game.blocks
+                    filename = "./copd/ui/assets/floor.png"
+                elif tile == '2':
+                    group = self.game.doors
+                    filename = "./copd/ui/assets/door.png"
+
+                Entity(self.game,x*TILE_SIZE, y*TILE_SIZE,group=group,filename=filename).draw()
                 x+=1
             y += 1
 
 class Monster(Entity):
 
-    def __init__(self, game, x=0, y=0,image=None):
-        super().__init__(game, x, y,game.monsters,image)
+    def __init__(self, game, x=0, y=0,solid=True,filename=None):
+        super().__init__(game, x, y,game.monsters,solid=solid,filename=filename)
         self.in_combat = Flag(False)
         self.stun = 0
 
@@ -192,8 +201,8 @@ class HobGoblin(Monster):
 
 
 class Ogre(Monster):
-    def __init__(self, game,image=None):
-        super().__init__(game,image=image)
+    def __init__(self, game,filename=None):
+        super().__init__(game,filename=filename)
         self.name = "Ogre"
         self.game = game
         self._layer = Layers.Player_Layer
@@ -208,8 +217,8 @@ class Ogre(Monster):
 
 
 class Player(Entity):
-    def __init__(self, name, game, x, y,filename):
-        super().__init__(game, x*TILE_SIZE, y*TILE_SIZE,game.players,filename)
+    def __init__(self, name, game, x, y,solid=True,filename=None):
+        super().__init__(game, x*TILE_SIZE, y*TILE_SIZE,game.players,solid,filename)
         self.in_combat = Flag(False)
         # name of player
         self.name = name
