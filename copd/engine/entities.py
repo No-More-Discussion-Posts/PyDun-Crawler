@@ -30,6 +30,7 @@ class Entity(pg.sprite.Sprite):
         self.add_component(Position(x, y))
         self.add_component(Velocity())
         self.stun = 0
+        self.facing = 'down'
         self.image = game.tile_map.get_image(name)
         self.rect = self.image.get_rect()
         self.x = x
@@ -73,7 +74,7 @@ class Entity(pg.sprite.Sprite):
     def get(self, component):
         return self.components.get(component)
 
-    def movement(self):
+    def movement(self): # def update(self)
         # updates sprite x and y coords
 
         dx = self.get(Velocity).dx * TILE_SIZE

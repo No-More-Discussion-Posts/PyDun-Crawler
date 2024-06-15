@@ -6,7 +6,7 @@ X_TILES = 40
 Y_TILES = 20
 SCREEN_WIDTH = X_TILES * TILE_SIZE # 32 blocks wide
 SCREEN_HEIGHT = Y_TILES * TILE_SIZE  # 18 blocks tall
-
+PLAYER_SPEED = 3
 
 OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
 
