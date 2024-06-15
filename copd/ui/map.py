@@ -1,3 +1,42 @@
+
+import csv
+from pathlib import Path
+from copd.engine.entities import Entity
+from copd.config import *
+class Map:
+    def __init__(self,game,filename):
+        self.game = game
+        self.start_x = 0
+        self.start_y = 0
+        self.filename = filename
+
+    def read_csv(self):
+        map = []
+        with open(Path(self.filename)) as data:
+            data = csv.reader(data,delimiter=',')
+            for row in data:
+                map.append(list(row))
+        return map
+
+    def load_tiles(self):
+        map = self.read_csv()
+        x,y = 0,0
+        for row in map:
+            x = 0
+            for tile in row:
+                if tile == '0':
+                    group=self.game.solid_blocks
+                    name = "wall"
+                elif tile == '1':
+                    group = self.game.blocks
+                    name = "floor"
+                elif tile == '2':
+                    group = self.game.doors
+                    name = "door"
+
+                Entity(self.game,x*TILE_SIZE, y*TILE_SIZE,group=group,name=name).draw()
+                x+=1
+            y += 1
 # def load_start_map(self, color, map=None) -> None:
 #         """
 #         loads starting map

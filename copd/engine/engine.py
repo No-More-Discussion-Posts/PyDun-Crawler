@@ -135,8 +135,8 @@ class Engine:
 
     def run(self):
         
-        self.update()
-        self.draw()
+        # self.update()
+        # self.draw()
 
         self.running = True
         while self.running:
@@ -144,6 +144,7 @@ class Engine:
                 self.handle_event(event)
             if self.state == GameStates.BATTLE:
                 BattleMenu(self).run()
+            self.update()
             self.draw()
         pygame.quit()
         sys.exit()
@@ -197,7 +198,7 @@ class Engine:
         if self.player.overworldcoords[1] == 2:  # if south border
             Wall(self, 17, 17, Colors.BLUE)  # draw wall at south door
         else:
-            Door(self, 17, 17)  # draw south door
+            Door(self, 17, Y_TILES-1)  # draw south door
 
         # left and right
         if self.player.overworldcoords[0] == 0:  # if nwest border
@@ -206,9 +207,9 @@ class Engine:
             Door(self, 0, 9)  # draw west door
 
         if self.player.overworldcoords[0] == 2:  # if east border
-            Wall(self, 31, 9, Colors.BLUE)  # draw wall at east door
+            Wall(self, X_TILES-1, 9, Colors.BLUE)  # draw wall at east door
         else:
-            Door(self, 31, 9)  # draw east door
+            Door(self, X_TILES-1, 9)  # draw east door
 
     def create_walls(self, map, color):
         self.doors.empty()
@@ -221,7 +222,7 @@ class Engine:
                 self.door_or_walls()
             else:
                 Wall(self, x, 0, color)  # draw north wall
-                Wall(self, x, 17, color)  # draw south wall
+                Wall(self, x, Y_TILES-1, color)  # draw south wall
         for y in map[1]:
             if y == 9:
                 # Door(self, 0, y) #draw west door
@@ -229,7 +230,7 @@ class Engine:
                 self.door_or_walls()
             else:
                 Wall(self, 0, y, color)  # draw west wall
-                Wall(self, 31, y, color)  # draw east wall
-        for x in range(1, 31):
-            for y in range(1, 17):
+                Wall(self, X_TILES-1, y, color)  # draw east wall
+        for x in range(1, X_TILES):
+            for y in range(1, Y_TILES):
                 self.bg = Background(self, x, y)

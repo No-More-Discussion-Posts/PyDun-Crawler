@@ -75,17 +75,17 @@ class Collision(System):
                 elif pygame.sprite.spritecollide(entity, entity.game.doors, False):
                     # loads sprite on corresponding doors
                     if entity.get(Position).x == 0:
-                        entity.get(Velocity).dx = 30
+                        entity.get(Velocity).dx = (X_TILES-2)
                         # updates minimap
                         entity.overworldcoords[0] = entity.overworldcoords[0] - 1
-                    elif entity.get(Position).x == 31:
-                        entity.get(Velocity).dx = -30
+                    elif entity.get(Position).x == (X_TILES-2):
+                        entity.get(Velocity).dx = -(X_TILES-2)
                         entity.overworldcoords[0] = entity.overworldcoords[0] + 1
                     elif entity.get(Position).y == 0:
-                        entity.get(Velocity).dy = 16
+                        entity.get(Velocity).dy = (Y_TILES-2)
                         entity.overworldcoords[1] = entity.overworldcoords[1] - 1
-                    elif entity.get(Position).y == 17:
-                        entity.get(Velocity).dy = -16
+                    elif entity.get(Position).y == (Y_TILES-1):
+                        entity.get(Velocity).dy = -(Y_TILES-2)
                         entity.overworldcoords[1] = entity.overworldcoords[1] + 1
                     # pushes new x and y coords to sprite
                     entity.game.Movement.update()
