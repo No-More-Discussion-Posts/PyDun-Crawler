@@ -102,7 +102,7 @@ class Engine:
         # add wall sprites around perimiter of map
         # self.create_walls(map, color)
         # add treasure sprite to game
-        # self.add_treasure(14, 10)
+        self.add_treasure(14*TILE_SIZE, 10*TILE_SIZE)
 
     def new_room(self, map=None) -> None:
         """
@@ -128,7 +128,7 @@ class Engine:
         # add walls to border
         # self.create_walls(map, color)
         # add treasure for room
-        self.add_treasure(14, 10)
+        self.add_treasure(14*TILE_SIZE, 10*TILE_SIZE)
 
     def draw(self):
         """
@@ -153,7 +153,7 @@ class Engine:
         font = pygame.font.get_default_font()
         FONT = pygame.font.Font(font, TILE_SIZE)
         turn = FONT.render(str(self.get(TurnCounter).turn), False, 'yellow')
-        self.screen.blit(turn, (20, 20))
+        self.screen.blit(turn, (TILE_SIZE, 0))
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
     def show_location(self):
@@ -161,7 +161,7 @@ class Engine:
         font = pygame.font.get_default_font()
         FONT = pygame.font.Font(font, TILE_SIZE)
         coords = FONT.render(str(self.player.overworldcoords), False, "yellow")
-        self.screen.blit(coords, ((X_TILES-4) * TILE_SIZE, TILE_SIZE))
+        self.screen.blit(coords, ((X_TILES-4) * TILE_SIZE, 0))
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
     def run(self):

@@ -85,8 +85,8 @@ class Monster(Entity):
 
     def __init__(self, game, x=0, y=0,name=None):
         super().__init__(game, x, y,game.monsters,name=name)
-        self.x = random.randint(1, X_TILES-1) * TILE_SIZE
-        self.y = random.randint(1, Y_TILES-1) * TILE_SIZE
+        self.x = random.randint(1, X_TILES-2) * TILE_SIZE
+        self.y = random.randint(1, Y_TILES-2) * TILE_SIZE
         self.in_combat = Flag(False)
         self.stun = 0
 
