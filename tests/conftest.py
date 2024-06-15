@@ -7,8 +7,9 @@ from importlib import reload
 if "copd" not in sys.modules:
     parent_dir_name = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     sys.path.append(parent_dir_name)
+
 from copd.engine.engine import Engine
-from copd.config import SCREEN_HEIGHT, SCREEN_WIDTH
+from copd.config import *
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
@@ -18,8 +19,8 @@ def game():
 
     pygame.init()
     mygame = Engine()
-
-    mygame.load_start_map((0, 0, 255))
+    mygame.add_player()
+    mygame.load_map(Colors.BLUE,DEFAULT_MAP)
 
     # game.run()
 
