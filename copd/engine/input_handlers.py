@@ -1,7 +1,7 @@
 import pygame
-from .menus import PauseMenu
-from .engine.states import GameStates
-from .engine.components import Velocity, Position
+from copd.ui.menus import PauseMenu
+from copd.engine.states import GameStates
+from copd.engine.components import Velocity, Position
 
 
 class EventHandler:

@@ -1,6 +1,6 @@
 import random
 import math
-from copd.inventory import Inventory, Equipped
+from copd.engine.inventory import Inventory, Equipped
 import pygame as pg  # TODO: make consistent
 from copd.config import *
 import time

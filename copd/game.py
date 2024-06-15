@@ -20,8 +20,6 @@ def main() -> None:
     game = Engine()
     game.add_player()
     game.load_map(Colors.BLUE,DEFAULT_MAP)
-    
-
     game.run()
 
 
