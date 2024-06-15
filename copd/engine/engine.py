@@ -105,6 +105,7 @@ class Engine:
         Draws all sprites, minimap,
         and turn counter to screen
         """
+        self.screen.fill(Colors.BLACK)
         self.all_sprites.draw(self.screen)
         self.players.draw(self.screen)
         self.blocks.draw(self.screen)

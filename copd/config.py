@@ -1,9 +1,13 @@
 from enum import Enum,IntEnum
 from dataclasses import dataclass
 from typing import Dict
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 360
-TILE_SIZE = 20
+
+X_TILES = 40
+Y_TILES = 20
+TILE_SIZE = 16
+SCREEN_WIDTH = X_TILES * TILE_SIZE
+SCREEN_HEIGHT = Y_TILES * TILE_SIZE
+PLAYER_SPEED = 3 # Pixels per tick
 FPS = 60
 OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
 
