@@ -120,6 +120,13 @@ class Engine:
         # add treasure for room
         self.add_treasure(14, 10)
 
+    def update(self):
+        '''Update all sprites'''
+        self.all_sprites.update()
+        self.players.update()
+        self.monster.update()
+        
+
     def draw(self):
         """
         Draws all sprites, minimap,
