@@ -1,0 +1,18 @@
+player:
+  x: 400
+  y: 0
+wall:
+  x: 160
+  y: 272
+door:
+  x: 80
+  y: 160
+monster:
+  x: 400
+  y: 32
+floor:
+  x: 256
+  y: 0
+chest:
+  x: 128
+  y: 96

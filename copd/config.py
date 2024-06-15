@@ -2,8 +2,8 @@ from enum import Enum,IntEnum
 from dataclasses import dataclass
 from typing import Dict
 TILE_SIZE = 16
-X_TILES = 64
-Y_TILES = 36
+X_TILES = 40
+Y_TILES = 20
 SCREEN_WIDTH = X_TILES * TILE_SIZE # 32 blocks wide
 SCREEN_HEIGHT = Y_TILES * TILE_SIZE  # 18 blocks tall
 

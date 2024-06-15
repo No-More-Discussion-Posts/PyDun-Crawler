@@ -8,6 +8,7 @@ from copd.ui.menus import PauseMenu, BattleMenu
 from copd.config import DEFAULT_MAP
 from copd.engine.states import GameStates
 from copd.engine.ecs import Component
+from copd.ui.tiles import TileMap,Map
 from copd.engine.input_handlers import EventHandler
 
 # test
@@ -44,6 +45,7 @@ class Engine:
         self.Combat = Combat(self)
         self.Turn.add_entity(self)
         self.add_component(TurnCounter())
+        self.tile_map = TileMap(Path('copd/ui/assets/tilemap.png'))
 
     def add_component(self, component: Component):
         """_summary_
@@ -65,7 +67,7 @@ class Engine:
 
         """
         if player is None:
-            self.player = Player("Bilbo", self, 15, 9,filename="./copd/ui/assets/player.png")
+            self.player = Player("Bilbo", self, 15, 9,"player")
             self.player.add_component(Position(15, 9))
             self.player.add_component(Velocity())
             self.player.draw()
@@ -90,7 +92,7 @@ class Engine:
         #     # load default starting map
         #     map = DEFAULT_MAP
         
-        map = TileMap(self,'./copd/ui/assets/map.csv')
+        map = Map(self,'./copd/ui/assets/map.csv')
         map.load_tiles()
         # add player to game
         self.add_player()
@@ -102,7 +104,7 @@ class Engine:
         # add treasure sprite to game
         # self.add_treasure(14, 10)
 
-    def load_map(self, color, map=None) -> None:
+    def new_room(self, map=None) -> None:
         """
         Kills all sprite groups and loads a new map
         when the player collides with a door
@@ -117,14 +119,14 @@ class Engine:
             map = map
         # loads default map
         else:
-            map = DEFAULT_MAP
+            pass
         # kills all non-player sprites
-        pygame.sprite.Group.empty(self.blocks)
+        # pygame.sprite.Group.empty(self.blocks)
         self.monster.kill()
         # add monster to game
         self.add_monster()
         # add walls to border
-        self.create_walls(map, color)
+        # self.create_walls(map, color)
         # add treasure for room
         self.add_treasure(14, 10)
 
@@ -133,8 +135,10 @@ class Engine:
         Draws all sprites, minimap,
         and turn counter to screen
         """
+        self.screen.fill((0,0,0))
         self.all_sprites.draw(self.screen)
         self.blocks.draw(self.screen)
+        self.solid_blocks.draw(self.screen)
         self.monsters.draw(self.screen)
         self.players.draw(self.screen)
         self.doors.draw(self.screen)
@@ -148,7 +152,7 @@ class Engine:
         # displays turn counter
         font = pygame.font.get_default_font()
         FONT = pygame.font.Font(font, TILE_SIZE)
-        turn = FONT.render(str(self.get(TurnCounter).turn), False, "black")
+        turn = FONT.render(str(self.get(TurnCounter).turn), False, 'yellow')
         self.screen.blit(turn, (20, 20))
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
@@ -156,8 +160,8 @@ class Engine:
         # displays turn counter
         font = pygame.font.get_default_font()
         FONT = pygame.font.Font(font, TILE_SIZE)
-        coords = FONT.render(str(self.player.overworldcoords), False, "black")
-        self.screen.blit(coords, (29 * TILE_SIZE, 20))
+        coords = FONT.render(str(self.player.overworldcoords), False, "yellow")
+        self.screen.blit(coords, ((X_TILES-4) * TILE_SIZE, TILE_SIZE))
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
     def run(self):
@@ -174,16 +178,6 @@ class Engine:
             self.draw()
         pygame.quit()
         sys.exit()
-
-    def Test_Grid(self):
-        """
-        draws 20 x 20 squares across game screen
-        """
-        for x in range(0, 640, 20):
-            pygame.draw.line(self.screen, (128, 128, 128), (x, 0), (x, 360))
-        # draw lines vertically
-        for y in range(0, 360, 20):
-            pygame.draw.line(self.screen, (128, 128, 128), (0, y), (640, y))
 
     def add_monster(self, monster=None):
         """
@@ -248,26 +242,26 @@ class Engine:
         else:
             Door(self, 31, 9)  # draw east door
 
-    def create_walls(self, map, color):
-        self.doors.empty()
-        self.blocks.empty()
-        for x in map[0]:
-            if x == 17:
-                # perform check here instead
-                # Door(self, x, 0) #draw north door
-                # Door(self, x, 17) #draw south door
-                self.door_or_walls()
-            else:
-                Wall(self, x, 0, color)  # draw north wall
-                Wall(self, x, 17, color)  # draw south wall
-        for y in map[1]:
-            if y == 9:
-                # Door(self, 0, y) #draw west door
-                # Door(self, 31, y) #draw east door
-                self.door_or_walls()
-            else:
-                Wall(self, 0, y, color)  # draw west wall
-                Wall(self, 31, y, color)  # draw east wall
-        for x in range(1, 31):
-            for y in range(1, 17):
-                self.bg = Background(self, x, y)
+    # def create_walls(self, map, color):
+    #     self.doors.empty()
+    #     self.blocks.empty()
+    #     for x in map[0]:
+    #         if x == 17:
+    #             # perform check here instead
+    #             # Door(self, x, 0) #draw north door
+    #             # Door(self, x, 17) #draw south door
+    #             self.door_or_walls()
+    #         else:
+    #             Wall(self, x, 0, color)  # draw north wall
+    #             Wall(self, x, 17, color)  # draw south wall
+    #     for y in map[1]:
+    #         if y == 9:
+    #             # Door(self, 0, y) #draw west door
+    #             # Door(self, 31, y) #draw east door
+    #             self.door_or_walls()
+    #         else:
+    #             Wall(self, 0, y, color)  # draw west wall
+    #             Wall(self, 31, y, color)  # draw east wall
+    #     for x in range(1, 31):
+    #         for y in range(1, 17):
+    #             self.bg = Background(self, x, y)

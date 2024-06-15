@@ -22,7 +22,7 @@ class immovable_entitiy(pg.sprite.Sprite):
     pass
 
 class Entity(pg.sprite.Sprite):
-    def __init__(self, game, x=0, y=0,group=None,solid=False,filename=None):
+    def __init__(self, game, x=0, y=0,group=None,name=None):
         super().__init__()
         self.components = {}
 
@@ -30,15 +30,14 @@ class Entity(pg.sprite.Sprite):
         self.add_component(Position(x, y))
         self.add_component(Velocity())
         self.stun = 0
-        self.solid = solid
-        self.image = pg.Surface((TILE_SIZE,TILE_SIZE)) 
+        self.image = game.tile_map.get_image(name)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         
-        if filename is not None:
-            img = pg.image.load(filename).convert_alpha()
-            self.image.blit(img,(0,0))
+        # if filename is not None:
+        #     img = pg.image.load(filename).convert_alpha()
+        #     self.image.blit(img,(0,0))
             
            
         if group is not None:
@@ -81,47 +80,13 @@ class Entity(pg.sprite.Sprite):
         dy = self.get(Velocity).dy * TILE_SIZE
         self.rect.move_ip(dx, dy)
 
-class TileMap:
-    def __init__(self,game,filename,spritesheet=None):
-        self.game = game
-        self.start_x = 0
-        self.start_y = 0
-        self.spritesheet = spritesheet
-        self.filename = filename
-
-    def read_csv(self):
-        map = []
-        with open(os.path.join(self.filename)) as data:
-            data = csv.reader(data,delimiter=',')
-            for row in data:
-                map.append(list(row))
-        return map
-
-    def load_tiles(self):
-        map = self.read_csv()
-        x,y = 0,0
-        for row in map:
-            x = 0
-            for tile in row:
-                solid = False
-                if tile == '0':
-                    group=self.game.solid_blocks
-                    filename = "./copd/ui/assets/wall.png"
-                elif tile == '1':
-                    group = self.game.blocks
-                    filename = "./copd/ui/assets/floor.png"
-                elif tile == '2':
-                    group = self.game.doors
-                    filename = "./copd/ui/assets/door.png"
-
-                Entity(self.game,x*TILE_SIZE, y*TILE_SIZE,group=group,filename=filename).draw()
-                x+=1
-            y += 1
 
 class Monster(Entity):
 
-    def __init__(self, game, x=0, y=0,solid=True,filename=None):
-        super().__init__(game, x, y,game.monsters,solid=solid,filename=filename)
+    def __init__(self, game, x=0, y=0,name=None):
+        super().__init__(game, x, y,game.monsters,name=name)
+        self.x = random.randint(1, X_TILES-1) * TILE_SIZE
+        self.y = random.randint(1, Y_TILES-1) * TILE_SIZE
         self.in_combat = Flag(False)
         self.stun = 0
 
@@ -130,8 +95,7 @@ class Monster(Entity):
         # self.groups = self.game.monsters
         # pg.sprite.Sprite.__init__(self, self.groups)
         # # random location on grid
-        self.x = random.randint(1, 30) * TILE_SIZE
-        self.y = random.randint(1, 16) * TILE_SIZE
+        
         # rest of sprite generation block
         # self.width = TILE_SIZE
         # self.height = TILE_SIZE
@@ -201,8 +165,8 @@ class HobGoblin(Monster):
 
 
 class Ogre(Monster):
-    def __init__(self, game,filename=None):
-        super().__init__(game,filename=filename)
+    def __init__(self, game):
+        super().__init__(game,name='monster')
         self.name = "Ogre"
         self.game = game
         self._layer = Layers.Player_Layer
@@ -212,13 +176,11 @@ class Ogre(Monster):
         self.atk = 4
         self.dex = 0
         self.item = items[random.randint(1, 4)]
-        self.sprite_gen(Colors.RED)
-        # self.image.fill(Colors.RED)
 
 
 class Player(Entity):
-    def __init__(self, name, game, x, y,solid=True,filename=None):
-        super().__init__(game, x*TILE_SIZE, y*TILE_SIZE,game.players,solid,filename)
+    def __init__(self, name, game, x, y,filename=None):
+        super().__init__(game, x*TILE_SIZE, y*TILE_SIZE,game.players,filename)
         self.in_combat = Flag(False)
         # name of player
         self.name = name
@@ -313,19 +275,8 @@ class Door(Entity):
 
 class Treasure(Entity):
     def __init__(self, game, x, y):
-        super().__init__(game, x, y)
+        super().__init__(game, x, y,group=game.treasures,name='chest')
         self._layer = Layers.Door_Layer
-        self.groups = self.game.treasures
-        pg.sprite.Sprite.__init__(self, self.groups)
 
         self.item = items[random.randint(1, 4)]
 
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-
-        self.image = pg.Surface([self.width, self.height])
-        self.image.fill(Colors.NachoCheese)
-
-        self.rect = self.image.get_rect()
-        self.rect.x = self.get(Position).x * TILE_SIZE
-        self.rect.y = self.get(Position).y * TILE_SIZE
