@@ -4,7 +4,7 @@ from typing import Dict
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 360
 TILE_SIZE = 20
-
+FPS = 60
 OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
 
 DEFAULT_MAP = [

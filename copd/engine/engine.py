@@ -31,14 +31,17 @@ class Engine:
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
         self.monsters = pygame.sprite.LayeredUpdates()
-        self.players = pygame.sprite.LayeredUpdates()
-        self.doors = pygame.sprite.LayeredUpdates()
-        self.treasures = pygame.sprite.LayeredUpdates()
+        self.players = pygame.sprite.LayeredUpdates() 
+        self.doors = pygame.sprite.LayeredUpdates() 
+        self.treasures = pygame.sprite.LayeredUpdates() # tagged for removal
         self.Movement = Movement()
         self.Collision = Collision()
         self.Combat = Combat(self)
         self.Turn.add_entity(self)
         self.add_component(TurnCounter())
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.clock = pygame.time.Clock()
+        pygame.display.set_caption(GAME_CAPTION)
 
     def add_component(self, component: Component):
         """_summary_
@@ -140,7 +143,7 @@ class Engine:
         self.treasures.draw(self.screen)
         self.show_turn()
         self.show_location()
-
+        self.clock.tick(FPS)
         pygame.display.update()
 
     def show_turn(self):
@@ -160,9 +163,8 @@ class Engine:
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
     def run(self):
-        pygame.init()
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption(GAME_CAPTION)
+        
+        self.update()
         self.draw()
 
         self.running = True
@@ -174,16 +176,6 @@ class Engine:
             self.draw()
         pygame.quit()
         sys.exit()
-
-    def Test_Grid(self):
-        """
-        draws 20 x 20 squares across game screen
-        """
-        for x in range(0, 640, 20):
-            pygame.draw.line(self.screen, (128, 128, 128), (x, 0), (x, 360))
-        # draw lines vertically
-        for y in range(0, 360, 20):
-            pygame.draw.line(self.screen, (128, 128, 128), (0, y), (640, y))
 
     def add_monster(self, monster=None):
         """

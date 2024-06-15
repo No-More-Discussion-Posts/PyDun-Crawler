@@ -7,6 +7,7 @@ import pygame
 import os
 import sys
 
+# Ensure copd can be imported even if not installed
 if "copd" not in sys.modules:
     parent_dir_name = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     sys.path.append(parent_dir_name)
