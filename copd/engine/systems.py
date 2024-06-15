@@ -93,7 +93,7 @@ class Collision(System):
                     # resets turn timer
                     self.entities[0].game.Turn.undo()
                     # calls load map to draw new room
-                    entity.game.load_map(Colors.BLUE)
+                    entity.game.load_map(Colors.BLUE,DEFAULT_MAP)
 
                 # if player overlaps with treasure, TRUE = delete treasure after collsion
                 elif pygame.sprite.spritecollide(entity, entity.game.treasures, True):

@@ -72,30 +72,7 @@ class Engine:
         self.Collision.add_entity(self.player)
         self.Combat.add_entity(self.player)
 
-    def load_start_map(self, color, map=None) -> None:
-        """
-        loads starting map
-        Parameters
-        ----------
-        color: Type: List, RGB value of wall color
-        map: Type: Array, x and y coordinates of map tiles
-        """
-        if map is not None:
-            # accepts alternate map
-            map = map
-        else:
-            # load default starting map
-            map = DEFAULT_MAP
-
-        # add player to game
-        self.add_player()
-        # add monster sprite to game
-        self.add_monster()
-        # self.Combat.add_entity()
-        # add wall sprites around perimiter of map
-        self.create_walls(map, color)
-        # add treasure sprite to game
-        self.add_treasure(14, 10)
+    
 
     def load_map(self, color, map=None) -> None:
         """
@@ -107,15 +84,8 @@ class Engine:
         color: Type: List, RGB value of wall color
         map: Type: Array, x and y coordinates of map tiles
         """
-        # loads specififc map from args
-        if map is not None:
-            map = map
-        # loads default map
-        else:
-            map = DEFAULT_MAP
         # kills all non-player sprites
-        pygame.sprite.Group.empty(self.blocks)
-        self.monster.kill()
+        self.monsters.empty()
         # add monster to game
         self.add_monster()
         # add walls to border
