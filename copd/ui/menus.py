@@ -258,33 +258,12 @@ class BattleMenu:
             monster_info.add_border()
             monster_info.draw()
             
-            # Create info areas
-            # monster_info = pygame.draw.rect(
-            #     self.game.screen, "black", [10, 10, 200, 100], 3, border_radius=15
-            # )
-            player_info = pygame.draw.rect(
-                self.game.screen,
-                "blue",
-                [width - 310, height - 210, 300, 200],
-                3,
-                border_radius=15,
-            )
-
-            # text = self.monster.name
-            # self.game.screen.blit(FONT.render(text, False, "black"), (20, 20))
-            # self.game.screen.blit(
-            #     FONT.render(f"{self.monster.hp}/{self.monster.max_hp}", False, "black"),
-            #     (20, 45),
-            # )
-
-            # Added player name and hp
-            text2 = self.player.name
-            self.game.screen.blit(FONT.render(text2, False, "blue"), (340, 160))
-            self.game.screen.blit(
-                FONT.render(f"{self.player.hp}/{self.player.max_hp}", False, "blue"),
-                (340, 185),
-            )
-
+            
+            player_info = TextBox(300,200,self.game.screen,width-310,height-210)
+            player_info.add_border(Colors.BLUE)
+            player_info.add_text(self.player.name,Colors.BLUE,(10,10))
+            player_info.add_text(f"{self.player.hp}/{self.player.max_hp}",Colors.BLUE,(10,45))
+            player_info.draw()
             # Button Testing
             fight = Button("Fight", self.game, 340, 210)
             fight.show()
