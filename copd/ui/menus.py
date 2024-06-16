@@ -255,6 +255,8 @@ class BattleMenu:
             width = self.game.screen.get_width()
             monster_info = TextBox(200,100,self.game.screen,10,10)
             monster_info.add_text(self.monster.name,Colors.BLACK,(20,20))
+            monster_info.add_text(f"{self.monster.hp}/{self.monster.max_hp}",Colors.BLACK,(10,45))
+
             monster_info.add_border()
             monster_info.draw()
             
@@ -265,13 +267,13 @@ class BattleMenu:
             player_info.add_text(f"{self.player.hp}/{self.player.max_hp}",Colors.BLUE,(10,45))
             player_info.draw()
             # Button Testing
-            fight = Button("Fight", self.game, 340, 210)
+            fight = Button("Fight", self.game, 340, 190)
             fight.show()
-            parry = Button("Parry", self.game, 485, 210)
+            parry = Button("Parry", self.game, 485, 190)
             parry.show()
-            run = Button("Run", self.game, 485, 280)
+            run = Button("Run", self.game, 485, 260)
             run.show()
-            items = Button("Inventory", self.game, 340, 280)
+            items = Button("Inventory", self.game, 340, 260)
             items.show()
 
             pygame.display.flip()
