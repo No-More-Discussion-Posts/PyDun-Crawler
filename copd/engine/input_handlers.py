@@ -9,9 +9,7 @@ class EventHandler:
         self.game = game
 
     def handle_event(self, event):
-        if self.game.debug:
-            print(f"New Event: {event}")
-            print(f"Game State: {self.game.state}")
+        
         if event.type == pygame.QUIT:
             self.game.running = False
         if self.game.state == GameStates.MAIN:
@@ -20,6 +18,9 @@ class EventHandler:
                     PauseMenu(self.game)
                     self.game.draw()
                 if event.key in [pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d]:
+                    if self.game.debug:
+                        print(f"New Event: {event}")
+                        print(f"Game State: {self.game.state}")
                     self.game.player.get(Velocity).set_from_key(event.key)
                     self.game.Movement.update()
                     self.game.player.movement()

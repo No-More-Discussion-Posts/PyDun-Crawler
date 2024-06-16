@@ -8,7 +8,8 @@ from copd.ui.menus import PauseMenu, BattleMenu
 from copd.config import DEFAULT_MAP
 from copd.engine.states import GameStates
 from copd.engine.ecs import Component
-from copd.ui.tiles import TileMap,Map
+from copd.ui.tiles import TileMap
+from copd.ui.map import Map
 from copd.engine.input_handlers import EventHandler
 
 # test
@@ -92,13 +93,16 @@ class Engine:
         """
         # kills all non-player sprites
         self.monsters.empty()
+        self.treasures.empty()
+        self.doors.empty()
+        self.solid_blocks.empty()
         # loads specififc map from args
         
         # add monster to game
         self.add_monster()
         
         self.current_room = Map(self,map)
-
+        self.current_room.load_tiles()
         # add treasure for room
         self.add_treasure(14*TILE_SIZE, 10*TILE_SIZE)
 
