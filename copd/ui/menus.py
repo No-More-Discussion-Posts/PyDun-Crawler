@@ -2,10 +2,8 @@ import pygame
 import sys
 from random import randint
 
-# from .entities import *
 from copd.ui.button import *
-
-# from .engine import *
+from copd.ui.text_box import TextBox
 from copd.config import Option, MenuOption
 from copd.engine.states import GameStates
 
@@ -252,12 +250,18 @@ class BattleMenu:
 
         while self.running:
             self.game.screen.fill(Colors.Snugglepuss)
+
             height = self.game.screen.get_height()
             width = self.game.screen.get_width()
+            monster_info = TextBox(200,100,self.game.screen,10,10)
+            monster_info.add_text(self.monster.name,Colors.BLACK,(20,20))
+            monster_info.add_border()
+            monster_info.draw()
+            
             # Create info areas
-            monster_info = pygame.draw.rect(
-                self.game.screen, "black", [10, 10, 200, 100], 3, border_radius=15
-            )
+            # monster_info = pygame.draw.rect(
+            #     self.game.screen, "black", [10, 10, 200, 100], 3, border_radius=15
+            # )
             player_info = pygame.draw.rect(
                 self.game.screen,
                 "blue",
@@ -266,12 +270,12 @@ class BattleMenu:
                 border_radius=15,
             )
 
-            text = self.monster.name
-            self.game.screen.blit(FONT.render(text, False, "black"), (20, 20))
-            self.game.screen.blit(
-                FONT.render(f"{self.monster.hp}/{self.monster.max_hp}", False, "black"),
-                (20, 45),
-            )
+            # text = self.monster.name
+            # self.game.screen.blit(FONT.render(text, False, "black"), (20, 20))
+            # self.game.screen.blit(
+            #     FONT.render(f"{self.monster.hp}/{self.monster.max_hp}", False, "black"),
+            #     (20, 45),
+            # )
 
             # Added player name and hp
             text2 = self.player.name
