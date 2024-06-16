@@ -10,53 +10,9 @@ SCREEN_HEIGHT = Y_TILES * TILE_SIZE
 PLAYER_SPEED = 3 # Pixels per tick
 FPS = 60
 OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
-
-DEFAULT_MAP = [
-    [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39
-    ],
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,18,19,20],
-]
+OVERWORLD_WIDTH = 2
+OVERWORLD_HEIGHT = 2
+DEFAULT_MAP = 'copd/ui/assets/map.csv'
 
 GAME_CAPTION = "Crawl of PyDun"
 

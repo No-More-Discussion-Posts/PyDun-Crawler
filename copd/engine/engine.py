@@ -4,7 +4,6 @@ import sys
 
 from copd.engine.entities import *
 from copd.ui.menus import PauseMenu, BattleMenu
-from copd.config import DEFAULT_MAP
 from copd.engine.states import GameStates
 from copd.engine.ecs import Component
 from copd.engine.input_handlers import EventHandler
@@ -182,55 +181,4 @@ class Engine:
         """
         self.treasure = Treasure(self, x, y)
 
-    def door_or_walls(self):
-        """
-        overworld_map:
-        [0, 0], [1, 0], [2, 0]
-        [0, 1], [1, 1], [2, 1]
-        [0, 2], [1, 2], [2, 2]
-        """
-
-        # up and down
-        if self.player.overworldcoords[1] == 0:  # if north border
-            Wall(self, 17, 0, Colors.BLUE)  # draw wall at north door
-        else:
-            Door(self, 17, 0)  # draw north door
-        if self.player.overworldcoords[1] == 2:  # if south border
-            Wall(self, 17, 17, Colors.BLUE)  # draw wall at south door
-        else:
-            Door(self, 17, Y_TILES-1)  # draw south door
-
-        # left and right
-        if self.player.overworldcoords[0] == 0:  # if nwest border
-            Wall(self, 0, 9, Colors.BLUE)  # draw wall at west door
-        else:
-            Door(self, 0, 9)  # draw west door
-
-        if self.player.overworldcoords[0] == 2:  # if east border
-            Wall(self, X_TILES-1, 9, Colors.BLUE)  # draw wall at east door
-        else:
-            Door(self, X_TILES-1, 9)  # draw east door
-
-    def create_walls(self, map, color):
-        self.doors.empty()
-        self.blocks.empty()
-        for x in map[0]:
-            if x == 17:
-                # perform check here instead
-                # Door(self, x, 0) #draw north door
-                # Door(self, x, 17) #draw south door
-                self.door_or_walls()
-            else:
-                Wall(self, x, 0, color)  # draw north wall
-                Wall(self, x, Y_TILES-1, color)  # draw south wall
-        for y in map[1]:
-            if y == 9:
-                # Door(self, 0, y) #draw west door
-                # Door(self, 31, y) #draw east door
-                self.door_or_walls()
-            else:
-                Wall(self, 0, y, color)  # draw west wall
-                Wall(self, X_TILES-1, y, color)  # draw east wall
-        for x in range(1, X_TILES):
-            for y in range(1, Y_TILES):
-                self.bg = Background(self, x, y)
+    

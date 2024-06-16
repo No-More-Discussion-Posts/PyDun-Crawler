@@ -24,44 +24,50 @@ class Map:
         for row in map:
             x = 0
             for tile in row:
-                if tile == '0':
+                if tile == '0': # Wall
                     group=self.game.solid_blocks
                     name = "wall"
-                elif tile == '1':
+                elif tile == '1': # Floor
                     group = self.game.blocks
                     name = "floor"
-                elif tile == '2':
-                    group = self.game.doors
-                    name = "door"
+                elif tile == '2': # Door
+                    group,name = self.door_or_wall(x,y)
 
                 Entity(self.game,x*TILE_SIZE, y*TILE_SIZE,group=group,name=name).draw()
                 x+=1
             y += 1
-# def load_start_map(self, color, map=None) -> None:
-#         """
-#         loads starting map
-#         Parameters
-#         ----------
-#         color: Type: List, RGB value of wall color
-#         map: Type: Array, x and y coordinates of map tiles
-#         """
-#         if map is not None:
-#             # accepts alternate map
-#             map = map
-#         else:
-#             # load default starting map
-#             map = DEFAULT_MAP
 
-#         # add player to game
-#         self.add_player()
-#         # add monster sprite to game
-#         self.add_monster()
-#         # self.Combat.add_entity()
-#         # add wall sprites around perimiter of map
-#         self.create_walls(map, color)
-#         # add treasure sprite to game
-#         self.add_treasure(14, 10)
+    def door_or_wall(self,x,y):
+        """
+#         overworld_map:
+#         [0, 0], [1, 0], [2, 0]
+#         [0, 1], [1, 1], [2, 1]
+#         [0, 2], [1, 2], [2, 2]
+#         """
+        is_door = True
 
+        if self.game.player.overworldcoords[0] == 0:
+            if x == 0:
+                is_door = False
+        elif self.game.player.overworldcoords[0] == OVERWORLD_WIDTH:
+            if x == (SCREEN_WIDTH-TILE_SIZE):
+                is_door = False
+        elif self.game.player.overworldcoords[1] == 0:
+            if y == 0:
+                is_door = False
+        elif self.game.player.overworldcoords[1] == OVERWORLD_HEIGHT:
+            if y == (SCREEN_HEIGHT-TILE_SIZE):
+                is_door = False
+            
+        if is_door:
+            group = self.game.doors
+            name = "door"
+        else:
+            group = self.game.solid_bricks
+            name = "wall"
+
+        return group,name
+    
 #   def door_or_walls(self):
 #         """
 #         overworld_map:
