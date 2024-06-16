@@ -1,11 +1,14 @@
 import pygame
 import random
 import sys
+from pathlib import Path
 
 from copd.engine.entities import *
 from copd.ui.menus import PauseMenu, BattleMenu
+from copd.config import DEFAULT_MAP
 from copd.engine.states import GameStates
 from copd.engine.ecs import Component
+from copd.ui.tiles import TileMap,Map
 from copd.engine.input_handlers import EventHandler
 
 # test
@@ -18,8 +21,11 @@ class Engine:
 
     def __init__(self):
         """Main Game Engine"""
+        pygame.init()
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption(GAME_CAPTION)
         self.components = {}
-        self.debug = False
+        self.debug = True
         self.Turn = Turn()
         self.running = False
         # will need to change state when changing between menus
@@ -29,6 +35,7 @@ class Engine:
         self.handle_event = self.event_handler.handle_event
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
+        self.solid_blocks = pygame.sprite.LayeredUpdates()
         self.monsters = pygame.sprite.LayeredUpdates()
         self.players = pygame.sprite.LayeredUpdates() 
         self.doors = pygame.sprite.LayeredUpdates() 
@@ -41,6 +48,7 @@ class Engine:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         pygame.display.set_caption(GAME_CAPTION)
+        self.tile_map = TileMap(Path('copd/ui/assets/tilemap.png'))
 
     def add_component(self, component: Component):
         """_summary_
@@ -62,18 +70,17 @@ class Engine:
 
         """
         if player is None:
-            self.player = Player("Bilbo", self, 15, 9)
+            self.player = Player("Bilbo", self, 15, 9,"player")
             self.player.add_component(Position(15, 9))
             self.player.add_component(Velocity())
+            self.player.draw()
         else:
             self.player = player
         self.Movement.add_entity(self.player)
         self.Collision.add_entity(self.player)
         self.Combat.add_entity(self.player)
 
-    
-
-    def load_map(self, color, map=None) -> None:
+    def load_map(self, map=DEFAULT_MAP) -> None:
         """
         Kills all sprite groups and loads a new map
         when the player collides with a door
@@ -85,12 +92,15 @@ class Engine:
         """
         # kills all non-player sprites
         self.monsters.empty()
+        # loads specififc map from args
+        
         # add monster to game
         self.add_monster()
-        # add walls to border
-        self.create_walls(map, color)
+        
+        self.current_room = Map(self,map)
+
         # add treasure for room
-        self.add_treasure(14, 10)
+        self.add_treasure(14*TILE_SIZE, 10*TILE_SIZE)
 
     def update(self):
         '''Update all sprites'''
@@ -106,9 +116,10 @@ class Engine:
         """
         self.screen.fill(Colors.BLACK)
         self.all_sprites.draw(self.screen)
-        self.players.draw(self.screen)
         self.blocks.draw(self.screen)
+        self.solid_blocks.draw(self.screen)
         self.monsters.draw(self.screen)
+        self.players.draw(self.screen)
         self.doors.draw(self.screen)
         self.treasures.draw(self.screen)
         self.show_turn()
@@ -120,16 +131,16 @@ class Engine:
         # displays turn counter
         font = pygame.font.get_default_font()
         FONT = pygame.font.Font(font, TILE_SIZE)
-        turn = FONT.render(str(self.get(TurnCounter).turn), False, "black")
-        self.screen.blit(turn, (20, 20))
+        turn = FONT.render(str(self.get(TurnCounter).turn), False, 'yellow')
+        self.screen.blit(turn, (TILE_SIZE, 0))
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
     def show_location(self):
         # displays turn counter
         font = pygame.font.get_default_font()
         FONT = pygame.font.Font(font, TILE_SIZE)
-        coords = FONT.render(str(self.player.overworldcoords), False, "black")
-        self.screen.blit(coords, (29 * TILE_SIZE, 20))
+        coords = FONT.render(str(self.player.overworldcoords), False, "yellow")
+        self.screen.blit(coords, ((X_TILES-4) * TILE_SIZE, 0))
         # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
     def run(self):
@@ -138,6 +149,7 @@ class Engine:
         # self.draw()
 
         self.running = True
+        self.load_map()
         while self.running:
             for event in pygame.event.get():
                 self.handle_event(event)
@@ -159,13 +171,14 @@ class Engine:
         else:
             # if no monster is supplied
             # initilizes random enemy sprite in room
-            num = random.randint(1, 3)
-            if num == 1:
-                self.monster = Goblin(self)
-            if num == 2:
-                self.monster = HobGoblin(self)
-            if num == 3:
-                self.monster = Ogre(self)
+            # num = random.randint(1, 3)
+            # if num == 1:
+            #     self.monster = Goblin(self)
+            # if num == 2:
+            #     self.monster = HobGoblin(self)
+            # if num == 3:
+            #     self.monster = Ogre(self)
+            self.monster = Ogre(self)
 
     def add_treasure(self, x, y):
         """

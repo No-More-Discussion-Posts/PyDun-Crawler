@@ -55,7 +55,8 @@ class Collision(System):
         for entity in self.entities:
             # checks all entities in system for collision with sprites
             # in the wall group of sprites
-            if pygame.sprite.spritecollide(entity, entity.game.blocks, False):
+            if pygame.sprite.spritecollide(entity, entity.game.solid_blocks, False):
+        
                 if entity.game.debug:
                     print(f"{entity}: Collision with wall")
                 # return sprite to original position
@@ -93,7 +94,7 @@ class Collision(System):
                     # resets turn timer
                     self.entities[0].game.Turn.undo()
                     # calls load map to draw new room
-                    entity.game.load_map(Colors.BLUE,DEFAULT_MAP)
+                    entity.game.load_map()
 
                 # if player overlaps with treasure, TRUE = delete treasure after collsion
                 elif pygame.sprite.spritecollide(entity, entity.game.treasures, True):
