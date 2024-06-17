@@ -6,6 +6,7 @@ from typing import Optional
 from sqlalchemy import create_engine
 from sqlalchemy import Integer, String, Boolean
 from sqlalchemy import ForeignKey
+from sqlalchemy import select
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
@@ -13,12 +14,6 @@ from sqlalchemy.orm import DeclarativeBase, Session
 
 
 engine = create_engine("sqlite://", echo=True)
-
-
-class DB:
-    def __init__(self):
-        self.engine = engine
-
 
 class Base(DeclarativeBase):
     pass
@@ -259,11 +254,11 @@ class Level(Base):
         return f"Dungeon(id={self.id!r}, dungeon_id={self.dungeon_id!r})"
 
 
-# Room-Wall
-class RoomWall(Base):
+# Wall
+class Wall(Base):
     """Static table to help with wall naming/pairing"""
 
-    __tablename__ = "room_wall"
+    __tablename__ = "wall"
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     side: Mapped[str] = mapped_column(String(5))  # north, east, south, west
     pair: Mapped[int] = mapped_column()
@@ -272,33 +267,7 @@ class RoomWall(Base):
         return f"RoomWall(id={self.id!r}, side={self.side!r}, pair={self.pair!r})"
 
 
-def create_room_walls():
-    """Hardcoded room_wall values"""
-    with Session(engine) as session:
-        north = RoomWall(id=0, side="north", pair=2)
-        east = RoomWall(id=1, side="east", pair=3)
-        south = RoomWall(id=2, side="south", pair=0)
-        west = RoomWall(id=3, side="west", pair=1)
-    session.add_all([north, east, south, west])
-    session.commit()
 
-
-def read_room_walls():
-    """
-    walls = []
-    with Session(db.engine) as session:
-        stmt = select(RoomWall).distinct()
-    return session.execute(stmt)
-    """
-    pass
-
-
-def update_room_walls():
-    pass
-
-
-def delete_room_walls():
-    pass
 
 
 # TODO: Refactor this into Tile class
@@ -370,21 +339,11 @@ class Room(Base):
     # TODO rename this (they should reflect level grid pos_x/y)
     x: Mapped[int] = mapped_column()
     y: Mapped[int] = mapped_column()
-    level_id: Mapped[int] = mapped_column(ForeignKey("level.id"))
+    #level_id: Mapped[int] = mapped_column(ForeignKey("level.id"))
 
     def __repr__(self) -> str:
         return f"Room(id={self.id!r}, x={self.x!r}, y={self.y!r})"
 
-
-def create_room(id, x, y):
-    with Session(engine) as session:
-        room = Room(id=id, x=x, y=y)
-    session.add(room)
-    session.commit()
-
-
-def read_room():
-    pass
 
 
 def update_room():
@@ -400,21 +359,13 @@ class Door(Base):
     __tablename__ = "door"
     id: Mapped[int] = mapped_column(primary_key=True)
     # room_id = The room to which the door leads
-    room_id: Mapped[int] = mapped_column()
+    room_id: Mapped[int] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
         return f"Door(id={self.id!r}, room_id={self.room_id!r})"
 
 
-def create_door(id, room_id):
-    with Session(engine) as session:
-        door = Door(id=id, room_id=room_id)
-    session.add(door)
-    session.commit()
 
-
-def read_door():
-    pass
 
 
 def update_door():
@@ -425,35 +376,145 @@ def delete_door():
     pass
 
 
-# Room-Door
-class RoomDoor(Base):
-    __tablename__ = "room_door"
+# Room-Door (with wall!)
+class RoomWallDoor(Base):
+    __tablename__ = "room_wall_door"
     id: Mapped[int] = mapped_column(primary_key=True)
-    room_wall_id: Mapped[int] = mapped_column()  # TODO: make this second PK
-    door_id: Mapped[int] = mapped_column()
+    room_id = mapped_column(ForeignKey("room.id"))
+    wall_id: Mapped[int] = mapped_column(ForeignKey("wall.id"))  # TODO: make this second PK
+    door_id: Mapped[int] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
-        return f"RoomDoor(id={self.id!r}, room_wall_id={self.room_wall_id!r}, door_id={self.door_id!r})"
+        return f"RoomDoor(id={self.id!r}, wall_id={self.wall_id!r}, door_id={self.door_id!r})"
 
 
-def create_room_door(id, room_wall_id, door_id):
-    with Session(engine) as session:
-        room_door = RoomDoor(id=id, room_id=room_wall_id, door_id=door_id)
-    session.add(room_door)
-    session.commit()
-
-
-def read_room_door():
+def update_room_wall_door():
     pass
 
 
-def update_room_door():
+def delete_room_wall_door():
     pass
 
 
-def delete_room_door():
-    pass
+# TODO move your CRUD methods here when you're done with them
+class DB:
+    def __init__(self):
+        #self.create_walls()
+        pass
 
+    Base.metadata.create_all(engine)
+
+    def create_walls(self):
+        """Hardcoded wall values"""
+        with Session(engine) as session:
+            north = Wall(id=0, side="north", pair=2)
+            east = Wall(id=1, side="east", pair=3)
+            south = Wall(id=2, side="south", pair=0)
+            west = Wall(id=3, side="west", pair=1)
+        session.add_all([north, east, south, west])
+        session.commit()
+
+
+    def read_wall(self, id):
+        stmt = select(Wall).where(Wall.id == id)
+        with Session(engine) as session:
+            wall = session.execute(stmt).first()
+        return wall
+    
+    def get_opposite_wall(self, wall_id):
+        stmt = select(Wall.pair).where(Wall.id == wall_id)
+        with Session(engine) as session:
+            pair = session.execute(stmt).first()
+        return pair[0]
+    
+    def update_walls():
+        pass
+
+
+    def delete_walls():
+        pass
+
+
+    def create_room(self, id, x, y):
+        with Session(engine) as session:
+            room = Room(id=id, x=x, y=y)
+        session.add(room)
+        session.commit()
+        return room.id
+
+    def read_room(self, id=0):
+        stmt = select(Room).where(Room.id == id)
+        with Session(engine) as session:
+            room = session.execute(stmt).first()
+        return room
+    
+    def get_room_if_exists(self, x, y, wall_pair):
+        match (wall_pair):
+            # facing....
+            case 0: # north
+                y -= 1
+            case 1: # east
+                x += 1
+            case 2: # south
+                y += 1
+            case 3: # west
+                x -= 1
+        stmt = select(Room.id).where((Room.x == x) & (Room.y == y))
+        with Session(engine) as session:
+            room = session.execute(stmt).one_or_none()
+        if room is None:
+            return 0
+        else:
+            return room[0]
+
+    def read_rooms(self):
+        stmt = select(Room)
+        rooms = []
+        with Session(engine) as session:
+            for row in session.execute(stmt):
+                #print(row)
+                rooms.append(row)
+        return rooms
+
+    def create_door(self, room_id=None):
+        with Session(engine) as session:
+            door = Door(room_id=room_id)
+        session.add(door)
+        session.commit()
+        return door.id
+
+
+    def read_door(self, id):
+        stmt = select(Door).where(Door.id == id)
+        with Session(engine) as session:
+            door = session.execute(stmt).one_or_none()
+        return door
+
+
+    def create_room_wall_door(self, room_id, wall_id, door_id=None):
+        with Session(engine) as session:
+            room_wall_door = RoomWallDoor(room_id=room_id, wall_id=wall_id, door_id=door_id)
+        session.add(room_wall_door)
+        session.commit()
+        return room_wall_door.id
+
+    def read_room_wall_door(self, id=0):
+        stmt = select(RoomWallDoor).where(RoomWallDoor.id == id)
+        with Session(engine) as session:
+            rwd = session.execute(stmt).first()
+        return rwd
+    
+    def get_door_from_rwd(self, room_id, wall_pair):
+        stmt = select(RoomWallDoor.door_id).where(
+            (RoomWallDoor.room_id == room_id) &
+            (RoomWallDoor.wall_id == wall_pair)
+            )
+        with Session(engine) as session:
+            door = session.execute(stmt)
+        return door.first()
+    
+    #def add_rwds_for_room(seld, room_id):
+        
 
 # Testing stuff
 def main() -> None:

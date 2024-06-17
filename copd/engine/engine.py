@@ -85,14 +85,13 @@ class Engine:
         color: Type: List, RGB value of wall color
         map: Type: Array, x and y coordinates of map tiles
         """
-        # if map is not None:
-        #     # accepts alternate map
-        #     map = map
-        # else:
-        #     # load default starting map
-        #     map = DEFAULT_MAP
+        if map is not None:
+            # accepts alternate map
+            map = map
+        else:
+            # load default starting map
+            map = Map(self,'./copd/ui/assets/map.csv')
         
-        map = Map(self,'./copd/ui/assets/map.csv')
         map.load_tiles()
         # add player to game
         self.add_player()
