@@ -79,7 +79,7 @@ class Collision(System):
                         entity.get(Velocity).dx = (X_TILES-2)
                         # updates minimap
                         entity.overworldcoords[0] = entity.overworldcoords[0] - 1
-                    elif entity.get(Position).x == (X_TILES-2):
+                    elif entity.get(Position).x == (X_TILES-1):
                         entity.get(Velocity).dx = -(X_TILES-2)
                         entity.overworldcoords[0] = entity.overworldcoords[0] + 1
                     elif entity.get(Position).y == 0:
