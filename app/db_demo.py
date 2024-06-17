@@ -42,5 +42,5 @@ class demo_engine:
     #TODO hook this into the ecs and create a simple map engine
     pass
 
-if __name__ == "__main__":
-    main()
+    if __name__ == "__main__":
+        main()

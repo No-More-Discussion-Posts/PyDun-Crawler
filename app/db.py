@@ -6,7 +6,7 @@ from typing import Optional
 from sqlalchemy import create_engine
 from sqlalchemy import Integer, String, Boolean
 from sqlalchemy import ForeignKey
-from sqlalchemy import select
+from sqlalchemy import select, update, func
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
@@ -368,8 +368,6 @@ class Door(Base):
 
 
 
-def update_door():
-    pass
 
 
 def delete_door():
@@ -426,13 +424,6 @@ class DB:
         with Session(engine) as session:
             pair = session.execute(stmt).first()
         return pair[0]
-    
-    def update_walls():
-        pass
-
-
-    def delete_walls():
-        pass
 
 
     def create_room(self, id, x, y):
@@ -467,7 +458,7 @@ class DB:
         else:
             return room[0]
 
-    def read_rooms(self):
+    def get_rooms(self):
         stmt = select(Room)
         rooms = []
         with Session(engine) as session:
@@ -505,16 +496,72 @@ class DB:
         return rwd
     
     def get_door_from_rwd(self, room_id, wall_pair):
-        stmt = select(RoomWallDoor.door_id).where(
+        stmt = select(RoomWallDoor).where(
             (RoomWallDoor.room_id == room_id) &
             (RoomWallDoor.wall_id == wall_pair)
             )
         with Session(engine) as session:
-            door = session.execute(stmt)
-        return door.first()
+            door = session.execute(stmt).first()
+        return door
     
+    def get_room_from_door(self, door_id):
+        stmt = select(RoomWallDoor.room_id).where(
+            RoomWallDoor.door_id == door_id
+        )
+        with Session(engine) as session:
+            room = session.execute(stmt).first()
+            print(room)
+        return room[0]
+    
+    def get_wall_from_door(self, door_id):
+        stmt = select(RoomWallDoor.wall_id).where(
+            RoomWallDoor.door_id == door_id
+        )
+        with Session(engine) as session:
+            wall = session.execute(stmt).first()
+        return wall[0]
+    
+    def add_rwd_door_from_room(self, room_id, wall, door_id):
+        stmt = (
+            update(RoomWallDoor)
+            .where(
+                (RoomWallDoor.room_id == room_id) &
+                (RoomWallDoor.wall_id == wall)
+            )
+            .values(door_id=door_id)
+        )
+        with Session(engine) as session:
+            rwd = session.execute(stmt)
+        return rwd
+
     #def add_rwds_for_room(seld, room_id):
+
+    def get_room_count(self):
+        stmt = select(func.count()).select_from(Room)
+        with Session(engine) as session:
+            room_count:int = session.execute(stmt).scalar()
+        return room_count
         
+    def update_door(self, door_id, room_id):
+        stmt = (
+            update(Door).where(
+                (Door.id == door_id)
+            )
+            .values(room_id=room_id)
+        )
+        with Session(engine) as session:
+            door = session.execute(stmt)
+        return door
+    
+    def get_rwds(self):
+        stmt = select(RoomWallDoor)
+        rooms = []
+        with Session(engine) as session:
+            for row in session.execute(stmt):
+                #print(row)
+                rooms.append(row)
+        return rooms
+
 
 # Testing stuff
 def main() -> None:
