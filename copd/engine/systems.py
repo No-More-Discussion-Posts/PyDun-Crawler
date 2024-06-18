@@ -74,6 +74,8 @@ class Collision(System):
                     entity.game.state = GameStates.BATTLE
                 # if overlap with door sprite group, load new area
                 elif pygame.sprite.spritecollide(entity, entity.game.doors, False):
+                    # update minimap
+                    entity.game.minimap.visit(entity.overworldcoords)
                     # loads sprite on corresponding doors
                     if entity.get(Position).x == 0:
                         entity.get(Velocity).dx = (X_TILES-2)

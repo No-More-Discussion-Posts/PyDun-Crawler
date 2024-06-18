@@ -15,6 +15,7 @@ from copd.engine.input_handlers import EventHandler
 # test
 from copd.engine.systems import Movement, Collision, Turn, Combat
 from copd.engine.components import Position, Velocity, TurnCounter
+from copd.ui.minimap import MiniMap
 
 
 # test
@@ -47,6 +48,7 @@ class Engine:
         self.Turn.add_entity(self)
         self.add_component(TurnCounter())
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.minimap = MiniMap(self)
         self.clock = pygame.time.Clock()
         pygame.display.set_caption(GAME_CAPTION)
         self.tile_map = TileMap(Path('copd/ui/assets/tilemap.png'))
@@ -128,6 +130,7 @@ class Engine:
         self.treasures.draw(self.screen)
         self.show_turn()
         self.show_location()
+        self.minimap.draw()
         self.clock.tick(FPS)
         pygame.display.update()
 
