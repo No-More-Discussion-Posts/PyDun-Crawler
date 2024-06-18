@@ -7,6 +7,7 @@ import pygame as pg  # TODO: make consistent
 from copd.config import *
 import time
 from copd.engine.components import Position, Velocity, Flag
+from random import randint
 
 
 items = {
@@ -128,6 +129,22 @@ class Monster(Entity):
                     dy = -1
                     self.y += dy * TILE_SIZE
         # time.sleep(.5) if velocity > 0
+        else:
+            PatrolDirection = randint(1, 4)
+            print(PatrolDirection)
+            if PatrolDirection == 1:
+                dx = 1
+                self.x += dx * TILE_SIZE
+            elif PatrolDirection == 2:
+                dx = -1
+                self.x += dx * TILE_SIZE
+            elif PatrolDirection == 3:
+                dy = 1
+                self.y += dy * TILE_SIZE
+            elif PatrolDirection == 4:
+                dy = -1
+                self.y += dy * TILE_SIZE
+
         self.rect.x = self.x
         self.rect.y = self.y
         self.monster_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
