@@ -166,6 +166,10 @@ class PauseMenu(Menu):
                 if e.type == pygame.MOUSEBUTTONDOWN:
                     if close_item.butt_rect.collidepoint(e.pos):
                         return
+                    elif item1.butt_rect.collidepoint(e.pos):
+                        BattleMenu.resolve_item(self, self.game.player, item1_text)
+                        self.player.inventory.use_item(item1_text, 1)
+                        return
                 else:
                     self.handle_input(e)
 
@@ -363,23 +367,15 @@ class BattleMenu:
                     if item1.butt_rect.collidepoint(e.pos):
                         self.resolve_item(self.player, item1_text)
                         self.player.inventory.use_item(item1_text, 1)
-                    if item2.butt_rect.collidepoint(e.pos):
+                    '''if item2.butt_rect.collidepoint(e.pos):
                         self.resolve_item(self.player, item2_text)
                     if item3.butt_rect.collidepoint(e.pos):
-                        self.resolve_item(self.player, item3_text)
+                        self.resolve_item(self.player, item3_text)'''
                 self.handle_input(e)
 
     def resolve_item(self, player, item):
-        if item == "L HP Pot":
+        if item == "Health Potion":
             player.hp += 10
-            if player.hp > player.max_hp:
-                player.hp = player.max_hp
-        elif item == "M HP Pot":
-            player.hp += 8
-            if player.hp > player.max_hp:
-                player.hp = player.max_hp
-        elif item == "S HP Pot":
-            player.hp += 5
             if player.hp > player.max_hp:
                 player.hp = player.max_hp
 
