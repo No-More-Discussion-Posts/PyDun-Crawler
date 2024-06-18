@@ -3,6 +3,7 @@ import csv
 from pathlib import Path
 from copd.engine.entities import Entity
 from copd.config import *
+
 class Map:
     def __init__(self,game,filename):
         self.game = game
@@ -52,14 +53,14 @@ class Map:
             if x == 0:
                 is_door = False
         elif self.game.player.overworldcoords[0] == OVERWORLD_WIDTH:
-            if x == (SCREEN_WIDTH-TILE_SIZE):
+            if x == (X_TILES-1):
                 is_door = False
         # North South Walls
         if self.game.player.overworldcoords[1] == 0:
             if y == 0:
                 is_door = False
         elif self.game.player.overworldcoords[1] == OVERWORLD_HEIGHT:
-            if y == (SCREEN_HEIGHT-TILE_SIZE):
+            if y == (Y_TILES-1):
                 is_door = False
             
         if is_door:
