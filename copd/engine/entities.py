@@ -82,7 +82,6 @@ class Entity(pg.sprite.Sprite):
 
         dx = self.get(Velocity).dx * TILE_SIZE
         dy = self.get(Velocity).dy * TILE_SIZE
-        self.get(Velocity).set(0,0)
         self.rect.move_ip(dx, dy)
 
 
@@ -151,6 +150,9 @@ class Player(Entity):
         if self.game.debug:
             print(f"Player at: {self.x},{self.y}")
         self.overworldcoords = [1, 1]  # overworld coordinates. starts at 1,1
+        self.game.Movement.add_entity(self)
+        self.game.Collision.add_entity(self)
+        self.game.Combat.add_entity(self)
 
 
 class Treasure(Entity):

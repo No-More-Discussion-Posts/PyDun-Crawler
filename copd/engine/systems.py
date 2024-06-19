@@ -68,9 +68,11 @@ class Collision(System):
                 entity.get(Velocity).dx = entity.get(Velocity).p_dx * -1
                 entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1
                 entity.game.Movement.update()
+                entity.get(Velocity).set(0,0)
                 # remove turn counter after returning sprite
                 if isinstance(entity, Player):
                     entity.game.Turn.undo()
+                    entity.game.monster.stun += 1 # ensure monster doesn't move
 
             ###PLAYER SPECIFIC COLLISION###
             if isinstance(entity, Player):

@@ -77,9 +77,6 @@ class Engine:
             self.player.draw()
         else:
             self.player = player
-        self.Movement.add_entity(self.player)
-        self.Collision.add_entity(self.player)
-        self.Combat.add_entity(self.player)
 
     def load_map(self, map=DEFAULT_MAP) -> None:
         """
