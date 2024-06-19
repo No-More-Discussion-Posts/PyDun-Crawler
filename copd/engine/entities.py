@@ -160,29 +160,6 @@ class Player(Entity):
         self.overworldcoords = [1, 1]  # overworld coordinates. starts at 1,1
 
 
-# class Wall(Entity):
-#     def __init__(self, game, x, y, color):
-#         super().__init__(game, x, y)
-#         ###WALL SPECIFIC###
-#         self._layer = Layers.Tile_Layer
-#         self.groups = self.game.blocks
-#         ###WALL SPECIFIC###
-#         pg.sprite.Sprite.__init__(self, self.groups)
-
-#         # sprite size(used for referencing the sprite)
-#         self.width = TILE_SIZE
-#         self.height = TILE_SIZE
-
-#         self.image = pg.Surface([self.width, self.height])
-#         ###WALL SPECIFIC###
-#         self.image.fill(color)
-#         ###WALL SPECIFIC###
-
-#         self.rect = self.image.get_rect()
-#         self.rect.x = self.get(Position).x * TILE_SIZE
-#         self.rect.y = self.get(Position).y * TILE_SIZE
-#         self.wall_rect = pg.Rect(self.rect.x, self.rect.y, TILE_SIZE, TILE_SIZE)
-
 class Treasure(Entity):
     def __init__(self, game, x, y):
         super().__init__(game, x, y,group=game.treasures,name='chest')
