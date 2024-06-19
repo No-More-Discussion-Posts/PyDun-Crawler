@@ -27,7 +27,7 @@ class Engine:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption(GAME_CAPTION)
         self.components = {}
-        self.debug = True
+        self.debug = False
         self.Turn = Turn()
         self.running = False
         # will need to change state when changing between menus
@@ -139,7 +139,6 @@ class Engine:
 
     def run(self):
         self.running = True
-        self.load_map()
         while self.running:
             for event in pygame.event.get():
                 self.handle_event(event)
@@ -160,7 +159,7 @@ class Engine:
             self.monster = monster
         else:
 
-            self.monster = create_monsters(self, randint(0, 2))
+            self.monster = create_monster(self, randint(0, 2))
         self.Collision.add_entity(self.monster)
         self.Movement.add_entity(self.monster)
 

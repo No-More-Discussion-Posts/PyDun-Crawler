@@ -21,7 +21,6 @@ class Movement(System):
         for entity in self.entities:
             if isinstance(entity, Monster):  # create a system
                 if entity.stun > 0:
-                    print(f"Stunned: {entity.stun}")
                     entity.stun -= 1
                 else:
                     entity.ai()

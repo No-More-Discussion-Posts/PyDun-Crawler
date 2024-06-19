@@ -45,6 +45,7 @@ class Entity(pg.sprite.Sprite):
 
         if group is not None:
             pg.sprite.Sprite.__init__(self, group)
+        
 
     @property
     def x(self):
@@ -81,6 +82,7 @@ class Entity(pg.sprite.Sprite):
 
         dx = self.get(Velocity).dx * TILE_SIZE
         dy = self.get(Velocity).dy * TILE_SIZE
+        self.get(Velocity).set(0,0)
         self.rect.move_ip(dx, dy)
 
 
@@ -98,7 +100,6 @@ class Monster(Entity):
         self.item = item
 
     def ai(self):
-        print("Conducting AI")
         # enemy to player vector math here
         dx = 0
         dy = 0
@@ -116,7 +117,6 @@ class Monster(Entity):
                 elif dy_player < 0:
                     dy = -1
             self.get(Velocity).set(dx, dy)
-            print(f"dx: {dx} dy: {dy}")
         else:
             patrol_direction = randint(1, 4)
             dx = 0
@@ -132,7 +132,6 @@ class Monster(Entity):
                 dy = -1
 
             self.get(Velocity).set(dx, dy)
-            print(f"dx: {dx} dy: {dy}")
 
 
 class Player(Entity):
@@ -162,7 +161,7 @@ class Treasure(Entity):
         self.item = items[random.randint(1, 4)]
 
 
-def create_monsters(game, number):
+def create_monster(game, number):
     x = random.randint(1, X_TILES - 2)
     y = random.randint(1, Y_TILES - 2)
     if number == 0:
