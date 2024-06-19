@@ -34,7 +34,7 @@ class Map:
                 elif tile == '2': # Door
                     group,name = self.door_or_wall(x,y)
 
-                Entity(self.game,x*TILE_SIZE, y*TILE_SIZE,group=group,name=name).draw()
+                Entity(self.game,x, y,group=group,name=name).draw()
                 x+=1
             y += 1
 

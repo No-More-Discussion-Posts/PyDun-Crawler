@@ -104,7 +104,7 @@ class Engine:
         self.current_room = Map(self,map)
         self.current_room.load_tiles()
         # add treasure for room
-        self.add_treasure(14*TILE_SIZE, 10*TILE_SIZE)
+        self.add_treasure(14, 10)
 
     def update(self):
         '''Update all sprites'''
