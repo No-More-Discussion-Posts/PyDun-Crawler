@@ -7,9 +7,15 @@ wall:
 door:
   x: 80
   y: 160
-monster:
+HobGoblin:
+  x: 432
+  y: 32
+Goblin:
   x: 400
   y: 32
+Ogre:
+  x: 480
+  y: 128
 floor:
   x: 256
   y: 0

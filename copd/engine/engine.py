@@ -74,8 +74,6 @@ class Engine:
         """
         if player is None:
             self.player = Player("Bilbo", self, 15, 9,"player")
-            self.player.add_component(Position(15, 9))
-            self.player.add_component(Velocity())
             self.player.draw()
         else:
             self.player = player
@@ -129,7 +127,6 @@ class Engine:
         self.doors.draw(self.screen)
         self.treasures.draw(self.screen)
         self.show_turn()
-        self.show_location()
         self.minimap.draw()
         self.clock.tick(FPS)
         pygame.display.update()
@@ -140,21 +137,9 @@ class Engine:
         FONT = pygame.font.Font(font, TILE_SIZE)
         turn = FONT.render(str(self.get(TurnCounter).turn), False, 'yellow')
         self.screen.blit(turn, (TILE_SIZE, 0))
-        # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
 
-    def show_location(self):
-        # displays turn counter
-        font = pygame.font.get_default_font()
-        FONT = pygame.font.Font(font, TILE_SIZE)
-        coords = FONT.render(str(self.player.overworldcoords), False, "yellow")
-        self.screen.blit(coords, ((X_TILES-4) * TILE_SIZE, 0))
-        # self.screen.blit(turn,(TILE_SIZE*2,SCREEN_WIDTH-(TILE_SIZE*2)))
-
+    
     def run(self):
-        
-        # self.update()
-        # self.draw()
-
         self.running = True
         self.load_map()
         while self.running:
@@ -176,16 +161,10 @@ class Engine:
         if monster is not None:
             self.monster = monster
         else:
-            # if no monster is supplied
-            # initilizes random enemy sprite in room
-            # num = random.randint(1, 3)
-            # if num == 1:
-            #     self.monster = Goblin(self)
-            # if num == 2:
-            #     self.monster = HobGoblin(self)
-            # if num == 3:
-            #     self.monster = Ogre(self)
-            self.monster = Ogre(self)
+           
+            self.monster = create_monsters(self,randint(0,2))
+        self.Collision.add_entity(self.monster)
+        self.Movement.add_entity(self.monster)
 
     def add_treasure(self, x, y):
         """

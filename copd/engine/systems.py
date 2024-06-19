@@ -3,7 +3,7 @@ import sys
 from random import randint
 from copd.engine.ecs import System
 from copd.engine.components import Position, Velocity, TurnCounter
-from copd.engine.entities import Player
+from copd.engine.entities import Player,Monster
 from copd.config import *
 from copd.engine.states import *
 
@@ -19,6 +19,12 @@ class Movement(System):
         # loops through all all entitites added by
         # system
         for entity in self.entities:
+            if isinstance(entity,Monster): #create a system
+                if entity.stun > 0:
+                    print(f"Stunned: {entity.stun}")
+                    entity.stun -= 1
+                else:
+                    entity.ai()
             # get x, y of sprite, adds changes
             entity.get(Position) + entity.get(Velocity)
             # updates sprite position
@@ -64,8 +70,8 @@ class Collision(System):
                 entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1
                 entity.game.Movement.update()
                 # remove turn counter after returning sprite
-                self.entities[0].game.Turn.undo()
-                entity.movement()
+                if isinstance(entity,Player):
+                    entity.game.Turn.undo()
 
             ###PLAYER SPECIFIC COLLISION###
             if isinstance(entity, Player):
@@ -92,7 +98,7 @@ class Collision(System):
                         entity.overworldcoords[1] = entity.overworldcoords[1] + 1
                     # pushes new x and y coords to sprite
                     entity.game.Movement.update()
-                    entity.movement()
+                    # entity.movement()
                     # resets turn timer
                     self.entities[0].game.Turn.undo()
                     # calls load map to draw new room

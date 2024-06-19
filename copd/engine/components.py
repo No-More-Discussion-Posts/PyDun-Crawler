@@ -31,6 +31,8 @@ class Velocity(Component):
     def __init__(self, dx: int = 0, dy: int = 0):
         self.dx = dx
         self.dy = dy
+        self.p_dx = 0
+        self.p_dy = 0
 
     def set_from_key(self, key):
         if key == pygame.K_w:
