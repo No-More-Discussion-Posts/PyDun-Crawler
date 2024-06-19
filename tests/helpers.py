@@ -32,7 +32,10 @@ def reset_monster():
 def no_monster():
     def wrap(func):
         def wrapper(game):
+            game.Movement.remove_entity(game.monster)
+            game.Collision.remove_entity(game.monster)
             game.monster.kill()
+            # del game.monster
             func(game)
 
         return wrapper
