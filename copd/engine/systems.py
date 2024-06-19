@@ -3,7 +3,7 @@ import sys
 from random import randint
 from copd.engine.ecs import System
 from copd.engine.components import Position, Velocity, TurnCounter
-from copd.engine.entities import Player,Monster
+from copd.engine.entities import Player, Monster
 from copd.config import *
 from copd.engine.states import *
 
@@ -19,7 +19,7 @@ class Movement(System):
         # loops through all all entitites added by
         # system
         for entity in self.entities:
-            if isinstance(entity,Monster): #create a system
+            if isinstance(entity, Monster):  # create a system
                 if entity.stun > 0:
                     print(f"Stunned: {entity.stun}")
                     entity.stun -= 1
@@ -62,7 +62,7 @@ class Collision(System):
             # checks all entities in system for collision with sprites
             # in the wall group of sprites
             if pygame.sprite.spritecollide(entity, entity.game.solid_blocks, False):
-        
+
                 if entity.game.debug:
                     print(f"{entity}: Collision with wall")
                 # return sprite to original position
@@ -70,7 +70,7 @@ class Collision(System):
                 entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1
                 entity.game.Movement.update()
                 # remove turn counter after returning sprite
-                if isinstance(entity,Player):
+                if isinstance(entity, Player):
                     entity.game.Turn.undo()
 
             ###PLAYER SPECIFIC COLLISION###
@@ -84,17 +84,17 @@ class Collision(System):
                     entity.game.minimap.visit(entity.overworldcoords)
                     # loads sprite on corresponding doors
                     if entity.get(Position).x == 0:
-                        entity.get(Velocity).dx = (X_TILES-2)
+                        entity.get(Velocity).dx = X_TILES - 2
                         # updates minimap
                         entity.overworldcoords[0] = entity.overworldcoords[0] - 1
-                    elif entity.get(Position).x == (X_TILES-1):
-                        entity.get(Velocity).dx = -(X_TILES-2)
+                    elif entity.get(Position).x == (X_TILES - 1):
+                        entity.get(Velocity).dx = -(X_TILES - 2)
                         entity.overworldcoords[0] = entity.overworldcoords[0] + 1
                     elif entity.get(Position).y == 0:
-                        entity.get(Velocity).dy = (Y_TILES-2)
+                        entity.get(Velocity).dy = Y_TILES - 2
                         entity.overworldcoords[1] = entity.overworldcoords[1] - 1
-                    elif entity.get(Position).y == (Y_TILES-1):
-                        entity.get(Velocity).dy = -(Y_TILES-2)
+                    elif entity.get(Position).y == (Y_TILES - 1):
+                        entity.get(Velocity).dy = -(Y_TILES - 2)
                         entity.overworldcoords[1] = entity.overworldcoords[1] + 1
                     # pushes new x and y coords to sprite
                     entity.game.Movement.update()
@@ -117,12 +117,14 @@ class Collision(System):
                         # adds health pot to player inventory
                         entity.inventory.update_item(entity.game.treasure.item, 1)
 
+
 class Combat(System):
 
-    def __init__(self,game):
+    def __init__(self, game):
         super().__init__()
         self.complete = True
         self.game = game
+
     def end(self):
         try:
             self.game.player.in_combat.state = False
@@ -132,7 +134,7 @@ class Combat(System):
             print("Problem in Combat.end")
             print(e)
 
-    def setup(self,parry= False):
+    def setup(self, parry=False):
         self.complete = False
         self.parry = parry
         self.game.player.in_combat.state = True
@@ -143,13 +145,12 @@ class Combat(System):
             self.player = self.entities[0].game.player
             self.monster = self.player.game.monster
             if self.player.in_combat.state and self.monster.in_combat.state:
-                self.attack(self.player.game,parry = False)
+                self.attack(self.player.game, parry=False)
         except Exception as e:
             print("Error in battle")
             print(e)
-                 
 
-    def attack(self,game, parry):
+    def attack(self, game, parry):
         self.complete = False
         # Just a basic Combat system can be better later
         if game.debug:
@@ -178,9 +179,8 @@ class Combat(System):
                 game.player.inventory.update_item(game.monster.item, 1)
             game.monster.kill()  # added this to remove monster from overworld after battle is won. -Roland
             self.complete = True
-       
-    
-    def calc_parry(self,game) -> bool:
+
+    def calc_parry(self, game) -> bool:
         """Parry attack: Chance to deal extra damage and take no damage
 
         Returns
@@ -199,10 +199,9 @@ class Combat(System):
         return parry_chance
 
     ###TYLER EXPERIMENTAL###
-    def miss_hit(self,player_dex):
+    def miss_hit(self, player_dex):
         pdex = player_dex
         chance_hit = randint(1, 10)
         if chance_hit <= pdex:
             return True
         return False
-

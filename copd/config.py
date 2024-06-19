@@ -1,4 +1,4 @@
-from enum import Enum,IntEnum
+from enum import Enum, IntEnum
 from dataclasses import dataclass
 from typing import Dict
 
@@ -7,14 +7,15 @@ Y_TILES = 20
 TILE_SIZE = 16
 SCREEN_WIDTH = X_TILES * TILE_SIZE
 SCREEN_HEIGHT = Y_TILES * TILE_SIZE
-PLAYER_SPEED = 3 # Pixels per tick
+PLAYER_SPEED = 3  # Pixels per tick
 FPS = 60
 OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
 OVERWORLD_WIDTH = 2
 OVERWORLD_HEIGHT = 2
-DEFAULT_MAP = 'copd/ui/assets/map.csv'
+DEFAULT_MAP = "copd/ui/assets/map.csv"
 
 GAME_CAPTION = "Crawl of PyDun"
+
 
 class Layers(IntEnum):
     BG_Layer = 0
@@ -22,8 +23,9 @@ class Layers(IntEnum):
     Door_Layer = 2
     Player_Layer = 3
 
+
 @dataclass
-class Colors():
+class Colors:
     NachoCheese = (255, 208, 108)
     DaytonaPeach = (253, 221, 200)
     DeadSalmon = (170, 148, 135)
@@ -45,6 +47,7 @@ class Colors():
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
     GREY = (128, 128, 128)
+
 
 class MenuOption(Enum):
     CAPTION = 1

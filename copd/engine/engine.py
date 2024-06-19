@@ -39,9 +39,9 @@ class Engine:
         self.blocks = pygame.sprite.LayeredUpdates()
         self.solid_blocks = pygame.sprite.LayeredUpdates()
         self.monsters = pygame.sprite.LayeredUpdates()
-        self.players = pygame.sprite.LayeredUpdates() 
-        self.doors = pygame.sprite.LayeredUpdates() 
-        self.treasures = pygame.sprite.LayeredUpdates() # tagged for removal
+        self.players = pygame.sprite.LayeredUpdates()
+        self.doors = pygame.sprite.LayeredUpdates()
+        self.treasures = pygame.sprite.LayeredUpdates()  # tagged for removal
         self.Movement = Movement()
         self.Collision = Collision()
         self.Combat = Combat(self)
@@ -51,7 +51,7 @@ class Engine:
         self.minimap = MiniMap(self)
         self.clock = pygame.time.Clock()
         pygame.display.set_caption(GAME_CAPTION)
-        self.tile_map = TileMap(Path('copd/ui/assets/tilemap.png'))
+        self.tile_map = TileMap(Path("copd/ui/assets/tilemap.png"))
 
     def add_component(self, component: Component):
         """_summary_
@@ -73,7 +73,7 @@ class Engine:
 
         """
         if player is None:
-            self.player = Player("Bilbo", self, 15, 9,"player")
+            self.player = Player("Bilbo", self, 15, 9, "player")
             self.player.draw()
         else:
             self.player = player
@@ -97,21 +97,20 @@ class Engine:
         self.doors.empty()
         self.solid_blocks.empty()
         # loads specififc map from args
-        
+
         # add monster to game
         self.add_monster()
-        
-        self.current_room = Map(self,map)
+
+        self.current_room = Map(self, map)
         self.current_room.load_tiles()
         # add treasure for room
         self.add_treasure(14, 10)
 
     def update(self):
-        '''Update all sprites'''
+        """Update all sprites"""
         self.all_sprites.update()
         self.players.update()
         self.monster.update()
-        
 
     def draw(self):
         """
@@ -135,10 +134,9 @@ class Engine:
         # displays turn counter
         font = pygame.font.get_default_font()
         FONT = pygame.font.Font(font, TILE_SIZE)
-        turn = FONT.render(str(self.get(TurnCounter).turn), False, 'yellow')
+        turn = FONT.render(str(self.get(TurnCounter).turn), False, "yellow")
         self.screen.blit(turn, (TILE_SIZE, 0))
 
-    
     def run(self):
         self.running = True
         self.load_map()
@@ -161,8 +159,8 @@ class Engine:
         if monster is not None:
             self.monster = monster
         else:
-           
-            self.monster = create_monsters(self,randint(0,2))
+
+            self.monster = create_monsters(self, randint(0, 2))
         self.Collision.add_entity(self.monster)
         self.Movement.add_entity(self.monster)
 
@@ -179,5 +177,3 @@ class Engine:
         y tile position
         """
         self.treasure = Treasure(self, x, y)
-
-    

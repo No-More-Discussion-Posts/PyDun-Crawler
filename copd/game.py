@@ -13,7 +13,9 @@ if "copd" not in sys.modules:
     sys.path.append(parent_dir_name)
 from copd.engine import Engine
 from copd.config import *
+
 pygame.init()
+
 
 def main() -> None:
     """Main game loop"""

@@ -22,8 +22,9 @@ class immovable_entitiy(pg.sprite.Sprite):
     # class to initilize a sprite that is immovable
     pass
 
+
 class Entity(pg.sprite.Sprite):
-    def __init__(self, game, x=0, y=0,group=None,name=None,max_hp=0,atk=0,dex=0):
+    def __init__(self, game, x=0, y=0, group=None, name=None, max_hp=0, atk=0, dex=0):
         super().__init__()
         self.components = {}
         self.name = name
@@ -31,7 +32,7 @@ class Entity(pg.sprite.Sprite):
         self.add_component(Position(x, y))
         self.add_component(Velocity())
         self.stun = 0
-        self.facing = 'down'
+        self.facing = "down"
         self.image = game.tile_map.get_image(name)
         self.rect = self.image.get_rect()
         self.x = x * TILE_SIZE
@@ -40,32 +41,32 @@ class Entity(pg.sprite.Sprite):
         self.hp = max_hp
         self.max_hp = max_hp
         self.atk = atk
-        self.dex = dex 
-           
+        self.dex = dex
+
         if group is not None:
             pg.sprite.Sprite.__init__(self, group)
-        
 
     @property
     def x(self):
         return self.rect.x
-    
+
     @property
     def y(self):
         return self.rect.y
-    
+
     @x.setter
-    def x(self,x):
+    def x(self, x):
         self.rect.x = x
 
     @y.setter
-    def y(self,y):
+    def y(self, y):
         self.rect.y = y
+
     def update(self):
         self.draw()
 
     def draw(self):
-        self.game.screen.blit(self.image,(self.x,self.y))
+        self.game.screen.blit(self.image, (self.x, self.y))
 
     # class to initilize a sprite with movement and actions
 
@@ -75,9 +76,9 @@ class Entity(pg.sprite.Sprite):
     def get(self, component):
         return self.components.get(component)
 
-    def movement(self): # def update(self)
+    def movement(self):  # def update(self)
         # updates sprite x and y coords
-        
+
         dx = self.get(Velocity).dx * TILE_SIZE
         dy = self.get(Velocity).dy * TILE_SIZE
         self.rect.move_ip(dx, dy)
@@ -85,9 +86,9 @@ class Entity(pg.sprite.Sprite):
 
 class Monster(Entity):
 
-    def __init__(self, game, name,x,y,max_hp=10,atk=2,dex=2,item = None):
-        super().__init__(game, x, y,game.monsters,name=name)
-       
+    def __init__(self, game, name, x, y, max_hp=10, atk=2, dex=2, item=None):
+        super().__init__(game, x, y, game.monsters, name=name)
+
         self.in_combat = Flag(False)
         self.stun = 0
         self.max_hp = max_hp
@@ -96,19 +97,14 @@ class Monster(Entity):
         self.dex = dex
         self.item = item
 
-
     def ai(self):
-        # super().movement()
-        print("Start ai")
+        print("Conducting AI")
         # enemy to player vector math here
         dx = 0
         dy = 0
         dx_player = self.game.player.get(Position).x - self.get(Position).x
         dy_player = self.game.player.get(Position).y - self.get(Position).y
-        print(f"px: {self.game.player.get(Position).x} py: {self.game.player.get(Position).y}")
-        print(f"mx: {self.get(Position).x} my: {self.get(Position).y}")
-        print(f"Distance: {math.sqrt(dx_player**2+dy_player**2)}")
-        if math.sqrt(dx_player**2+dy_player**2) <5:
+        if math.sqrt(dx_player**2 + dy_player**2) < 5:
             if abs(dx_player) > abs(dy_player):
                 if dx_player > 0:
                     dx = 1
@@ -119,31 +115,29 @@ class Monster(Entity):
                     dy = 1
                 elif dy_player < 0:
                     dy = -1
-            self.get(Velocity).set(dx,dy)
-        # time.sleep(.5) if velocity > 0
+            self.get(Velocity).set(dx, dy)
+            print(f"dx: {dx} dy: {dy}")
         else:
-            PatrolDirection = randint(1, 4)
-            print(PatrolDirection)
+            patrol_direction = randint(1, 4)
             dx = 0
             dy = 0
 
-            if PatrolDirection == 1:
+            if patrol_direction == 1:
                 dx = 1
-            elif PatrolDirection == 2:
+            elif patrol_direction == 2:
                 dx = -1
-            elif PatrolDirection == 3:
+            elif patrol_direction == 3:
                 dy = 1
-            elif PatrolDirection == 4:
+            elif patrol_direction == 4:
                 dy = -1
-                
-                
-            self.get(Velocity).set(dx,dy)
-        
+
+            self.get(Velocity).set(dx, dy)
+            print(f"dx: {dx} dy: {dy}")
 
 
 class Player(Entity):
-    def __init__(self, name, game, x, y,filename=None):
-        super().__init__(game, x, y,game.players,filename)
+    def __init__(self, name, game, x, y, filename=None):
+        super().__init__(game, x, y, game.players, filename)
         self.in_combat = Flag(False)
         # name of player
         self.name = name
@@ -162,19 +156,45 @@ class Player(Entity):
 
 class Treasure(Entity):
     def __init__(self, game, x, y):
-        super().__init__(game, x, y,group=game.treasures,name='chest')
+        super().__init__(game, x, y, group=game.treasures, name="chest")
         self._layer = Layers.Door_Layer
 
         self.item = items[random.randint(1, 4)]
-        
-def create_monsters(game,number):
-    x = random.randint(1, X_TILES-2) 
-    y = random.randint(1, Y_TILES-2) 
-    if number == 0:
-        return Monster(game,"Ogre",x,y,max_hp = 20, atk=4,dex=0,item=items[random.randint(1,4)])
-    elif number == 1:
-        return Monster(game,"HobGoblin",x,y,max_hp = 15, atk = 2, dex = 2, item = items[random.randint(1,4)])
-    elif number == 2:
-        return Monster(game,"Goblin",x,y,max_hp=10,atk = 1, dex = 2, item=items[random.randint(1,4)])
-    
 
+
+def create_monsters(game, number):
+    x = random.randint(1, X_TILES - 2)
+    y = random.randint(1, Y_TILES - 2)
+    if number == 0:
+        return Monster(
+            game,
+            "Ogre",
+            x,
+            y,
+            max_hp=20,
+            atk=4,
+            dex=0,
+            item=items[random.randint(1, 4)],
+        )
+    elif number == 1:
+        return Monster(
+            game,
+            "HobGoblin",
+            x,
+            y,
+            max_hp=15,
+            atk=2,
+            dex=2,
+            item=items[random.randint(1, 4)],
+        )
+    elif number == 2:
+        return Monster(
+            game,
+            "Goblin",
+            x,
+            y,
+            max_hp=10,
+            atk=1,
+            dex=2,
+            item=items[random.randint(1, 4)],
+        )

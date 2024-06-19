@@ -32,7 +32,7 @@ def test_collide_wall_s(game: Engine):
     x = player.get(Position).x
     y = player.get(Position).y
     print(player.get(Position))
-    assert (x, y) == (15, Y_TILES-2)
+    assert (x, y) == (15, Y_TILES - 2)
 
 
 @reset_player()
@@ -47,7 +47,7 @@ def test_collide_wall_e(game):
     x = player.get(Position).x
     y = player.get(Position).y
     print(player.get(Position))
-    assert (x, y) == (X_TILES-2, 8)
+    assert (x, y) == (X_TILES - 2, 8)
 
 
 @reset_player()

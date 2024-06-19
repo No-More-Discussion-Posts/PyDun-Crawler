@@ -7,6 +7,7 @@ from copd.ui.text_box import TextBox
 from copd.config import Option, MenuOption
 from copd.engine.states import GameStates
 
+
 class Menu:
     def __init__(self, game, options):
         self.game = game
@@ -257,18 +258,21 @@ class BattleMenu:
 
             height = self.game.screen.get_height()
             width = self.game.screen.get_width()
-            monster_info = TextBox(200,100,self.game.screen,10,10)
-            monster_info.add_text(self.monster.name,Colors.BLACK,(10,10))
-            monster_info.add_text(f"{self.monster.hp}/{self.monster.max_hp}",Colors.BLACK,(10,35))
+            monster_info = TextBox(200, 100, self.game.screen, 10, 10)
+            monster_info.add_text(self.monster.name, Colors.BLACK, (10, 10))
+            monster_info.add_text(
+                f"{self.monster.hp}/{self.monster.max_hp}", Colors.BLACK, (10, 35)
+            )
 
             monster_info.add_border()
             monster_info.draw()
-            
-            
-            player_info = TextBox(300,200,self.game.screen,width-310,height-210)
+
+            player_info = TextBox(300, 200, self.game.screen, width - 310, height - 210)
             player_info.add_border(Colors.BLUE)
-            player_info.add_text(self.player.name,Colors.BLUE,(10,10))
-            player_info.add_text(f"{self.player.hp}/{self.player.max_hp}",Colors.BLUE,(10,35))
+            player_info.add_text(self.player.name, Colors.BLUE, (10, 10))
+            player_info.add_text(
+                f"{self.player.hp}/{self.player.max_hp}", Colors.BLUE, (10, 35)
+            )
             player_info.draw()
             # Button Testing
             fight = Button("Fight", self.game, 340, 170)
@@ -283,14 +287,16 @@ class BattleMenu:
             pygame.display.flip()
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
-                    if fight.butt_rect.collidepoint(e.pos) or parry.butt_rect.collidepoint(e.pos):
+                    if fight.butt_rect.collidepoint(
+                        e.pos
+                    ) or parry.butt_rect.collidepoint(e.pos):
                         parrying = False
                         if parry.butt_rect.collidepoint(e.pos):
                             parrying = True
-                        self.game.Combat.setup(parry = parrying)
+                        self.game.Combat.setup(parry=parrying)
                         self.game.Combat.update()
                         self.running = not self.game.Combat.complete
-                    
+
                         # self.running = combat(self.game,parry=True)
                     if run.butt_rect.collidepoint(e.pos):
                         self.monster.stun = 2
@@ -301,9 +307,7 @@ class BattleMenu:
                     # self.running = not self.game.Combat.complete
                 self.handle_input(e)
         self.game.state = GameStates.MAIN
-       
 
-    
     ###TYLER EXPERIMENTAL###
 
     def inventory_screen(self):
@@ -367,10 +371,10 @@ class BattleMenu:
                     if item1.butt_rect.collidepoint(e.pos):
                         self.resolve_item(self.player, item1_text)
                         self.player.inventory.use_item(item1_text, 1)
-                    '''if item2.butt_rect.collidepoint(e.pos):
+                    """if item2.butt_rect.collidepoint(e.pos):
                         self.resolve_item(self.player, item2_text)
                     if item3.butt_rect.collidepoint(e.pos):
-                        self.resolve_item(self.player, item3_text)'''
+                        self.resolve_item(self.player, item3_text)"""
                 self.handle_input(e)
 
     def resolve_item(self, player, item):
@@ -386,5 +390,3 @@ class BattleMenu:
         if input.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
-

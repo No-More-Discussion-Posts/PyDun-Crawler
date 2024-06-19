@@ -25,7 +25,7 @@ def test_parry(game):
     monster_hp = game.player.hp
     game.Combat.setup()
     # game.Combat.update()
-    
+
     parried = False
     for i in range(100):
         parried = game.Combat.calc_parry(game)
@@ -49,7 +49,7 @@ def test_player_death(game):
         game.Combat.setup()
         game.Combat.update()
     assert game_status.type == SystemExit
-   
+
 
 def test_monster_death(game):
     game.state = GameStates.BATTLE

@@ -1,10 +1,12 @@
 import pygame
 from .ecs import Component
 
+
 class Flag(Component):
-    def __init__(self,state = False):
+    def __init__(self, state=False):
         super().__init__()
         self.state = state
+
 
 class Position(Component):
     def __init__(self, x: int, y: int):
@@ -22,8 +24,6 @@ class Position(Component):
 
     def __str__(self):
         return f"Position - x:{self.x}, y:{self.y}"
-
-
 
 
 class Velocity(Component):
