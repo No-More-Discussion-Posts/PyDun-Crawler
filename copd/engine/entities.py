@@ -85,12 +85,20 @@ class Entity(pg.sprite.Sprite):
     def animate(self):
         dx = 0
         dy = 0
-        if self.x_dest != self.x:
-            dx = ANIMATION_SPEED * (self.x_dest - self.x)/abs(self.x_dest - self.x)
-        if self.y_dest != self.y:
-            dy = ANIMATION_SPEED * (self.y_dest - self.y)/abs(self.y_dest - self.y)
-        if self.x == self.x_dest and self.y == self.y_dest:
-            self.moving = False
+        x_distance = self.x_dest - self.x
+        y_distance = self.y_dest - self.y
+        if abs(x_distance) > TILE_SIZE or abs(y_distance) > TILE_SIZE:
+                dx = x_distance
+                dy = y_distance
+            
+        else:
+            if self.x_dest != self.x:
+                dx = ANIMATION_SPEED * (x_distance)/abs(x_distance)
+            if self.y_dest != self.y:
+                dy = ANIMATION_SPEED * (y_distance)/abs(y_distance)
+            if self.x == self.x_dest and self.y == self.y_dest:
+                self.moving = False
+            
         self.prev_dx = dx
         self.prev_dy = dy
         return (dx,dy)
