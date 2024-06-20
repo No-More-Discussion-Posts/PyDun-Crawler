@@ -25,9 +25,18 @@ class Movement(System):
                 else:
                     entity.ai()
             # get x, y of sprite, adds changes
-            entity.get(Position) + entity.get(Velocity)
+            entity.get(Position).x += entity.get(Velocity).dx
+            entity.get(Position).y += entity.get(Velocity).dy
             # updates sprite position
-            entity.movement()
+            dx = entity.get(Velocity).dx * TILE_SIZE
+            dy = entity.get(Velocity).dy * TILE_SIZE
+            # self.rect.move_ip(dx, dy)
+            #positive or negative
+            if dx != 0 or dy != 0:
+                entity.moving = True
+                entity.x_dest = entity.x + dx
+                entity.y_dest = entity.y + dy
+            entity.update()
             # resets velocity
             entity.get(Velocity).set(0, 0)
             if entity == self.entities[0]:
@@ -65,9 +74,11 @@ class Collision(System):
                 if entity.game.debug:
                     print(f"{entity}: Collision with wall")
                 # return sprite to original position
-                entity.get(Velocity).dx = entity.get(Velocity).p_dx * -1
-                entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1
-                entity.game.Movement.update()
+                entity.moving = False
+                entity.rect.move_ip(entity.prev_dx*-1, entity.prev_dy *-1)
+                # entity.get(Velocity).dx = entity.get(Velocity).p_dx * -1
+                # entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1
+                # entity.game.Movement.update()
                 entity.get(Velocity).set(0,0)
                 # remove turn counter after returning sprite
                 if isinstance(entity, Player):

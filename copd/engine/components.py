@@ -16,11 +16,12 @@ class Position(Component):
 
     def __add__(self, obj):
         if isinstance(obj, Velocity):
-            self.x += obj.dx
-            self.y += obj.dy
+            x = self.x + obj.dx
+            y = self.y + obj.dy
+            return Position(x, y)
         else:
             raise TypeError("Position must be incremented with a Velocity object")
-        return self
+        
 
     def __str__(self):
         return f"Position - x:{self.x}, y:{self.y}"

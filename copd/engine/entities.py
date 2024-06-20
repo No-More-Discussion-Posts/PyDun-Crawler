@@ -42,6 +42,7 @@ class Entity(pg.sprite.Sprite):
         self.max_hp = max_hp
         self.atk = atk
         self.dex = dex
+        self.moving = False
 
         if group is not None:
             pg.sprite.Sprite.__init__(self, group)
@@ -77,12 +78,25 @@ class Entity(pg.sprite.Sprite):
     def get(self, component):
         return self.components.get(component)
 
-    def movement(self):  # def update(self)
+    def update(self):  # def update(self)
         # updates sprite x and y coords
-
-        dx = self.get(Velocity).dx * TILE_SIZE
-        dy = self.get(Velocity).dy * TILE_SIZE
-        self.rect.move_ip(dx, dy)
+        if self.moving:
+            self.rect.move_ip(*self.animate())
+    def animate(self):
+        dx = 0
+        dy = 0
+        if self.x_dest != self.x:
+            dx = ANIMATION_SPEED * (self.x_dest - self.x)/abs(self.x_dest - self.x)
+        if self.y_dest != self.y:
+            dy = ANIMATION_SPEED * (self.y_dest - self.y)/abs(self.y_dest - self.y)
+        if self.x == self.x_dest and self.y == self.y_dest:
+            self.moving = False
+        self.prev_dx = dx
+        self.prev_dy = dy
+        return (dx,dy)
+     
+        
+    
 
 
 class Monster(Entity):
