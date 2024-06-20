@@ -81,7 +81,17 @@ class Entity(pg.sprite.Sprite):
     def update(self):  # def update(self)
         # updates sprite x and y coords
         if self.moving:
+            if self.x_dest % 16 != 0:
+                print('not on tile')
+                self.x_dest = round(self.x_dest / 16) * 16
+            if self.y_dest % 16 != 0:
+                print('not on tile')
+                self.y_dest = round(self.y_dest / 16) * 16
             self.rect.move_ip(*self.animate())
+            print(self)
+            print(f"{self.rect.x},{self.rect.y}")
+            print(f"{self.x_dest},{self.y_dest}")
+    
     def animate(self):
         dx = 0
         dy = 0
@@ -124,9 +134,9 @@ class Monster(Entity):
         # enemy to player vector math here
         dx = 0
         dy = 0
-        dx_player = self.game.player.get(Position).x - self.get(Position).x
-        dy_player = self.game.player.get(Position).y - self.get(Position).y
-        if math.sqrt(dx_player**2 + dy_player**2) < 5:
+        dx_player = self.game.player.rect.x - self.rect.x
+        dy_player = self.game.player.rect.y - self.rect.y
+        if math.sqrt(dx_player**2 + dy_player**2) < 5*TILE_SIZE:
             if abs(dx_player) > abs(dy_player):
                 if dx_player > 0:
                     dx = 1
@@ -154,7 +164,7 @@ class Monster(Entity):
 
             self.get(Velocity).set(dx, dy)
 
-
+        self.game.Collision.update()
 class Player(Entity):
     def __init__(self, name, game, x, y, filename=None):
         super().__init__(game, x, y, game.players, filename)

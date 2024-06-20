@@ -83,9 +83,7 @@ class Collision(System):
 
             ###PLAYER SPECIFIC COLLISION###
             if isinstance(entity, Player):
-                # if overlap with monster sprite, begin combat gamestate
-                if pygame.sprite.spritecollide(entity, entity.game.monsters, False):
-                    entity.game.state = GameStates.BATTLE
+                
                 # if overlap with door sprite group, load new area
                 door = pygame.sprite.spritecollide(entity, entity.game.doors, False)
                 if len(door) > 0:  # if door collides with player, load new area, else:
@@ -94,8 +92,7 @@ class Collision(System):
                     # update minimap
                     entity.game.minimap.visit(entity.overworldcoords)
                     # loads sprite on corresponding doors
-                    entity.moving = False
-                    entity.rect.move_ip(entity.prev_dx*-1, entity.prev_dy *-1)
+                    self.undo_movement(entity)
                     print(f"door coords: {door.rect.x}, {door.rect.y}")
                     if door.rect.x == 0:
                         entity.get(Velocity).dx = X_TILES - 3
@@ -131,8 +128,19 @@ class Collision(System):
                     elif entity.game.treasure.item == "Health Pot":
                         # adds health pot to player inventory
                         entity.inventory.update_item(entity.game.treasure.item, 1)
+                # if overlap with monster sprite, begin combat gamestate
+                monsters = pygame.sprite.spritecollide(entity, entity.game.monsters, False)
+                if len(monsters) > 0:
+                    self.undo_movement(entity)
+                    self.undo_movement(monsters[0])
+                    entity.game.state = GameStates.BATTLE   
+    def undo_movement(self, entity):
+        entity.moving = False
+        entity.rect.move_ip(entity.prev_dx*-1, entity.prev_dy *-1)
+        entity.prev_dx = 0
+        entity.prev_dy = 0
 
-
+        entity.game.update()
 class Combat(System):
 
     def __init__(self, game):
