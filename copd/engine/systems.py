@@ -75,10 +75,9 @@ class Collision(System):
                     print(f"{entity}: Collision with wall")
                 # return sprite to original position
                 entity.moving = False
+
                 entity.rect.move_ip(entity.prev_dx*-1, entity.prev_dy *-1)
-                # entity.get(Velocity).dx = entity.get(Velocity).p_dx * -1
-                # entity.get(Velocity).dy = entity.get(Velocity).p_dy * -1
-                # entity.game.Movement.update()
+                
                 entity.get(Velocity).set(0,0)
                 # remove turn counter after returning sprite
                 if isinstance(entity, Player):
@@ -91,22 +90,29 @@ class Collision(System):
                 if pygame.sprite.spritecollide(entity, entity.game.monsters, False):
                     entity.game.state = GameStates.BATTLE
                 # if overlap with door sprite group, load new area
-                elif pygame.sprite.spritecollide(entity, entity.game.doors, False):
+                door = pygame.sprite.spritecollide(entity, entity.game.doors, False)
+                if len(door) > 0:  # if door collides with player, load new area, else:
+                    # only one door can collide with player at a time
+                    door = door[0]
                     # update minimap
                     entity.game.minimap.visit(entity.overworldcoords)
                     # loads sprite on corresponding doors
-                    if entity.get(Position).x == 0:
-                        entity.get(Velocity).dx = X_TILES - 2
+                    entity.moving = False
+                    entity.rect.move_ip(entity.prev_dx*-1, entity.prev_dy *-1)
+                    
+                    if door.get(Position).x == 0:
+                        entity.get(Velocity).dx = X_TILES - 3
+                        
                         # updates minimap
                         entity.overworldcoords[0] = entity.overworldcoords[0] - 1
-                    elif entity.get(Position).x == (X_TILES - 1):
-                        entity.get(Velocity).dx = -(X_TILES - 2)
+                    elif door.get(Position).x == (X_TILES - 1):
+                        entity.get(Velocity).dx = -(X_TILES - 3)
                         entity.overworldcoords[0] = entity.overworldcoords[0] + 1
-                    elif entity.get(Position).y == 0:
-                        entity.get(Velocity).dy = Y_TILES - 2
+                    elif door.get(Position).y == 0:
+                        entity.get(Velocity).dy = Y_TILES - 3
                         entity.overworldcoords[1] = entity.overworldcoords[1] - 1
-                    elif entity.get(Position).y == (Y_TILES - 1):
-                        entity.get(Velocity).dy = -(Y_TILES - 2)
+                    elif door.get(Position).y == (Y_TILES - 1):
+                        entity.get(Velocity).dy = -(Y_TILES - 3)
                         entity.overworldcoords[1] = entity.overworldcoords[1] + 1
                     # pushes new x and y coords to sprite
                     entity.game.Movement.update()
