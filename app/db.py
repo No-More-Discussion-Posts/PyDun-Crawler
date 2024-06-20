@@ -344,7 +344,10 @@ class Room(Base):
     def __repr__(self) -> str:
         return f"Room(id={self.id!r}, x={self.x!r}, y={self.y!r})"
 
-
+    def __init__(self, id, x, y):
+        self.id = id
+        self.x = x
+        self.y = y
 
 def update_room():
     pass
@@ -434,13 +437,18 @@ class DB:
         return room.id
 
     def read_room(self, id=0):
-        stmt = select(Room).where(Room.id == id)
+        stmt = select(Room.x, Room.y).where(Room.id == id)
         with Session(engine) as session:
-            room = session.execute(stmt).first()
-        return room
+            result = session.execute(stmt).one_or_none()
+            # room = {
+            #     "id": id,
+            #     "x": result[0],
+            #     "y": result[1]
+            # }
+        return result
     
     def get_room_if_exists(self, x, y, wall_pair):
-        match (wall_pair):
+        match (wall_pair): # same switch exists on api.py
             # facing....
             case 0: # north
                 y -= 1
@@ -478,7 +486,7 @@ class DB:
     def read_door(self, id):
         stmt = select(Door).where(Door.id == id)
         with Session(engine) as session:
-            door = session.execute(stmt).one_or_none()
+            door = session.scalars(stmt).first()
         return door
 
 
@@ -562,13 +570,27 @@ class DB:
                 rooms.append(row)
         return rooms
 
+    def get_xy_from_room(self, room_id):
+        room = self.read_room(room_id)
+        print(f"room = {room}")
+        if room is None:
+            return {'x':999, 'y':999}
+        room_dict = {
+            "x":room.x,
+            "y":room.y
+        }
+        print(room_dict)
+        return room_dict
+        
 
 # Testing stuff
 def main() -> None:
     Base.metadata.create_all(engine)
     create_item(id=0, name="Robe")
     create_item(id=1, name="Wizard Hat")
-
+    test_db = DB()
+    test_db.create_room(0, 1, 2)
+    test_db.get_xy_from_room(0)
 
 if __name__ == "__main__":
     main()

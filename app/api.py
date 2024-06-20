@@ -27,7 +27,6 @@ class PlayerDB(API):
         super().__init__(engine, db)
         pass
 
-
 class DungeonDB(API):
     def __init__(self, engine=None, db=None) -> None:
         super().__init__(engine, db)
@@ -36,12 +35,12 @@ class DungeonDB(API):
 
         self.max_rooms = ROOM_LIMIT
 
-# TODO: create dungeon map generator
+    # TODO: create dungeon map generator
 
-# this needs to return a 2d array of room_ids
-# each room_id must correspond to a unique room object
+    # this needs to return a 2d array of room_ids
+    # each room_id must correspond to a unique room object
 
-# basic dun gen sequence:
+    # basic dun gen sequence:
     
     def generate_new_level(self, x=MAP_X, y=MAP_Y, size=ROOM_LIMIT) -> None:
         self.max_rooms = size
@@ -60,7 +59,7 @@ class DungeonDB(API):
         
         # call room gen method
         room_count = 0
-        door_count = 0
+        last_door = 0
         while (room_count < size):
             room_count += 1 # thanks, sql
             if (room_count == 1):
@@ -70,11 +69,10 @@ class DungeonDB(API):
                 )
             else:
                 last_door = self.generate_room(
-                    x=seed_x,
-                    y=seed_y,
-                    last_door=door_count
+                    last_door=last_door
                 )
-            door_count = last_door
+            
+            
 
         # Testing 
         first_room = self.database.read_room()
@@ -91,7 +89,7 @@ class DungeonDB(API):
 
         
     # room gen sequence
-    def generate_room(self, x, y, first_wall=None, last_door=None, room_id=None):
+    def generate_room(self, x=None, y=None, first_wall=None, last_door=None, room_id=None):
         # create new room
         if last_door is None:
             room_id = 1
@@ -100,10 +98,30 @@ class DungeonDB(API):
             room_id = self.database.create_room(id=room_id, x=x, y=y)
             first_wall = random.randint(0,3)
         else:
+            #TODO: FIGURE OUT WHY THIS IS RETURNING NULL:
             last_room_id = self.database.get_room_from_door(last_door)
-            # This is mostly to help prevent 1 vs 0 based indexing issues... I think?
-            room_id = self.database.create_room(id=last_room_id, x=x, y=y)
             first_wall = self.database.get_wall_from_door(door_id=last_door)
+            if x is None or y is None:
+                #last_room = self.database.read_room(last_room_id)
+                #x = last_room.get("x")
+                #y = last_room.get("y")
+                last_xy = self.database.get_xy_from_room(last_room_id)
+                x = last_xy.get("x")
+                y = last_xy.get("y")
+                print(f"last x = {x}")
+                print(f"last y = {y}")
+                match (first_wall): # same switch exists on db.py
+                # facing....
+                    case 0: # north
+                        y -= 1
+                    case 1: # east
+                        x += 1
+                    case 2: # south
+                        y += 1
+                    case 3: # west
+                        x -= 1
+            #last_room = self.database.read_room(last_room_id)
+            room_id = self.database.create_room(id=last_room_id, x=x, y=y)
         
 
         # No first wall implies seed room (TODO: enforce this somehow)
@@ -264,3 +282,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
