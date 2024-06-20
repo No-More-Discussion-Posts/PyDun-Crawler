@@ -25,8 +25,7 @@ class Movement(System):
                 else:
                     entity.ai()
             # get x, y of sprite, adds changes
-            entity.get(Position).x += entity.get(Velocity).dx
-            entity.get(Position).y += entity.get(Velocity).dy
+            
             # updates sprite position
             dx = entity.get(Velocity).dx * TILE_SIZE
             dy = entity.get(Velocity).dy * TILE_SIZE
@@ -42,9 +41,7 @@ class Movement(System):
             if entity == self.entities[0]:
                 # update turn timer after movement
                 self.entities[0].game.Turn.update()
-            if entity.game.debug:
-                # debbuger
-                print(f"{entity}: {entity.get(Position)}")
+            
 
 
 class Turn(System):
@@ -99,19 +96,19 @@ class Collision(System):
                     # loads sprite on corresponding doors
                     entity.moving = False
                     entity.rect.move_ip(entity.prev_dx*-1, entity.prev_dy *-1)
-                    
-                    if door.get(Position).x == 0:
+                    print(f"door coords: {door.rect.x}, {door.rect.y}")
+                    if door.rect.x == 0:
                         entity.get(Velocity).dx = X_TILES - 3
                         
                         # updates minimap
                         entity.overworldcoords[0] = entity.overworldcoords[0] - 1
-                    elif door.get(Position).x == (X_TILES - 1):
+                    elif door.rect.x == (X_TILES - 1)*TILE_SIZE:
                         entity.get(Velocity).dx = -(X_TILES - 3)
                         entity.overworldcoords[0] = entity.overworldcoords[0] + 1
-                    elif door.get(Position).y == 0:
+                    elif door.rect.y == 0:
                         entity.get(Velocity).dy = Y_TILES - 3
                         entity.overworldcoords[1] = entity.overworldcoords[1] - 1
-                    elif door.get(Position).y == (Y_TILES - 1):
+                    elif door.rect.y == (Y_TILES - 1) * TILE_SIZE:
                         entity.get(Velocity).dy = -(Y_TILES - 3)
                         entity.overworldcoords[1] = entity.overworldcoords[1] + 1
                     # pushes new x and y coords to sprite
