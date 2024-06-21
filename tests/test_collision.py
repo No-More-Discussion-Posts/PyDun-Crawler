@@ -15,10 +15,11 @@ def test_collide_wall_n(game: Engine):
     for i in range(20):
         movement = pygame.event.Event(pygame.KEYDOWN, dict(key=pygame.K_w))
         game.handle_event(movement)
-    x = player.get(Position).x
-    y = player.get(Position).y
+        player.update()
+    x = player.x
+    y = player.y
     print(player.get(Position))
-    assert (x, y) == (15, 1)
+    assert (x, y) == (15*TILE_SIZE, 1*TILE_SIZE)
 
 
 @reset_player()
@@ -29,10 +30,12 @@ def test_collide_wall_s(game: Engine):
     for i in range(20):
         movement = pygame.event.Event(pygame.KEYDOWN, dict(key=pygame.K_s))
         game.handle_event(movement)
-    x = player.get(Position).x
-    y = player.get(Position).y
+        player.update()
+    player.update()
+    x = player.x
+    y = player.y
     print(player.get(Position))
-    assert (x, y) == (15, Y_TILES - 2)
+    assert (x, y) == (15*TILE_SIZE, (Y_TILES - 2)*TILE_SIZE)
 
 
 @reset_player()

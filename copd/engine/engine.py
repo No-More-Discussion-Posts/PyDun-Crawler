@@ -14,7 +14,7 @@ from copd.engine.input_handlers import EventHandler
 
 # test
 from copd.engine.systems import Movement, Collision, Turn, Combat
-from copd.engine.components import Position, Velocity, TurnCounter
+from copd.engine.components import TurnCounter
 from copd.ui.minimap import MiniMap
 
 
