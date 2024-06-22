@@ -78,12 +78,12 @@ class DungeonDB(API):
         first_room = self.database.read_room()
         all_rooms = self.database.get_rooms()
         all_rwds = self.database.get_rwds()
-        print("rooms: ")
-        print(f"first room: {first_room}")
+        print_gaps("rooms: ")
+        print_gaps(f"first room: {first_room}")
         for room in all_rooms:
-            print(room)
+            print_gaps(room)
         for rwd in all_rwds:
-            print(rwd)
+            print_gaps(rwd)
 
         # pick a random? room to declare as exit
 
@@ -102,14 +102,14 @@ class DungeonDB(API):
             last_room_id = self.database.get_room_from_door(last_door)
             first_wall = self.database.get_wall_from_door(door_id=last_door)
             if x is None or y is None:
-                #last_room = self.database.read_room(last_room_id)
-                #x = last_room.get("x")
-                #y = last_room.get("y")
-                last_xy = self.database.get_xy_from_room(last_room_id)
-                x = last_xy.get("x")
-                y = last_xy.get("y")
-                print(f"last x = {x}")
-                print(f"last y = {y}")
+                last_room = self.database.read_room(last_room_id)
+                x = last_room.get("x")
+                y = last_room.get("y")
+                # last_xy = self.database.read_room(last_room_id)
+                # x = last_xy.get("x")
+                # y = last_xy.get("y")
+                # print(f"last x = {x}")
+                # print(f"last y = {y}")
                 match (first_wall): # same switch exists on db.py
                 # facing....
                     case 0: # north
@@ -130,13 +130,13 @@ class DungeonDB(API):
             first_wall = random.randint(0,3)
         else:
             first_wall = self.database.get_wall_from_door(door_id=last_door)
-        print(f"first_wall: {first_wall}")
+        print_gaps(f"first_wall: {first_wall}")
         
         # randomise wall choice
         walls = list(range(4))
         random.shuffle(walls)
         walls.insert(0, walls.pop(walls.index(first_wall)))
-        print(f"walls = {walls}")
+        print_gaps(f"walls = {walls}")
                 
         ### ALGO NOTES: ###
         ### ADD NEW ROOM ###
@@ -161,7 +161,7 @@ class DungeonDB(API):
                 door_id = self.database.create_door()
 
                 if (last_door is not None) & (door_choice == 1):
-                    print(f"last room id: {last_room_id}")
+                    print_gaps(f"last room id: {last_room_id}")
                     # TODO write update door method
                     self.database.update_door(door_id=door_id, room_id=room_id)
             
@@ -169,7 +169,7 @@ class DungeonDB(API):
             ### this.door_id = new_door.id  ###
             rwd_id = self.database.create_room_wall_door(room_id=room_id, wall_id=wall, door_id=door_id)
             #door_id = self.database.create_door(room_id=room_id) # door.
-            print(rwd_id)
+            print_gaps(rwd_id)
             ### if "no door", don't update door ###
             ### if "yes door" ###
             doors.append({
@@ -190,10 +190,10 @@ class DungeonDB(API):
             # yes, this wall-pair system is a bit over-engineered
             # but just imagine if we needed to change
             # the room shape at some point down the line
-            wall_pair = self.database.get_opposite_wall(wall) 
-            print(f"wall = {wall}, pair = {wall_pair}")
+            wall_pair = self.database.read_wall(wall).get("pair")
+            print_gaps(f"wall = {wall}, pair = {wall_pair}")
             
-            that_room_id = 0 # invalid room (should start at 1)
+            that_room_id = None # invalid room (should start at 1)
             
             # door_choice == 1 # For testing
             if door_choice == 1:
@@ -202,12 +202,12 @@ class DungeonDB(API):
                 ### check if opposite room already exists ###
                 ### check room posx/y against room table ###
                 that_room_id = self.database.get_room_if_exists(x=x, y=y, wall_pair=wall_pair)
-                print(f"that_room_id = {that_room_id}")
+                print_gaps(f"that_room_id = {that_room_id}")
                 ### room exists if target position exists ###
             
             ### if exists, check if door can be created ###
             that_door = None
-            if that_room_id != 0: # <--- USE THIS
+            if that_room_id != None: # <--- USE THIS
             #if that_room_id == 0: # <--- DELETE THIS AFTER WRITING
                 ### look for other room in room_wall_door table ###
                     ### select room_id from room_wall_door ###
@@ -215,47 +215,47 @@ class DungeonDB(API):
 
                 #that_door = self.database.get_door_from_rwd(room_id=that_room_id, wall_pair=wall_pair)
                 that_door = self.database.get_door_from_rwd(room_id=that_room_id, wall_pair=wall_pair)
-                print(f"that_door = {that_door}")
+                print_gaps(f"that_door = {that_door}")
 
-            if that_door is not None: # aka, room has door
-                pass
+                if that_door is not None: # aka, room has door
+                    pass
 
-                ### if that_room.door(pair_of_this_wall).room_id = null ###
-                ### create null room ###
-                ### aka, do nothing. it was created ealier ###S
+                    ### if that_room.door(pair_of_this_wall).room_id = null ###
+                    ### create null room ###
+                    ### aka, do nothing. it was created ealier ###S
 
-            else:
-                ### if that_room.door(pair_of_this_wall) = null ###
-                #pass
-                ### create two new doors ###
-                ### that_room.door = new_door(with room = this_room) ###
-                ### this_room.door = new_door(with room = that_room) ###
+                else:
+                    ### if that_room.door(pair_of_this_wall) = null ###
+                    #pass
+                    ### create two new doors ###
+                    ### that_room.door = new_door(with room = this_room) ###
+                    ### this_room.door = new_door(with room = that_room) ###
 
-                # TODO: GO THROUGH THIS WHOLE THING AND MAKE SURE DOOR.ROOM_ID IS CORRECT
-                this_new_door_id = self.database.create_door(room_id=that_room_id)
-                that_new_door_id = self.database.create_door(room_id=room_id)
-                print(f"New door: {this_new_door_id}")
-                print(f"New door: {that_new_door_id}")
+                    # TODO: GO THROUGH THIS WHOLE THING AND MAKE SURE DOOR.ROOM_ID IS CORRECT
+                    this_new_door_id = self.database.create_door(room_id=that_room_id)
+                    that_new_door_id = self.database.create_door(room_id=room_id)
+                    print_gaps(f"New door: {this_new_door_id}")
+                    print_gaps(f"New door: {that_new_door_id}")
 
-                ### update room_wall_doors ###
-                this_rwd_id = self.database.add_rwd_door_from_room(
-                    room_id=room_id,
-                    wall=wall,
-                    door_id=this_new_door_id
-                )
-                that_rwd_id = self.database.add_rwd_door_from_room(
-                    room_id=that_room_id,
-                    wall=wall_pair,
-                    door_id=that_new_door_id
-                )
-                print(this_rwd_id)
-                print(that_rwd_id)
+                    ### update room_wall_doors ###
+                    this_rwd_id = self.database.add_rwd_door_from_room(
+                        room_id=room_id,
+                        wall=wall,
+                        door_id=this_new_door_id
+                    )
+                    that_rwd_id = self.database.add_rwd_door_from_room(
+                        room_id=that_room_id,
+                        wall=wall_pair,
+                        door_id=that_new_door_id
+                    )
+                    print_gaps(this_rwd_id)
+                    print_gaps(that_rwd_id)
 
             ### if other room doesn't exist ###
             if that_room_id == 0:
                 ### check if at room limit ###
                 room_count = self.database.get_room_count()
-                print(f"room count: {room_count}")
+                print_gaps(f"room count: {room_count}")
 
                 if room_count < self.max_rooms:
                     #pass
@@ -267,12 +267,15 @@ class DungeonDB(API):
                         door_id=new_door_id,
                         wall_id=wall_pair
                     )
-                    print(f"new rwd = {new_rwd}")
-                    print(f"returned door = {new_door_id}")
+                    print_gaps(f"new rwd = {new_rwd}")
+                    print_gaps(f"returned door = {new_door_id}")
                     return new_door_id
                 #print(door_id)
                 #print(room_id)
         return None # no last door
+
+def print_gaps(str):
+    print (f"\n -- {str} -- \n")
 
 def main():
     test_dungeon = DungeonDB()
@@ -282,4 +285,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

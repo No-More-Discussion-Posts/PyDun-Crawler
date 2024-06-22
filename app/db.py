@@ -8,7 +8,7 @@ from sqlalchemy import Integer, String, Boolean
 from sqlalchemy import ForeignKey
 from sqlalchemy import select, update, func
 from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import mapped_column, column_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import DeclarativeBase, Session
 
@@ -415,21 +415,26 @@ class DB:
         session.add_all([north, east, south, west])
         session.commit()
 
-
     def read_wall(self, id):
         stmt = select(Wall).where(Wall.id == id)
         with Session(engine) as session:
-            wall = session.execute(stmt).first()
-        return wall
+            wall = session.scalars(stmt).first()
+        return {
+            "id":wall.id,
+            "side":wall.side,
+            "pair":wall.pair
+        }
     
+    '''
     def get_opposite_wall(self, wall_id):
         stmt = select(Wall.pair).where(Wall.id == wall_id)
         with Session(engine) as session:
             pair = session.execute(stmt).first()
         return pair[0]
-
+    '''
 
     def create_room(self, id, x, y):
+        print_gaps(f"Creating room with id={id}, x={x}, y={y}")
         with Session(engine) as session:
             room = Room(id=id, x=x, y=y)
         session.add(room)
@@ -437,15 +442,19 @@ class DB:
         return room.id
 
     def read_room(self, id=0):
-        stmt = select(Room.x, Room.y).where(Room.id == id)
+        stmt = select(Room).where(Room.id == id)
         with Session(engine) as session:
-            result = session.execute(stmt).one_or_none()
+            result = session.scalars(stmt).one()
             # room = {
             #     "id": id,
             #     "x": result[0],
             #     "y": result[1]
             # }
-        return result
+        return {
+            "id":result.id,
+            "x":result.x,
+            "y":result.y
+        }
     
     def get_room_if_exists(self, x, y, wall_pair):
         match (wall_pair): # same switch exists on api.py
@@ -530,6 +539,7 @@ class DB:
         return wall[0]
     
     def add_rwd_door_from_room(self, room_id, wall, door_id):
+        print_gaps(f"adding door to rwd with room_id={room_id}, wall={wall}, door_id={door_id}")
         stmt = (
             update(RoomWallDoor)
             .where(
@@ -537,10 +547,11 @@ class DB:
                 (RoomWallDoor.wall_id == wall)
             )
             .values(door_id=door_id)
+            .returning(RoomWallDoor.id)
         )
         with Session(engine) as session:
-            rwd = session.execute(stmt)
-        return rwd
+            rwd = session.scalars(stmt).fetchall()
+        return rwd[0]
 
     #def add_rwds_for_room(seld, room_id):
 
@@ -570,27 +581,40 @@ class DB:
                 rooms.append(row)
         return rooms
 
-    def get_xy_from_room(self, room_id):
-        room = self.read_room(room_id)
-        print(f"room = {room}")
-        if room is None:
-            return {'x':999, 'y':999}
-        room_dict = {
-            "x":room.x,
-            "y":room.y
-        }
-        print(room_dict)
-        return room_dict
+    # def get_xy_from_room(self, room_id):
+    #     room = self.read_room(room_id)
+    #     print(f"room = {room}")
+    #     if room is None:
+    #         return {'x':999, 'y':999}
+    #     room_dict = {
+    #         "x":room.x,
+    #         "y":room.y
+    #     }
+    #     print(room_dict)
+    #     return room_dict
         
 
+    # TODO: rewrite read operations to return dictionaries
+
+
+
+
 # Testing stuff
+def print_gaps(str):
+    print (f"\n - {str} - \n")
+
 def main() -> None:
     Base.metadata.create_all(engine)
     create_item(id=0, name="Robe")
     create_item(id=1, name="Wizard Hat")
     test_db = DB()
-    test_db.create_room(0, 1, 2)
-    test_db.get_xy_from_room(0)
+    test_room_id = test_db.create_room(0, 1, 2)
+    test_room_id = test_db.create_room(1, 2, 1)
+    #test_db.get_xy_from_room(0)
+    print(test_db.read_room(test_room_id))
+    print(test_db.create_door(1))
+    print(test_db.create_room_wall_door(0, 0, None))
+    print(test_db.add_rwd_door_from_room(0, 0, 1))
 
 if __name__ == "__main__":
     main()
