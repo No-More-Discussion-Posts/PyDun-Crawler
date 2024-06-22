@@ -335,7 +335,7 @@ class Treasure(Base):
 # Room
 class Room(Base):
     __tablename__ = "room"
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     # TODO rename this (they should reflect level grid pos_x/y)
     x: Mapped[int] = mapped_column()
     y: Mapped[int] = mapped_column()
@@ -343,11 +343,6 @@ class Room(Base):
 
     def __repr__(self) -> str:
         return f"Room(id={self.id!r}, x={self.x!r}, y={self.y!r})"
-
-    def __init__(self, id, x, y):
-        self.id = id
-        self.x = x
-        self.y = y
 
 def update_room():
     pass
@@ -433,10 +428,10 @@ class DB:
         return pair[0]
     '''
 
-    def create_room(self, id, x, y):
+    def create_room(self, x, y):
         print_gaps(f"Creating room with id={id}, x={x}, y={y}")
         with Session(engine) as session:
-            room = Room(id=id, x=x, y=y)
+            room = Room(x=x, y=y)
         session.add(room)
         session.commit()
         return room.id
@@ -479,8 +474,9 @@ class DB:
         stmt = select(Room)
         rooms = []
         with Session(engine) as session:
-            for row in session.execute(stmt):
+            for row in session.scalars(stmt).all():
                 #print(row)
+
                 rooms.append(row)
         return rooms
 
@@ -597,7 +593,11 @@ class DB:
     # TODO: rewrite read operations to return dictionaries
 
 
-
+    def room_exists(self, x, y):
+        stmt = select(Room).where((Room.x == x) & (Room.y == y))
+        with Session(engine) as session:
+            result = session.execute(stmt).all()
+        return len(result) > 0
 
 # Testing stuff
 def print_gaps(str):
@@ -608,13 +608,14 @@ def main() -> None:
     create_item(id=0, name="Robe")
     create_item(id=1, name="Wizard Hat")
     test_db = DB()
-    test_room_id = test_db.create_room(0, 1, 2)
-    test_room_id = test_db.create_room(1, 2, 1)
+    test_room_id = test_db.create_room(1, 2)
+    test_room_id = test_db.create_room(2, 1)
     #test_db.get_xy_from_room(0)
-    print(test_db.read_room(test_room_id))
-    print(test_db.create_door(1))
-    print(test_db.create_room_wall_door(0, 0, None))
-    print(test_db.add_rwd_door_from_room(0, 0, 1))
+    #print(test_db.read_room(test_room_id))
+    #print(test_db.create_door(1))
+    #print(test_db.create_room_wall_door(0, 0, None))
+    #print(test_db.add_rwd_door_from_room(0, 0, 1))
+    print(test_db.room_exists(1,2))
 
 if __name__ == "__main__":
     main()

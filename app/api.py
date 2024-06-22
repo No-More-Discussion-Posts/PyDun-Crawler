@@ -8,9 +8,10 @@ from db import Room
 from sqlalchemy import *
 from sqlalchemy.orm import *
 
-MAP_X = 40
+MAP_X = 20
 MAP_Y = 20
-ROOM_LIMIT = 10
+ROOM_LIMIT = 200
+ROOM_MINIMUM = 50
 
 engine = create_engine("sqlite://", echo=True)
 database = DB()
@@ -34,6 +35,7 @@ class DungeonDB(API):
         self.database.create_walls()
 
         self.max_rooms = ROOM_LIMIT
+        self.min_rooms = ROOM_MINIMUM
 
     # TODO: create dungeon map generator
 
@@ -43,51 +45,127 @@ class DungeonDB(API):
     # basic dun gen sequence:
     
     def generate_new_level(self, x=MAP_X, y=MAP_Y, size=ROOM_LIMIT) -> None:
+        self.room_count = 0
         self.max_rooms = size
         # create 2d array
-        map_coords = [[*range(x)],[*range(y)]]
+        self.map_coords = [[*range(x)],[*range(y)]]
         #print(map_coords)
-        map_array = [[0 for col in map_coords[1]] for row in map_coords[0]]
+        map_array = [[0 for row in self.map_coords[0]] for col in self.map_coords[1]]
         
         # pick a random seed room (this will be "room 0")
-        seed_x = random.choice(map_coords[0])
-        seed_y = random.choice(map_coords[1])
-        map_array[seed_x][seed_y] = 1        
+        #seed_x = random.choice(self.map_coords[0])
+        #seed_y = random.choice(self.map_coords[1])
+        seed_x = MAP_X//2
+        seed_y = MAP_Y//2
+        map_array[seed_y][seed_x] = 1        
 
         #print(map_array)
         print (f"seed room = {seed_x},{seed_y}")
         
-        # call room gen method
-        room_count = 0
-        last_door = 0
-        while (room_count < size):
-            room_count += 1 # thanks, sql
-            if (room_count == 1):
-                last_door = self.generate_room(
-                    x=seed_x,
-                    y=seed_y,
-                )
-            else:
-                last_door = self.generate_room(
-                    last_door=last_door
-                )
+
+        #self.walls = self.generate_walls()
+
+        while self.room_count < ROOM_MINIMUM:        
+            self.generate_map(x=seed_x, y=seed_y)
+            self.room_count = len(self.database.get_rooms())
+            
+
+
+        # # call room gen method
+        # room_count = 0
+        # last_door = 0
+        # while (room_count < size):
+        #     room_count += 1 # thanks, sql
+        #     # if (room_count == 1):
+            #     last_door = self.generate_room(
+            #         x=seed_x,
+            #         y=seed_y,
+            #     )
+            # else:
+            #     last_door = self.generate_room(
+            #         last_door=last_door
+            #     )
             
             
 
         # Testing 
-        first_room = self.database.read_room()
+        #first_room = self.database.read_room()
         all_rooms = self.database.get_rooms()
-        all_rwds = self.database.get_rwds()
-        print_gaps("rooms: ")
-        print_gaps(f"first room: {first_room}")
+        #all_rwds = self.database.get_rwds()
+        #print_gaps("rooms: ")
+        #print_gaps(f"first room: {first_room}")
         for room in all_rooms:
             print_gaps(room)
-        for rwd in all_rwds:
-            print_gaps(rwd)
-
+            map_array[room.y][room.x] = 1
+        for row in map_array:
+            print(row)
+        # for rwd in all_rwds:
+        #     print_gaps(rwd)
         # pick a random? room to declare as exit
 
+
+    # TODO: split this whole thing up into steps...
+    # Create a grid of room_ids:
+    #   Create room
+    #   Shuffle "walls"
+    #   Iterate through walls:
+    #       if opposite room is out of bounds, return
+    #       if opposite room exists, return
+    #       if adding a room, recur
+    #     
+    # Iterate through grid:
+    #   Create four RWDs for each room
+    #   Check if room has adjacent rooms
+    #       Create doors and update RWDs
+
+
+    # map grid generation sequence
+    # do it recursively this times
+    def generate_map(self, x, y):
+        self.room_count = len(self.database.get_rooms())
+        print_gaps(self.room_count)
+        if self.room_count >= self.max_rooms:
+            return
         
+        new_room = self.database.create_room(x=x, y=y)
+        print_gaps(new_room)
+
+        walls = self.generate_walls()
+        #walls = random.shuffle(self.walls)
+        for wall in walls:
+            match (wall): # same switch exists on db.py
+                # facing....
+                case 0: # north
+                    y -= 1
+                case 1: # east
+                    x += 1
+                case 2: # south
+                    y += 1
+                case 3: # west
+                    x -= 1
+            if self.database.room_exists(x=x, y=y):
+                return
+
+            if not self.room_in_bounds(x=x, y=y):
+                return
+            if (self.room_count > self.min_rooms) & (random.randint(0,4) == 0):
+                return
+            
+            self.generate_map(x=x, y=y)
+
+
+    def generate_walls(self):
+         # randomise wall choice
+        walls = list(range(4))
+        random.shuffle(walls)
+        print_gaps(f"walls = {walls}")
+        return walls
+    
+    def room_in_bounds(self, x, y) -> Boolean:
+        x_valid = self.map_coords[0].count(x) > 0
+        y_valid = self.map_coords[1].count(y) > 0
+        return x_valid & y_valid
+
     # room gen sequence
     def generate_room(self, x=None, y=None, first_wall=None, last_door=None, room_id=None):
         # create new room
