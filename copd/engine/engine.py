@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 from copd.engine.entities import *
-from copd.ui.menus import PauseMenu, BattleMenu
+from copd.ui.menus import PauseMenu, BattleMenu,MainMenu
 from copd.config import DEFAULT_MAP
 from copd.engine.states import GameStates
 from copd.engine.ecs import Component
@@ -136,6 +136,7 @@ class Engine:
 
     def run(self):
         self.running = True
+        MainMenu(self).run()
         while self.running:
             for event in pygame.event.get():
                 self.handle_event(event)

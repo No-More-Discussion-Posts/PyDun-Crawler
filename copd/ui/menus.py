@@ -6,7 +6,7 @@ from copd.ui.button import *
 from copd.ui.text_box import TextBox
 from copd.config import Option, MenuOption
 from copd.engine.states import GameStates
-
+from copd.ui.text import render_text
 
 class Menu:
     def __init__(self, game, options):
@@ -16,6 +16,7 @@ class Menu:
         self.DEFAULT_FONT = pygame.font.get_default_font()
         self.runnable_opts = []
         self.handlers = []
+        
         # TODO: Add a layer option or some what to say if this will just overlay another menu or if it takes over the screen
 
     def handle_options(self) -> None:
@@ -86,6 +87,16 @@ class Menu:
         self.game.state = GameStates.MAIN
         pygame.display.set_caption(self.previous_caption)
 
+class MainMenu(Menu):
+    def __init__(self, game, options=[]):
+        super().__init__(game,options)
+    
+    def run(self) -> None:
+        running = True
+        while running:
+            self.game.screen.fill((0, 0, 0))
+            for e in pygame.event.get():
+                self.game.handle_event(e)
 
 class PauseMenu(Menu):
     def __init__(self, game, options=[]):
@@ -94,9 +105,9 @@ class PauseMenu(Menu):
         self.player = game.player
         self.options = options
         self.options.append(Option(MenuOption.CAPTION, "Paused"))
-        self.options.append(
-            Option(MenuOption.PRINT, dict(size=20, text="PAUSED", pos=(270, 20)))
-        )
+        # self.options.append(
+        #     Option(MenuOption.PRINT, dict(size=20, text="PAUSED", pos=(270, 20)))
+        # )
         self.options.append(
             Option(
                 MenuOption.HANDLER,
@@ -114,7 +125,7 @@ class PauseMenu(Menu):
         while self.running:
             self.game.screen.fill(Colors.Cyantology)
             self.run_opts()
-
+            self.game.screen.blit(render_text("PAUSED",24), (256, 20))
             # Creating Buttons
             inventory = Button("Inventory", self.game, 242, 70)
             equip = Button("Equipment", self.game, 242, 140)
