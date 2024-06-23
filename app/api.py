@@ -8,10 +8,10 @@ from db import Room
 from sqlalchemy import *
 from sqlalchemy.orm import *
 
-MAP_X = 20
-MAP_Y = 20
-ROOM_LIMIT = 100
-ROOM_MINIMUM = 20
+MAP_X = 10
+MAP_Y = 10
+ROOM_LIMIT = 20
+ROOM_MINIMUM = 10
 
 engine = create_engine("sqlite://", echo=True)
 database = DB()
@@ -44,9 +44,10 @@ class DungeonDB(API):
 
     # basic dun gen sequence:
     
-    def generate_new_level(self, x=MAP_X, y=MAP_Y, size=ROOM_LIMIT) -> None:
+    def generate_new_level(self, x=MAP_X, y=MAP_Y, max_rooms=ROOM_LIMIT, min_rooms=ROOM_MINIMUM) -> None:
         self.room_count = 0
-        self.max_rooms = size
+        self.max_rooms = max_rooms
+        self.min_rooms = min_rooms
         # create 2d array
         self.map_coords = [[*range(x)],[*range(y)]]
         #print(map_coords)
@@ -57,11 +58,10 @@ class DungeonDB(API):
         #seed_y = random.choice(self.map_coords[1])
         seed_x = MAP_X//2
         seed_y = MAP_Y//2
-        map_array[seed_y][seed_x] = 1        
+        map_array[seed_y][seed_x] = 1
 
         #print(map_array)
         print (f"seed room = {seed_x},{seed_y}")
-        
 
         self.walls = self.generate_walls()
 
@@ -80,7 +80,6 @@ class DungeonDB(API):
 
         if self.room_count < ROOM_MINIMUM:
             self.generate_map(x=seed_x, y=seed_y)
-
 
 
         # # call room gen method
@@ -107,8 +106,8 @@ class DungeonDB(API):
         #print_gaps(f"first room: {first_room}")
         for room in all_rooms:
             print(room)
-            map_array[room.y][room.x] = 1
-            # map_array[room.y][room.x] = room.id
+            # map_array[room.y][room.x] = 1
+            map_array[room.y][room.x] = room.id
             # print_gaps(self.database.get_room_neighbors(room_id=room.id))
             self.generate_doors(room.id)
 
@@ -119,8 +118,11 @@ class DungeonDB(API):
         print("\nMAP:")
         for row in map_array:
             print(row)
-        # pick a random? room to declare as exit
+        # TODO: pick a random? room to declare as exit
 
+        return map_array
+
+        
 
     # TODO: split this whole thing up into steps...
     # Create a grid of room_ids:
@@ -154,6 +156,7 @@ class DungeonDB(API):
         # walls = self.generate_walls()
         random.shuffle(self.walls)
         for wall in self.walls:
+            print_gaps(f"wall = {wall}")
             match (wall): # same switch exists on db.py (but 1 indexed)
                 # facing....
                 case 0: # north
