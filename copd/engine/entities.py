@@ -118,10 +118,8 @@ class Entity(pg.sprite.Sprite):
 
 
 class Monster(Entity):
-
-    def __init__(self, game, name, x, y, max_hp=10, atk=2, dex=2, item=None):
+    def __init__(self, game, name, x, y, max_hp=10, atk=2, dex=2, item=None, type=None, alive=True):
         super().__init__(game, x, y, game.monsters, name=name)
-
         self.in_combat = Flag(False)
         self.stun = 0
         self.max_hp = max_hp
@@ -129,6 +127,14 @@ class Monster(Entity):
         self.atk = atk
         self.dex = dex
         self.item = item
+        self.type = type
+        self.prev_dx = 0  # Initialize prev_dx
+        self.prev_dy = 0  # Initialize prev_dy
+        self.alive = alive
+
+    def die(self):
+        self.alive = False
+        self.kill()
 
     def ai(self):
         # enemy to player vector math here
@@ -136,7 +142,7 @@ class Monster(Entity):
         dy = 0
         dx_player = self.game.player.rect.x - self.rect.x
         dy_player = self.game.player.rect.y - self.rect.y
-        if math.sqrt(dx_player**2 + dy_player**2) < 5*TILE_SIZE:
+        if math.sqrt(dx_player**2 + dy_player**2) < 5 * TILE_SIZE:
             if abs(dx_player) > abs(dy_player):
                 if dx_player > 0:
                     dx = 1
@@ -147,12 +153,8 @@ class Monster(Entity):
                     dy = 1
                 elif dy_player < 0:
                     dy = -1
-            self.get(Velocity).set(dx, dy)
         else:
             patrol_direction = randint(1, 4)
-            dx = 0
-            dy = 0
-
             if patrol_direction == 1:
                 dx = 1
             elif patrol_direction == 2:
@@ -162,9 +164,9 @@ class Monster(Entity):
             elif patrol_direction == 4:
                 dy = -1
 
-            self.get(Velocity).set(dx, dy)
-
-        self.game.Collision.update()
+        self.get(Velocity).set(dx, dy)  # Set velocity in terms of tiles
+        self.prev_dx = dx  # Update prev_dx
+        self.prev_dy = dy
 class Player(Entity):
     def __init__(self, name, game, x, y, filename=None):
         super().__init__(game, x, y, game.players, filename)
@@ -188,16 +190,21 @@ class Player(Entity):
 
 
 class Treasure(Entity):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, collected=False):
         super().__init__(game, x, y, group=game.treasures, name="chest")
         self._layer = Layers.Door_Layer
-
         self.item = items[random.randint(1, 4)]
+        self.collected = collected
+
+    def collect(self):
+        self.collected = True
+        self.kill()
 
 
-def create_monster(game, number):
-    x = random.randint(1, X_TILES - 2)
-    y = random.randint(1, Y_TILES - 2)
+def create_monster(game, x, y, number=None):
+    if number is None:
+        number = random.randint(0, 2)
+
     if number == 0:
         return Monster(
             game,
@@ -208,6 +215,7 @@ def create_monster(game, number):
             atk=4,
             dex=0,
             item=items[random.randint(1, 4)],
+            type=number  # Set the monster type here
         )
     elif number == 1:
         return Monster(
@@ -219,6 +227,7 @@ def create_monster(game, number):
             atk=2,
             dex=2,
             item=items[random.randint(1, 4)],
+            type=number  # Set the monster type here
         )
     elif number == 2:
         return Monster(
@@ -230,4 +239,7 @@ def create_monster(game, number):
             atk=1,
             dex=2,
             item=items[random.randint(1, 4)],
+            type=number  # Set the monster type here
         )
+    else:
+        raise ValueError(f"Unknown monster type: {number}")
