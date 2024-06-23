@@ -18,7 +18,6 @@ from copd.engine.components import Position, Velocity, TurnCounter
 from copd.ui.minimap import MiniMap
 
 
-# test
 class Engine:
 
     def __init__(self):
@@ -41,7 +40,7 @@ class Engine:
         self.monsters = pygame.sprite.LayeredUpdates()
         self.players = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
-        self.treasures = pygame.sprite.LayeredUpdates()  # tagged for removal
+        self.treasures = pygame.sprite.LayeredUpdates()
         self.Movement = Movement()
         self.Collision = Collision()
         self.Combat = Combat(self)
@@ -52,6 +51,7 @@ class Engine:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption(GAME_CAPTION)
         self.tile_map = TileMap(Path("copd/ui/assets/tilemap.png"))
+        self.room_states = {}
 
     def add_component(self, component: Component):
         """_summary_
@@ -68,9 +68,8 @@ class Engine:
 
     def add_player(self, player=None) -> None:
         """
-        adds the player entitity
+        adds the player entity
         to game, only called on game start
-
         """
         if player is None:
             self.player = Player("Bilbo", self, 15, 9, "player")
@@ -93,15 +92,45 @@ class Engine:
         self.treasures.empty()
         self.doors.empty()
         self.solid_blocks.empty()
-        # loads specififc map from args
 
-        # add monster to game
-        self.add_monster()
+        # Get the unique identifier for the current room
+        room_id = self.get_room_id()
 
+        # Retrieve the room state if it exists, otherwise initialize it
+        room_state = self.room_states.get(room_id, {'treasures': [], 'enemies': []})
+
+        # Load the map
         self.current_room = Map(self, map)
         self.current_room.load_tiles()
-        # add treasure for room
-        self.add_treasure(14, 10)
+
+        # Load treasures from the room state
+        for treasure_info in room_state['treasures']:
+            x, y, collected = treasure_info
+            if not collected:
+                treasure = Treasure(self, x, y, collected=collected)
+                self.treasures.add(treasure)
+                treasure.draw()
+
+        # Load enemies from the room state
+        for enemy_info in room_state['enemies']:
+            enemy_type, x, y, alive = enemy_info
+            if alive:
+                enemy = create_monster(self, x, y, number=enemy_type)
+                self.monsters.add(enemy)
+                self.Collision.add_entity(enemy)
+                self.Movement.add_entity(enemy)
+                enemy.draw()
+
+        # Add new monsters and treasures if they do not already exist in the room state
+        if not room_state['enemies']:
+            self.add_monster()
+
+        if not room_state['treasures']:
+            self.add_treasure()
+
+    def get_room_id(self):
+        """Returns a unique identifier for the current room."""
+        return tuple(self.player.overworldcoords)
 
     def update(self):
         """Update all sprites"""
@@ -155,18 +184,38 @@ class Engine:
         Creates a random, or specific
         entity monster sprite
         """
-        # allows selection of specific monsters(BOSSES)
+        room_id = self.get_room_id()
+        room_state = self.room_states.get(room_id, {'treasures': [], 'enemies': []})
+
         if monster is not None:
             self.monster = monster
         else:
+            valid_positions = self.current_room.valid_positions
+            if not valid_positions:
+                print("No valid positions available to spawn monsters.")
+                return
 
-            self.monster = create_monster(self, randint(0, 2))
+            x, y = random.choice(valid_positions)
+            self.monster = create_monster(self, x, y)
+
+        if self.monster is None:
+            print("Failed to create a monster.")
+            return
+
         self.Collision.add_entity(self.monster)
         self.Movement.add_entity(self.monster)
 
-    def add_treasure(self, x, y):
+        # Add the monster to the room state if it doesn't already exist
+        if not any(enemy for enemy in room_state['enemies'] if enemy[1] == self.monster.rect.x // TILE_SIZE and enemy[2] == self.monster.rect.y // TILE_SIZE):
+            room_state['enemies'].append((self.monster.type, self.monster.rect.x // TILE_SIZE, self.monster.rect.y // TILE_SIZE, True))
+            self.room_states[room_id] = room_state
+
+        self.monsters.add(self.monster)
+        self.monster.draw()
+
+    def add_treasure(self):
         """
-        creates a treasure sprite at coords
+        Creates a treasure sprite at coords
         ###TEST FUNCTION###
 
         Parameters
@@ -176,4 +225,38 @@ class Engine:
         y : INT
         y tile position
         """
+        room_id = self.get_room_id()
+        room_state = self.room_states.get(room_id, {'treasures': [], 'enemies': []})
+
+        valid_positions = self.current_room.valid_positions
+        x, y = random.choice(valid_positions)
         self.treasure = Treasure(self, x, y)
+
+        # Add the treasure to the room state if it doesn't already exist
+        if not any(treasure for treasure in room_state['treasures'] if treasure[0] == x and treasure[1] == y):
+            room_state['treasures'].append((x, y, False))
+            self.room_states[room_id] = room_state
+
+        self.treasures.add(self.treasure)
+        self.treasure.draw()
+
+    def update_room_state(self):
+        """
+        Updates the room state based on the current state of treasures and monsters
+        """
+        room_id = self.get_room_id()
+        room_state = self.room_states.get(room_id, {'treasures': [], 'enemies': []})
+
+        # Update treasures
+        for treasure in self.treasures:
+            for idx, (x, y, collected) in enumerate(room_state['treasures']):
+                if treasure.rect.x // TILE_SIZE == x and treasure.rect.y // TILE_SIZE == y:
+                    room_state['treasures'][idx] = (x, y, True)
+
+        # Update enemies
+        for monster in self.monsters:
+            for idx, (enemy_type, x, y, alive) in enumerate(room_state['enemies']):
+                if monster.rect.x // TILE_SIZE == x and monster.rect.y // TILE_SIZE == y:
+                    room_state['enemies'][idx] = (enemy_type, x, y, False)
+
+        self.room_states[room_id] = room_state

@@ -12,7 +12,7 @@ FPS = 60
 OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
 OVERWORLD_WIDTH = 2
 OVERWORLD_HEIGHT = 2
-DEFAULT_MAP = "copd/ui/assets/map.csv"
+DEFAULT_MAP = "copd/ui/assets/crawlofpydun.csv"
 
 GAME_CAPTION = "Crawl of PyDun"
 
