@@ -504,7 +504,25 @@ class DB:
                 rooms.append(room)
         return rooms
     
-        
+    def get_room_neighbors(self, room_id):
+        """ Returns a list of tuples: (neighbor, wall)"""
+        rooms = []
+        with Session(engine) as session:
+            this_room = session.scalars(select(Room).where(Room.id == room_id)).one()
+            for rwd in session.scalars(select(RoomWallDoor).where(RoomWallDoor.room_id == room_id)).all():
+                # rwds.append(rwd)
+            # for wall in rwds:
+                rooms.append((self.get_room_if_exists(
+                    x=this_room.x,
+                    y=this_room.y,
+                    wall_pair=rwd.wall_id
+                ),
+                    rwd.wall_id
+                ))
+        return rooms
+
+
+
 
     def create_door(self, room_id=None):
         with Session(engine) as session:

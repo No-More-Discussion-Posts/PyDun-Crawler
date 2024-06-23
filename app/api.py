@@ -10,8 +10,8 @@ from sqlalchemy.orm import *
 
 MAP_X = 20
 MAP_Y = 20
-ROOM_LIMIT = 100
-ROOM_MINIMUM = 10
+ROOM_LIMIT = 10
+ROOM_MINIMUM = 5
 
 engine = create_engine("sqlite://", echo=True)
 database = DB()
@@ -110,6 +110,7 @@ class DungeonDB(API):
             print(room)
             map_array[room.y][room.x] = 1
             # map_array[room.y][room.x] = room.id
+            print_gaps(self.database.get_room_neighbors(room_id=room.id))
         for rwd in all_rwds:
             print(rwd)
 
@@ -180,6 +181,9 @@ class DungeonDB(API):
         random.shuffle(walls)
         print_gaps(f"walls = {walls}")
         return walls
+    
+    def generate_doors(self, room_id):
+        pass
     
     def room_in_bounds(self, x, y) -> Boolean:
         x_valid = self.map_coords[0].count(x) > 0
