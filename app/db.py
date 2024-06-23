@@ -383,7 +383,7 @@ class RoomWallDoor(Base):
     door_id: Mapped[int] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
-        return f"RoomDoor(id={self.id!r}, wall_id={self.wall_id!r}, door_id={self.door_id!r})"
+        return f"RoomWallDoor(id={self.id!r}, room_id={self.room_id}, wall_id={self.wall_id!r}, door_id={self.door_id!r})"
 
 
 def update_room_wall_door():
@@ -405,10 +405,10 @@ class DB:
     def create_walls(self):
         """Hardcoded wall values"""
         with Session(engine) as session:
-            north = Wall(id=0, side="north", pair=2)
-            east = Wall(id=1, side="east", pair=3)
-            south = Wall(id=2, side="south", pair=0)
-            west = Wall(id=3, side="west", pair=1)
+            north = Wall(id=1, side="north", pair=3)
+            east = Wall(id=2, side="east", pair=4)
+            south = Wall(id=3, side="south", pair=1)
+            west = Wall(id=4, side="west", pair=2)
         session.add_all([north, east, south, west])
         session.commit()
 
@@ -436,7 +436,23 @@ class DB:
             room = Room(x=x, y=y)
         session.add(room)
         session.commit()
+        self.create_rwds(room.id)
         return room.id
+
+    def create_room_wall_door(self, room_id, wall_id, door_id=None):
+        with Session(engine) as session:
+            room_wall_door = RoomWallDoor(room_id=room_id, wall_id=wall_id, door_id=door_id)
+        session.add(room_wall_door)
+        session.commit()
+        return room_wall_door.id
+    
+    def create_rwds(self, room_id):
+        for wall in self.get_walls():
+            with Session(engine) as session:
+                rwd = RoomWallDoor(room_id=room_id, wall_id=wall.id, door_id=None)
+            session.add(rwd)
+            session.commit()
+            
 
     def read_room(self, id=0):
         stmt = select(Room).where(Room.id == id)
@@ -452,17 +468,24 @@ class DB:
             "x":result.x,
             "y":result.y
         }
-    
+
+    def get_walls(self):
+        walls = []
+        with Session(engine) as session:
+            for wall in session.scalars(select(Wall)).all():
+                walls.append(wall)
+        return walls
+
     def get_room_if_exists(self, x, y, wall_pair):
-        match (wall_pair): # same switch exists on api.py
+        match (wall_pair): # same switch exists on api.py (but 0 indexed)
             # facing....
-            case 0: # north
+            case 1: # north
                 y -= 1
-            case 1: # east
+            case 2: # east
                 x += 1
-            case 2: # south
+            case 3: # south
                 y += 1
-            case 3: # west
+            case 4: # west
                 x -= 1
         stmt = select(Room.id).where((Room.x == x) & (Room.y == y))
         with Session(engine) as session:
@@ -476,11 +499,12 @@ class DB:
         stmt = select(Room)
         rooms = []
         with Session(engine) as session:
-            for row in session.scalars(stmt).all():
-                #print(row)
-
-                rooms.append(row)
+            for room in session.scalars(stmt).all():
+                #print(row)    
+                rooms.append(room)
         return rooms
+    
+        
 
     def create_door(self, room_id=None):
         with Session(engine) as session:
@@ -489,7 +513,6 @@ class DB:
         session.commit()
         return door.id
 
-
     def read_door(self, id):
         stmt = select(Door).where(Door.id == id)
         with Session(engine) as session:
@@ -497,12 +520,7 @@ class DB:
         return door
 
 
-    def create_room_wall_door(self, room_id, wall_id, door_id=None):
-        with Session(engine) as session:
-            room_wall_door = RoomWallDoor(room_id=room_id, wall_id=wall_id, door_id=door_id)
-        session.add(room_wall_door)
-        session.commit()
-        return room_wall_door.id
+
 
     def read_room_wall_door(self, id=0):
         stmt = select(RoomWallDoor).where(RoomWallDoor.id == id)
@@ -574,7 +592,7 @@ class DB:
         stmt = select(RoomWallDoor)
         rooms = []
         with Session(engine) as session:
-            for row in session.execute(stmt):
+            for row in session.scalars(stmt).all():
                 #print(row)
                 rooms.append(row)
         return rooms

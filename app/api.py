@@ -11,7 +11,7 @@ from sqlalchemy.orm import *
 MAP_X = 20
 MAP_Y = 20
 ROOM_LIMIT = 100
-ROOM_MINIMUM = 50
+ROOM_MINIMUM = 10
 
 engine = create_engine("sqlite://", echo=True)
 database = DB()
@@ -63,7 +63,7 @@ class DungeonDB(API):
         print (f"seed room = {seed_x},{seed_y}")
         
 
-        #self.walls = self.generate_walls()
+        self.walls = self.generate_walls()
 
         # while self.room_count < ROOM_MINIMUM:        
         #     self.generate_map(x=seed_x, y=seed_y)
@@ -80,6 +80,7 @@ class DungeonDB(API):
 
         if self.room_count < ROOM_MINIMUM:
             self.generate_map(x=seed_x, y=seed_y)
+
 
 
         # # call room gen method
@@ -102,16 +103,19 @@ class DungeonDB(API):
         # Testing 
         #first_room = self.database.read_room()
         all_rooms = self.database.get_rooms()
-        #all_rwds = self.database.get_rwds()
+        all_rwds = self.database.get_rwds()
         #print_gaps("rooms: ")
         #print_gaps(f"first room: {first_room}")
         for room in all_rooms:
-            print_gaps(room)
+            print(room)
             map_array[room.y][room.x] = 1
+            # map_array[room.y][room.x] = room.id
+        for rwd in all_rwds:
+            print(rwd)
+
+        print("\nMAP:")
         for row in map_array:
             print(row)
-        # for rwd in all_rwds:
-        #     print_gaps(rwd)
         # pick a random? room to declare as exit
 
 
@@ -126,7 +130,7 @@ class DungeonDB(API):
     #     
     # Iterate through grid:
     #   Create four RWDs for each room
-    #   Check if room has adjacent rooms
+    #   Check if room has adjacent rooms <-- doing now
     #       Create doors and update RWDs
 
 
@@ -144,10 +148,10 @@ class DungeonDB(API):
         new_room = self.database.create_room(x=x, y=y)
         print_gaps(new_room)
 
-        walls = self.generate_walls()
-        #walls = random.shuffle(self.walls)
-        for wall in walls:
-            match (wall): # same switch exists on db.py
+        # walls = self.generate_walls()
+        random.shuffle(self.walls)
+        for wall in self.walls:
+            match (wall): # same switch exists on db.py (but 1 indexed)
                 # facing....
                 case 0: # north
                     y -= 1
