@@ -10,7 +10,7 @@ from sqlalchemy.orm import *
 
 MAP_X = 20
 MAP_Y = 20
-ROOM_LIMIT = 200
+ROOM_LIMIT = 100
 ROOM_MINIMUM = 50
 
 engine = create_engine("sqlite://", echo=True)
@@ -65,10 +65,21 @@ class DungeonDB(API):
 
         #self.walls = self.generate_walls()
 
-        while self.room_count < ROOM_MINIMUM:        
-            self.generate_map(x=seed_x, y=seed_y)
-            self.room_count = len(self.database.get_rooms())
+        # while self.room_count < ROOM_MINIMUM:        
+        #     self.generate_map(x=seed_x, y=seed_y)
+        #     self.room_count = len(self.database.get_rooms())
             
+        self.generate_map(x=seed_x, y=seed_y)
+
+        ### If the count comes up short, try again up to three times ###
+        if self.room_count < ROOM_MINIMUM:
+            self.generate_map(x=seed_x, y=seed_y)
+
+        if self.room_count < ROOM_MINIMUM:
+            self.generate_map(x=seed_x, y=seed_y)
+
+        if self.room_count < ROOM_MINIMUM:
+            self.generate_map(x=seed_x, y=seed_y)
 
 
         # # call room gen method
@@ -120,11 +131,14 @@ class DungeonDB(API):
 
 
     # map grid generation sequence
-    # do it recursively this times
+    # do it recursively this time
     def generate_map(self, x, y):
         self.room_count = len(self.database.get_rooms())
         print_gaps(self.room_count)
         if self.room_count >= self.max_rooms:
+            return
+        
+        if self.database.room_exists(x=x, y=y):
             return
         
         new_room = self.database.create_room(x=x, y=y)
@@ -143,11 +157,13 @@ class DungeonDB(API):
                     y += 1
                 case 3: # west
                     x -= 1
-            if self.database.room_exists(x=x, y=y):
-                return
+                    
+            # if self.database.room_exists(x=x, y=y):
+            #     return
 
             if not self.room_in_bounds(x=x, y=y):
                 return
+            
             if (self.room_count > self.min_rooms) & (random.randint(0,4) == 0):
                 return
             
@@ -166,6 +182,12 @@ class DungeonDB(API):
         y_valid = self.map_coords[1].count(y) > 0
         return x_valid & y_valid
 
+
+
+
+
+
+    ################### No longer using this. Keeping it around for reference ###################
     # room gen sequence
     def generate_room(self, x=None, y=None, first_wall=None, last_door=None, room_id=None):
         # create new room

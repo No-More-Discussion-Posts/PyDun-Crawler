@@ -5,7 +5,7 @@ from typing import List
 from typing import Optional
 from sqlalchemy import create_engine
 from sqlalchemy import Integer, String, Boolean
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy import select, update, func
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column, column_property
@@ -14,6 +14,7 @@ from sqlalchemy.orm import DeclarativeBase, Session
 
 
 engine = create_engine("sqlite://", echo=True)
+#sa = sqlalchemy()
 
 class Base(DeclarativeBase):
     pass
@@ -340,6 +341,7 @@ class Room(Base):
     x: Mapped[int] = mapped_column()
     y: Mapped[int] = mapped_column()
     #level_id: Mapped[int] = mapped_column(ForeignKey("level.id"))
+    __table_args__ = (UniqueConstraint('x', 'y', name='_room_xy_uc'),)
 
     def __repr__(self) -> str:
         return f"Room(id={self.id!r}, x={self.x!r}, y={self.y!r})"
@@ -597,7 +599,10 @@ class DB:
         stmt = select(Room).where((Room.x == x) & (Room.y == y))
         with Session(engine) as session:
             result = session.execute(stmt).all()
-        return len(result) > 0
+        # return len(result) > 0
+        exists = len(result) > 0
+        print_gaps(f"room exists = {exists}")
+        return exists
 
 # Testing stuff
 def print_gaps(str):
@@ -610,12 +615,15 @@ def main() -> None:
     test_db = DB()
     test_room_id = test_db.create_room(1, 2)
     test_room_id = test_db.create_room(2, 1)
+    test_room_id = test_db.create_room(2, 2)
+    #test_room_id = test_db.create_room(1, 2) # should throw unique constraint error
     #test_db.get_xy_from_room(0)
     #print(test_db.read_room(test_room_id))
     #print(test_db.create_door(1))
     #print(test_db.create_room_wall_door(0, 0, None))
     #print(test_db.add_rwd_door_from_room(0, 0, 1))
-    print(test_db.room_exists(1,2))
+    print_gaps(test_db.room_exists(1,2))
+    print_gaps(test_db.room_exists(1,0))
 
 if __name__ == "__main__":
     main()
