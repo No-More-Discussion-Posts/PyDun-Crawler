@@ -581,11 +581,14 @@ class DB:
                 (RoomWallDoor.wall_id == wall)
             )
             .values(door_id=door_id)
-            .returning(RoomWallDoor.id)
+            # .returning(RoomWallDoor.id)
         )
+        # with Session(engine) as session:
+        #     rwd = session.execute(stmt)
+        # return rwd
         with Session(engine) as session:
-            rwd = session.scalars(stmt).fetchall()
-        return rwd[0]
+            session.execute(stmt)
+            session.commit()
 
     #def add_rwds_for_room(seld, room_id):
 

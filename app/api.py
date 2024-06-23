@@ -10,8 +10,8 @@ from sqlalchemy.orm import *
 
 MAP_X = 20
 MAP_Y = 20
-ROOM_LIMIT = 10
-ROOM_MINIMUM = 5
+ROOM_LIMIT = 100
+ROOM_MINIMUM = 20
 
 engine = create_engine("sqlite://", echo=True)
 database = DB()
@@ -103,14 +103,16 @@ class DungeonDB(API):
         # Testing 
         #first_room = self.database.read_room()
         all_rooms = self.database.get_rooms()
-        all_rwds = self.database.get_rwds()
         #print_gaps("rooms: ")
         #print_gaps(f"first room: {first_room}")
         for room in all_rooms:
             print(room)
             map_array[room.y][room.x] = 1
             # map_array[room.y][room.x] = room.id
-            print_gaps(self.database.get_room_neighbors(room_id=room.id))
+            # print_gaps(self.database.get_room_neighbors(room_id=room.id))
+            self.generate_doors(room.id)
+
+        all_rwds = self.database.get_rwds()
         for rwd in all_rwds:
             print(rwd)
 
@@ -183,7 +185,17 @@ class DungeonDB(API):
         return walls
     
     def generate_doors(self, room_id):
-        pass
+        neighbors = self.database.get_room_neighbors(room_id=room_id)
+        print_gaps(neighbors)
+        for neighbor in neighbors:
+            if neighbor[0] > 0:
+                print_gaps(neighbor)
+                new_door = self.database.create_door(room_id=neighbor[0])
+                self.database.add_rwd_door_from_room(
+                    room_id=room_id,
+                    wall=neighbor[1],
+                    door_id=new_door
+                )
     
     def room_in_bounds(self, x, y) -> Boolean:
         x_valid = self.map_coords[0].count(x) > 0
