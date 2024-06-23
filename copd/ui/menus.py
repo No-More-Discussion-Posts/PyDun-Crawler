@@ -126,9 +126,9 @@ class PauseMenu(Menu):
         self.player = game.player
         self.options = options
         self.options.append(Option(MenuOption.CAPTION, "Paused"))
-        # self.options.append(
-        #     Option(MenuOption.PRINT, dict(size=20, text="PAUSED", pos=(270, 20)))
-        # )
+        self.options.append(
+            Option(MenuOption.PRINT, dict(size=20, text="PAUSED", pos=(270, 20)))
+        )
         self.options.append(
             Option(
                 MenuOption.HANDLER,
@@ -146,7 +146,7 @@ class PauseMenu(Menu):
         while self.running:
             self.game.screen.fill(Colors.Cyantology)
             self.run_opts()
-            self.game.screen.blit(render_text("PAUSED",24), (256, 20))
+            # self.game.screen.blit(render_text("PAUSED",24), (256, 20))
             # Creating Buttons
             inventory = Button("Inventory", self.game, 242, 70)
             equip = Button("Equipment", self.game, 242, 140)
