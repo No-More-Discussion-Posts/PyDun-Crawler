@@ -137,6 +137,9 @@ class Engine:
     def run(self):
         self.running = True
         MainMenu(self).run()
+        
+        self.add_player()
+        self.load_map(DEFAULT_MAP)
         while self.running:
             for event in pygame.event.get():
                 self.handle_event(event)

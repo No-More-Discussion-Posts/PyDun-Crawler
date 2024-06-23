@@ -90,13 +90,34 @@ class Menu:
 class MainMenu(Menu):
     def __init__(self, game, options=[]):
         super().__init__(game,options)
+        self.options.append(
+            Option(
+                MenuOption.HANDLER,
+                dict(
+                    event_type=pygame.KEYDOWN,
+                    key=pygame.K_p,
+                    result=lambda: self.stop(),
+                ),
+            )
+        )
     
     def run(self) -> None:
         running = True
         while running:
-            self.game.screen.fill((0, 0, 0))
+            self.game.screen.fill((20, 20, 20))
+            
+            self.game.screen.blit(render_text(
+                "COPD",
+                48
+            ), (225, 20))
+            self.game.screen.blit(render_text(
+                "Press any key to start",24
+            ), (50, 100))
+            pygame.display.update()        
             for e in pygame.event.get():
-                self.game.handle_event(e)
+                if e.type == pygame.KEYDOWN:
+                    running = False
+                self.handle_input(e)
 
 class PauseMenu(Menu):
     def __init__(self, game, options=[]):

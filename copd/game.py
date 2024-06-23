@@ -20,8 +20,7 @@ pygame.init()
 def main() -> None:
     """Main game loop"""
     game = Engine()
-    game.add_player()
-    game.load_map(DEFAULT_MAP)
+    
     game.run()
 
 
