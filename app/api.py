@@ -99,7 +99,7 @@ class DungeonDB(API):
         #seed_y = random.choice(self.map_coords[1])
         seed_x = x//2
         seed_y = y//2
-        map_array[seed_y][seed_x] = 1
+        # map_array[seed_y][seed_x] = 1
         #print(map_array)
         print(f"seed room = {seed_x},{seed_y}")
 
@@ -125,7 +125,6 @@ class DungeonDB(API):
         # if self.room_count < ROOM_MINIMUM:
         #     self.generate_map(x=seed_x, y=seed_y)
            
-
         all_rooms = self.database.get_rooms()
         #print_gaps("rooms: ")
         #print_gaps(f"first room: {first_room}")
@@ -141,11 +140,12 @@ class DungeonDB(API):
         for rwd in all_rwds:
             print(rwd)
 
-        print("\nMAP:")
-        for row in map_array:
-            print(row)
+        # print("\nMAP:")
+        # for row in map_array:
+        #     print(row)
+        # print()
+
         # TODO: pick a random room to declare as exit?
-        print()
 
         return map_array
 
@@ -237,9 +237,34 @@ class DungeonDB(API):
 
     # Retrieval methods
     def get_map_from_room(self, room_id):
+        """_summary_
+
+        Args:
+            room_id (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         return self.database.get_room_map(room_id=room_id)
 
+    def get_level_grid(self):
+        """_summary_
 
+        Returns:
+            _type_: _description_
+        """
+        map_array = [[0 for row in self.map_coords[0]] for col in self.map_coords[1]]
+        all_rooms = self.database.get_rooms()
+        #print_gaps("rooms: ")
+        #print_gaps(f"first room: {first_room}")
+        for room in all_rooms:
+            print(room)
+            print(self.database.get_room_map(room.id))
+            # map_array[room.y][room.x] = 1
+            map_array[room.y][room.x] = room.id
+            # print_gaps(self.database.get_room_neighbors(room_id=room.id))
+            #self.generate_doors(room.id)
+        return map_array
 
 def print_gaps(str):
     print (f"\n -- {str} -- \n")
@@ -250,5 +275,7 @@ def main():
     test_dungeon.generate_new_level()
     #test_dungeon.generate_new_level(x=10,y=10)
     #test_dungeon.generate_room(x=0, y=1)
+    print(test_dungeon.get_level_grid())
+
 if __name__ == "__main__":
     main()
