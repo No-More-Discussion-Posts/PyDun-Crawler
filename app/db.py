@@ -58,13 +58,14 @@ def update_game_entity():
 def delete_game_entity():
     pass
 
-
+# TODO: modify this. I don't think we need to split file and extension
 # FilePath
 class FilePath(Base):
     __tablename__ = "file_path"
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
-    file_name: Mapped[str] = mapped_column(String(256))
-    extension: Mapped[str] = mapped_column(String(32))
+    path: Mapped[str] = mapped_column(String(256))
+    #name: Mapped[str] = mapped_column(String(256))
+    #extension: Mapped[str] = mapped_column(String(32))
 
     def __repr__(self) -> str:
         return f"FilePath(id={self.id!r}, file_name={self.file_name!r}, extension={self.extension!r})"
@@ -297,11 +298,6 @@ def delete_tile():
     pass
 
 
-#TODO: read csv, load tile map into db, tile object, 
-# add xy for tile positions in room
-# get all tiles that match room id
-# return a list of room objects
-
 
 # TileType
 class TileType(Base):
@@ -336,11 +332,17 @@ class Room(Base):
     # TODO rename this (they should reflect level grid pos_x/y)
     x: Mapped[int] = mapped_column()
     y: Mapped[int] = mapped_column()
-    #level_id: Mapped[int] = mapped_column(ForeignKey("level.id"))
+    room_map_id: Mapped[int] = mapped_column(ForeignKey("room_map.id"), nullable=True)
     __table_args__ = (UniqueConstraint('x', 'y', name='_room_xy_uc'),)
 
     def __repr__(self) -> str:
         return f"Room(id={self.id!r}, x={self.x!r}, y={self.y!r})"
+
+class RoomMap(Base):
+    __tablename__ = "room_map"
+    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
+    map_string: Mapped[str] = mapped_column(str(2000))
+    #room_id: Mapped[int] = mapped_column(ForeignKey("room.id"), nullable=True)
 
 # Door
 class Door(Base):
@@ -399,6 +401,14 @@ class DB:
         session.commit()
         self.create_rwds(room.id)
         return room.id
+    
+    def create_room_map(self, map_string):
+        with Session(engine) as session:
+            room_map = RoomMap(map_string=map_string)
+        session.add(room_map)
+        session.commit()
+        return room_map.id
+    
 
     def create_room_wall_door(self, room_id, wall_id, door_id=None):
         with Session(engine) as session:
@@ -427,7 +437,16 @@ class DB:
         return {
             "id":result.id,
             "x":result.x,
-            "y":result.y
+            "y":result.y,
+            "room_map_id": result.room_map_id
+        }
+    def read_room_map(self, id):
+        stmt = select(RoomMap).where(RoomMap.id == id)
+        with Session(engine) as session:
+            result = session.scalars(stmt).one()
+        return {
+            "id": result.id,
+            "map_string": result.map_string,
         }
 
     def get_walls(self):
@@ -580,12 +599,35 @@ class DB:
         print_gaps(f"room exists = {exists}")
         return exists
     
-    def create_tile(id, room_id):
+    def create_tile(self, id, room_id):
         """Insert new tile with arguments"""
         with Session(engine) as session:
             tile = Tile(id=id, room_id=room_id)
         session.add(tile)
         session.commit()
+
+    def get_room_map(self, room_id):
+        room_stmt = select(Room.room_map_id).where(
+            Room.id == room_id
+            )
+        with Session(engine) as session:
+            map_id = session.scalars(room_stmt).one()
+
+            map_stmt = select(RoomMap.map_string).where(
+                RoomMap.id == map_id
+                )
+            result = session.scalars(map_stmt).one()
+        return result.split('|')
+    
+    def add_room_map_to_room(self, room_id, room_map_id):
+        stmt = (
+            update(Room)
+            .where(Room.id == room_id)
+            .values(room_map_id = room_map_id)
+        )
+        with Session(engine) as session:
+            session.execute(stmt)
+            session.commit()
 
 # Testing stuff
 def print_gaps(str):
@@ -605,8 +647,11 @@ def main() -> None:
     #print(test_db.create_door(1))
     #print(test_db.create_room_wall_door(0, 0, None))
     #print(test_db.add_rwd_door_from_room(0, 0, 1))
-    print_gaps(test_db.room_exists(1,2))
-    print_gaps(test_db.room_exists(1,0))
+    #print_gaps(test_db.room_exists(1,2))
+    #print_gaps(test_db.room_exists(1,0))
+    room_map_id = test_db.create_room_map(map_string="0,1|1,0")
+    test_db.add_room_map_to_room(room_id=1, room_map_id=room_map_id)
+    print(test_db.get_room_map(room_id=1))
 
 if __name__ == "__main__":
     main()
