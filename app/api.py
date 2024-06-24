@@ -233,6 +233,11 @@ class DungeonDB(API):
         x_valid = self.map_coords[0].count(x) > 0
         y_valid = self.map_coords[1].count(y) > 0
         return x_valid & y_valid
+    
+
+    # Retrieval methods
+    def get_map_from_room(self, room_id):
+        return self.database.get_room_map(room_id=room_id)
 
 
 
