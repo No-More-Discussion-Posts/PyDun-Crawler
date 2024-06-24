@@ -13,7 +13,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm import DeclarativeBase, Session
 
 
-engine = create_engine("sqlite://", echo=True)
+engine = create_engine("sqlite://", echo=False)
 #sa = sqlalchemy()
 
 class Base(DeclarativeBase):
@@ -269,30 +269,20 @@ class Wall(Base):
 
 
 
-
-
-# TODO: Refactor this into Tile class
-# DungeonTile
+# Tile
 class Tile(Base):
     """Tile class"""
 
     __tablename__ = "tile"
     id: Mapped[int] = mapped_column(primary_key=True)
     room_id: Mapped[int] = mapped_column(ForeignKey("room.id"))
+
     sprite_id: Mapped[int] = mapped_column(ForeignKey("sprite.id"))
     tile_type_id: Mapped[int] = mapped_column(ForeignKey("tile_type.id"))
-    treasure_id: Mapped[int] = mapped_column(ForeignKey("treasure.id"))
+    treasure_id: Mapped[int] = mapped_column(ForeignKey("treasure.id"), nullable=True)
 
     def __repr__(self) -> str:
         return f"Tile(id={self.id!r}, room_id={self.room_id!r})"
-
-
-def create_tile(id, room_id):
-    """Insert new tile with arguments"""
-    with Session(engine) as session:
-        tile = Tile(id=id, room_id=room_id)
-    session.add(tile)
-    session.commit()
 
 
 def read_tile():
@@ -305,6 +295,12 @@ def update_tile():
 
 def delete_tile():
     pass
+
+
+#TODO: read csv, load tile map into db, tile object, 
+# add xy for tile positions in room
+# get all tiles that match room id
+# return a list of room objects
 
 
 # TileType
@@ -346,14 +342,6 @@ class Room(Base):
     def __repr__(self) -> str:
         return f"Room(id={self.id!r}, x={self.x!r}, y={self.y!r})"
 
-def update_room():
-    pass
-
-
-def delete_room():
-    pass
-
-
 # Door
 class Door(Base):
     __tablename__ = "door"
@@ -363,16 +351,6 @@ class Door(Base):
 
     def __repr__(self) -> str:
         return f"Door(id={self.id!r}, room_id={self.room_id!r})"
-
-
-
-
-
-
-
-def delete_door():
-    pass
-
 
 # Room-Door (with wall!)
 class RoomWallDoor(Base):
@@ -386,15 +364,6 @@ class RoomWallDoor(Base):
         return f"RoomWallDoor(id={self.id!r}, room_id={self.room_id}, wall_id={self.wall_id!r}, door_id={self.door_id!r})"
 
 
-def update_room_wall_door():
-    pass
-
-
-def delete_room_wall_door():
-    pass
-
-
-# TODO move your CRUD methods here when you're done with them
 class DB:
     def __init__(self):
         #self.create_walls()
@@ -422,14 +391,6 @@ class DB:
             "pair":wall.pair
         }
     
-    '''
-    def get_opposite_wall(self, wall_id):
-        stmt = select(Wall.pair).where(Wall.id == wall_id)
-        with Session(engine) as session:
-            pair = session.execute(stmt).first()
-        return pair[0]
-    '''
-
     def create_room(self, x, y):
         print_gaps(f"Creating room with id={id}, x={x}, y={y}")
         with Session(engine) as session:
@@ -521,9 +482,6 @@ class DB:
                 ))
         return rooms
 
-
-
-
     def create_door(self, room_id=None):
         with Session(engine) as session:
             door = Door(room_id=room_id)
@@ -536,9 +494,6 @@ class DB:
         with Session(engine) as session:
             door = session.scalars(stmt).first()
         return door
-
-
-
 
     def read_room_wall_door(self, id=0):
         stmt = select(RoomWallDoor).where(RoomWallDoor.id == id)
@@ -583,14 +538,9 @@ class DB:
             .values(door_id=door_id)
             # .returning(RoomWallDoor.id)
         )
-        # with Session(engine) as session:
-        #     rwd = session.execute(stmt)
-        # return rwd
         with Session(engine) as session:
             session.execute(stmt)
             session.commit()
-
-    #def add_rwds_for_room(seld, room_id):
 
     def get_room_count(self):
         stmt = select(func.count()).select_from(Room)
@@ -618,19 +568,6 @@ class DB:
                 rooms.append(row)
         return rooms
 
-    # def get_xy_from_room(self, room_id):
-    #     room = self.read_room(room_id)
-    #     print(f"room = {room}")
-    #     if room is None:
-    #         return {'x':999, 'y':999}
-    #     room_dict = {
-    #         "x":room.x,
-    #         "y":room.y
-    #     }
-    #     print(room_dict)
-    #     return room_dict
-        
-
     # TODO: rewrite read operations to return dictionaries
 
 
@@ -642,6 +579,13 @@ class DB:
         exists = len(result) > 0
         print_gaps(f"room exists = {exists}")
         return exists
+    
+    def create_tile(id, room_id):
+        """Insert new tile with arguments"""
+        with Session(engine) as session:
+            tile = Tile(id=id, room_id=room_id)
+        session.add(tile)
+        session.commit()
 
 # Testing stuff
 def print_gaps(str):

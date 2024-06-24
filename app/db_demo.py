@@ -6,6 +6,7 @@
 import pygame
 import os
 import sys
+from api import DungeonDB
 
 if "copd" not in sys.modules:
     parent_dir_name = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -24,8 +25,8 @@ def create_demo_map(x, y):
         
 def main() -> None:
     """Main game loop"""
+    '''
     game = Engine()
-
     #game.load_start_map((0, 0, 255), map=DEFAULT_MAP)
 
     map = create_demo_map(MAP_X, MAP_Y)
@@ -34,9 +35,14 @@ def main() -> None:
     map = Map(game=game, filename='./app/demomap.csv')
     game.load_start_map(color=(0, 0, 255), map=map)
 
-    #game.Test_Grid()
+    game.Test_Grid()
+    '''
 
-    game.run()
+    # game.run()
+    db = DungeonDB()
+    map = db.generate_new_level()
+    print(map)
+    
 
 class demo_engine:
     #TODO hook this into the ecs and create a simple map engine
