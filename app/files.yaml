@@ -1,0 +1,9 @@
+room_map:
+  1: demomap1.csv
+  2: demomap2.csv
+
+
+tile_type:
+  0: "wall"
+  1: "floor"
+  2: "door"
