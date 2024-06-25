@@ -102,6 +102,7 @@ class Entity(pg.sprite.Sprite):
                 dy = y_distance
             
         else:
+            print(f"animating...{self.x_dest},{self.y_dest}")
             if self.x_dest != self.x:
                 dx = ANIMATION_SPEED * (x_distance)/abs(x_distance)
             if self.y_dest != self.y:
