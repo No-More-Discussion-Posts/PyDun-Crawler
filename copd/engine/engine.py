@@ -175,7 +175,7 @@ class Engine:
                 BattleMenu(self).run()
             self.update()
             self.draw()
-            if self.enemies_killed >= 3:
+            if self.enemies_killed >= 5:
                 break
         GameOver(self).run()
         pygame.quit()

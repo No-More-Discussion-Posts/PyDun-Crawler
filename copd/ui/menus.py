@@ -442,8 +442,10 @@ class GameOver(Menu):
         running = True
         while running:
             self.game.screen.fill((20, 20, 20))
-            
-            game_over_text = render_text("GAME OVER",24)
+            if self.game.enemies_killed >=5:
+                game_over_text = render_text("DunGEON CLEARED",24)
+            else:
+                game_over_text = render_text("GAME OVER",24)
             self.game.screen.blit(game_over_text, ((SCREEN_WIDTH/2)-(game_over_text.get_width()/2), 100))
             enemy_text = render_text( f"Enemies killed: {self.game.enemies_killed}",24)                
             self.game.screen.blit(enemy_text, ((SCREEN_WIDTH/2)-(enemy_text.get_width()/2), 200))
