@@ -184,11 +184,13 @@ class Combat(System):
             print(f"Monster HP: {game.monster.hp}")
 
         if game.player.hp <= 0:
-            pygame.quit()
-            sys.exit()
+            self.game.running = False
+            self.complete = True
+
         elif game.monster.hp <= 0:
             self.handle_monster_defeat(game)
             self.complete = True
+            self.game.enemies_killed += 1
 
     def handle_monster_defeat(self, game):
         """Handle logic for when a monster is defeated."""

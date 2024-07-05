@@ -4,15 +4,13 @@ import sys
 from pathlib import Path
 
 from copd.engine.entities import *
-from copd.ui.menus import PauseMenu, BattleMenu,MainMenu
+from copd.ui.menus import PauseMenu, BattleMenu,MainMenu,GameOver
 from copd.config import DEFAULT_MAP
 from copd.engine.states import GameStates
 from copd.engine.ecs import Component
 from copd.ui.tiles import TileMap
 from copd.ui.map import Map
 from copd.engine.input_handlers import EventHandler
-
-# test
 from copd.engine.systems import Movement, Collision, Turn, Combat
 from copd.engine.components import Position, Velocity, TurnCounter
 from copd.ui.minimap import MiniMap
@@ -52,6 +50,7 @@ class Engine:
         pygame.display.set_caption(GAME_CAPTION)
         self.tile_map = TileMap(Path("copd/ui/assets/tilemap.png"))
         self.room_states = {}
+        self.enemies_killed = 0
 
     def add_component(self, component: Component):
         """_summary_
@@ -176,6 +175,9 @@ class Engine:
                 BattleMenu(self).run()
             self.update()
             self.draw()
+            if self.enemies_killed >= 3:
+                break
+        GameOver(self).run()
         pygame.quit()
         sys.exit()
 

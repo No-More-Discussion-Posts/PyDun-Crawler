@@ -1,5 +1,7 @@
 room_map:
-  1: demomap.csv
+  1: demomap1.csv
+  2: demomap2.csv
+
 
 tile_type:
   0: "wall"

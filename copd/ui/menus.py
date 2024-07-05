@@ -285,7 +285,7 @@ class BattleMenu:
 
         # self.start_combat()  #commented out for testing random enemy generation on overworld. -Roland
 
-        while self.running:
+        while self.running and self.game.running:
             self.game.screen.fill(Colors.Snugglepuss)
 
             height = self.game.screen.get_height()
@@ -422,3 +422,35 @@ class BattleMenu:
         if input.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
+
+class GameOver(Menu):
+    def __init__(self, game, options=[]):
+        super().__init__(game,options)
+        self.options.append(
+            Option(
+                MenuOption.HANDLER,
+                dict(
+                    event_type=pygame.KEYDOWN,
+                    key=pygame.K_p,
+                    result=lambda: self.stop(),
+                ),
+            )
+        )
+    
+    def run(self) -> None:
+        running = True
+        while running:
+            self.game.screen.fill((20, 20, 20))
+            
+            game_over_text = render_text(
+                "GAME OVER",24
+            )
+            self.game.screen.blit(game_over_text, ((SCREEN_WIDTH/2)-(game_over_text.get_width()/2), 100))
+            enemy_text = render_text( f"Enemies killed: {self.game.enemies_killed}",24)                
+            self.game.screen.blit(enemy_text, ((SCREEN_WIDTH/2)-(enemy_text.get_width()/2), 200))
+            print(f"Enemies killed: {self.game.enemies_killed}")
+            for e in pygame.event.get():
+                if e.type == pygame.KEYDOWN:
+                    running = False
+                self.handle_input(e)
