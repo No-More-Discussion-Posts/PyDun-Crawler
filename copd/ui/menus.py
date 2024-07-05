@@ -443,13 +443,11 @@ class GameOver(Menu):
         while running:
             self.game.screen.fill((20, 20, 20))
             
-            game_over_text = render_text(
-                "GAME OVER",24
-            )
+            game_over_text = render_text("GAME OVER",24)
             self.game.screen.blit(game_over_text, ((SCREEN_WIDTH/2)-(game_over_text.get_width()/2), 100))
             enemy_text = render_text( f"Enemies killed: {self.game.enemies_killed}",24)                
             self.game.screen.blit(enemy_text, ((SCREEN_WIDTH/2)-(enemy_text.get_width()/2), 200))
-            print(f"Enemies killed: {self.game.enemies_killed}")
+            pygame.display.update()
             for e in pygame.event.get():
                 if e.type == pygame.KEYDOWN:
                     running = False

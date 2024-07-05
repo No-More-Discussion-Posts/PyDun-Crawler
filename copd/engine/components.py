@@ -21,7 +21,6 @@ class Position(Component):
             return Position(x, y)
         else:
             raise TypeError("Position must be incremented with a Velocity object")
-        
 
     def __str__(self):
         return f"Position - x:{self.x}, y:{self.y}"

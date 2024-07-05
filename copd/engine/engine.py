@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 from copd.engine.entities import *
-from copd.ui.menus import PauseMenu, BattleMenu,MainMenu,GameOver
+from copd.ui.menus import PauseMenu, BattleMenu, MainMenu, GameOver
 from copd.config import DEFAULT_MAP
 from copd.engine.states import GameStates
 from copd.engine.ecs import Component
@@ -96,14 +96,14 @@ class Engine:
         room_id = self.get_room_id()
 
         # Retrieve the room state if it exists, otherwise initialize it
-        room_state = self.room_states.get(room_id, {'treasures': [], 'enemies': []})
+        room_state = self.room_states.get(room_id, {"treasures": [], "enemies": []})
 
         # Load the map
         self.current_room = Map(self, map)
         self.current_room.load_tiles()
 
         # Load treasures from the room state
-        for treasure_info in room_state['treasures']:
+        for treasure_info in room_state["treasures"]:
             x, y, collected = treasure_info
             if not collected:
                 treasure = Treasure(self, x, y, collected=collected)
@@ -111,7 +111,7 @@ class Engine:
                 treasure.draw()
 
         # Load enemies from the room state
-        for enemy_info in room_state['enemies']:
+        for enemy_info in room_state["enemies"]:
             enemy_type, x, y, alive = enemy_info
             if alive:
                 enemy = create_monster(self, x, y, number=enemy_type)
@@ -121,10 +121,10 @@ class Engine:
                 enemy.draw()
 
         # Add new monsters and treasures if they do not already exist in the room state
-        if not room_state['enemies']:
+        if not room_state["enemies"]:
             self.add_monster()
 
-        if not room_state['treasures']:
+        if not room_state["treasures"]:
             self.add_treasure()
 
     def get_room_id(self):
@@ -165,7 +165,7 @@ class Engine:
     def run(self):
         self.running = True
         MainMenu(self).run()
-        
+
         self.add_player()
         self.load_map(DEFAULT_MAP)
         while self.running:
@@ -187,7 +187,7 @@ class Engine:
         entity monster sprite
         """
         room_id = self.get_room_id()
-        room_state = self.room_states.get(room_id, {'treasures': [], 'enemies': []})
+        room_state = self.room_states.get(room_id, {"treasures": [], "enemies": []})
 
         if monster is not None:
             self.monster = monster
@@ -208,8 +208,20 @@ class Engine:
         self.Movement.add_entity(self.monster)
 
         # Add the monster to the room state if it doesn't already exist
-        if not any(enemy for enemy in room_state['enemies'] if enemy[1] == self.monster.rect.x // TILE_SIZE and enemy[2] == self.monster.rect.y // TILE_SIZE):
-            room_state['enemies'].append((self.monster.type, self.monster.rect.x // TILE_SIZE, self.monster.rect.y // TILE_SIZE, True))
+        if not any(
+            enemy
+            for enemy in room_state["enemies"]
+            if enemy[1] == self.monster.rect.x // TILE_SIZE
+            and enemy[2] == self.monster.rect.y // TILE_SIZE
+        ):
+            room_state["enemies"].append(
+                (
+                    self.monster.type,
+                    self.monster.rect.x // TILE_SIZE,
+                    self.monster.rect.y // TILE_SIZE,
+                    True,
+                )
+            )
             self.room_states[room_id] = room_state
 
         self.monsters.add(self.monster)
@@ -228,15 +240,19 @@ class Engine:
         y tile position
         """
         room_id = self.get_room_id()
-        room_state = self.room_states.get(room_id, {'treasures': [], 'enemies': []})
+        room_state = self.room_states.get(room_id, {"treasures": [], "enemies": []})
 
         valid_positions = self.current_room.valid_positions
         x, y = random.choice(valid_positions)
         self.treasure = Treasure(self, x, y)
 
         # Add the treasure to the room state if it doesn't already exist
-        if not any(treasure for treasure in room_state['treasures'] if treasure[0] == x and treasure[1] == y):
-            room_state['treasures'].append((x, y, False))
+        if not any(
+            treasure
+            for treasure in room_state["treasures"]
+            if treasure[0] == x and treasure[1] == y
+        ):
+            room_state["treasures"].append((x, y, False))
             self.room_states[room_id] = room_state
 
         self.treasures.add(self.treasure)
@@ -247,18 +263,24 @@ class Engine:
         Updates the room state based on the current state of treasures and monsters
         """
         room_id = self.get_room_id()
-        room_state = self.room_states.get(room_id, {'treasures': [], 'enemies': []})
+        room_state = self.room_states.get(room_id, {"treasures": [], "enemies": []})
 
         # Update treasures
         for treasure in self.treasures:
-            for idx, (x, y, collected) in enumerate(room_state['treasures']):
-                if treasure.rect.x // TILE_SIZE == x and treasure.rect.y // TILE_SIZE == y:
-                    room_state['treasures'][idx] = (x, y, True)
+            for idx, (x, y, collected) in enumerate(room_state["treasures"]):
+                if (
+                    treasure.rect.x // TILE_SIZE == x
+                    and treasure.rect.y // TILE_SIZE == y
+                ):
+                    room_state["treasures"][idx] = (x, y, True)
 
         # Update enemies
         for monster in self.monsters:
-            for idx, (enemy_type, x, y, alive) in enumerate(room_state['enemies']):
-                if monster.rect.x // TILE_SIZE == x and monster.rect.y // TILE_SIZE == y:
-                    room_state['enemies'][idx] = (enemy_type, x, y, False)
+            for idx, (enemy_type, x, y, alive) in enumerate(room_state["enemies"]):
+                if (
+                    monster.rect.x // TILE_SIZE == x
+                    and monster.rect.y // TILE_SIZE == y
+                ):
+                    room_state["enemies"][idx] = (enemy_type, x, y, False)
 
         self.room_states[room_id] = room_state

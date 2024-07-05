@@ -14,7 +14,8 @@ from sqlalchemy.orm import DeclarativeBase, Session
 
 
 engine = create_engine("sqlite://", echo=False)
-#sa = sqlalchemy()
+# sa = sqlalchemy()
+
 
 class Base(DeclarativeBase):
     pass
@@ -58,14 +59,15 @@ def update_game_entity():
 def delete_game_entity():
     pass
 
+
 # TODO: modify this. I don't think we need to split file and extension
 # FilePath
 class FilePath(Base):
     __tablename__ = "file_path"
     id: Mapped[int] = mapped_column(primary_key=True, index=True, unique=True)
     path: Mapped[str] = mapped_column(String(256))
-    #name: Mapped[str] = mapped_column(String(256))
-    #extension: Mapped[str] = mapped_column(String(32))
+    # name: Mapped[str] = mapped_column(String(256))
+    # extension: Mapped[str] = mapped_column(String(32))
 
     def __repr__(self) -> str:
         return f"FilePath(id={self.id!r}, file_name={self.file_name!r}, extension={self.extension!r})"
@@ -269,7 +271,6 @@ class Wall(Base):
         return f"RoomWall(id={self.id!r}, side={self.side!r}, pair={self.pair!r})"
 
 
-
 # Tile
 class Tile(Base):
     """Tile class"""
@@ -296,7 +297,6 @@ def update_tile():
 
 def delete_tile():
     pass
-
 
 
 # TileType
@@ -333,16 +333,18 @@ class Room(Base):
     x: Mapped[int] = mapped_column()
     y: Mapped[int] = mapped_column()
     room_map_id: Mapped[int] = mapped_column(ForeignKey("room_map.id"), nullable=True)
-    __table_args__ = (UniqueConstraint('x', 'y', name='_room_xy_uc'),)
+    __table_args__ = (UniqueConstraint("x", "y", name="_room_xy_uc"),)
 
     def __repr__(self) -> str:
         return f"Room(id={self.id!r}, x={self.x!r}, y={self.y!r})"
+
 
 class RoomMap(Base):
     __tablename__ = "room_map"
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     map_string: Mapped[str] = mapped_column(str(2000))
-    #room_id: Mapped[int] = mapped_column(ForeignKey("room.id"), nullable=True)
+    # room_id: Mapped[int] = mapped_column(ForeignKey("room.id"), nullable=True)
+
 
 # Door
 class Door(Base):
@@ -354,12 +356,15 @@ class Door(Base):
     def __repr__(self) -> str:
         return f"Door(id={self.id!r}, room_id={self.room_id!r})"
 
+
 # Room-Door (with wall!)
 class RoomWallDoor(Base):
     __tablename__ = "room_wall_door"
     id: Mapped[int] = mapped_column(primary_key=True)
     room_id = mapped_column(ForeignKey("room.id"))
-    wall_id: Mapped[int] = mapped_column(ForeignKey("wall.id"))  # TODO: make this second PK
+    wall_id: Mapped[int] = mapped_column(
+        ForeignKey("wall.id")
+    )  # TODO: make this second PK
     door_id: Mapped[int] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
@@ -368,7 +373,7 @@ class RoomWallDoor(Base):
 
 class DB:
     def __init__(self):
-        #self.create_walls()
+        # self.create_walls()
         pass
 
     Base.metadata.create_all(engine)
@@ -387,12 +392,8 @@ class DB:
         stmt = select(Wall).where(Wall.id == id)
         with Session(engine) as session:
             wall = session.scalars(stmt).first()
-        return {
-            "id":wall.id,
-            "side":wall.side,
-            "pair":wall.pair
-        }
-    
+        return {"id": wall.id, "side": wall.side, "pair": wall.pair}
+
     def create_room(self, x, y):
         print_gaps(f"Creating room with id={id}, x={x}, y={y}")
         with Session(engine) as session:
@@ -401,29 +402,29 @@ class DB:
         session.commit()
         self.create_rwds(room.id)
         return room.id
-    
+
     def create_room_map(self, map_string):
         with Session(engine) as session:
             room_map = RoomMap(map_string=map_string)
         session.add(room_map)
         session.commit()
         return room_map.id
-    
 
     def create_room_wall_door(self, room_id, wall_id, door_id=None):
         with Session(engine) as session:
-            room_wall_door = RoomWallDoor(room_id=room_id, wall_id=wall_id, door_id=door_id)
+            room_wall_door = RoomWallDoor(
+                room_id=room_id, wall_id=wall_id, door_id=door_id
+            )
         session.add(room_wall_door)
         session.commit()
         return room_wall_door.id
-    
+
     def create_rwds(self, room_id):
         for wall in self.get_walls():
             with Session(engine) as session:
                 rwd = RoomWallDoor(room_id=room_id, wall_id=wall.id, door_id=None)
             session.add(rwd)
             session.commit()
-            
 
     def read_room(self, id=0):
         stmt = select(Room).where(Room.id == id)
@@ -435,11 +436,12 @@ class DB:
             #     "y": result[1]
             # }
         return {
-            "id":result.id,
-            "x":result.x,
-            "y":result.y,
-            "room_map_id": result.room_map_id
+            "id": result.id,
+            "x": result.x,
+            "y": result.y,
+            "room_map_id": result.room_map_id,
         }
+
     def read_room_map(self, id):
         stmt = select(RoomMap).where(RoomMap.id == id)
         with Session(engine) as session:
@@ -457,15 +459,15 @@ class DB:
         return walls
 
     def get_room_if_exists(self, x, y, wall_pair):
-        match (wall_pair): # same switch exists on api.py (but 0 indexed)
+        match (wall_pair):  # same switch exists on api.py (but 0 indexed)
             # facing....
-            case 1: # north
+            case 1:  # north
                 y -= 1
-            case 2: # east
+            case 2:  # east
                 x += 1
-            case 3: # south
+            case 3:  # south
                 y += 1
-            case 4: # west
+            case 4:  # west
                 x -= 1
         stmt = select(Room.id).where((Room.x == x) & (Room.y == y))
         with Session(engine) as session:
@@ -480,25 +482,28 @@ class DB:
         rooms = []
         with Session(engine) as session:
             for room in session.scalars(stmt).all():
-                #print(row)    
+                # print(row)
                 rooms.append(room)
         return rooms
-    
+
     def get_room_neighbors(self, room_id):
-        """ Returns a list of tuples: (neighbor, wall)"""
+        """Returns a list of tuples: (neighbor, wall)"""
         rooms = []
         with Session(engine) as session:
             this_room = session.scalars(select(Room).where(Room.id == room_id)).one()
-            for rwd in session.scalars(select(RoomWallDoor).where(RoomWallDoor.room_id == room_id)).all():
+            for rwd in session.scalars(
+                select(RoomWallDoor).where(RoomWallDoor.room_id == room_id)
+            ).all():
                 # rwds.append(rwd)
-            # for wall in rwds:
-                rooms.append((self.get_room_if_exists(
-                    x=this_room.x,
-                    y=this_room.y,
-                    wall_pair=rwd.wall_id
-                ),
-                    rwd.wall_id
-                ))
+                # for wall in rwds:
+                rooms.append(
+                    (
+                        self.get_room_if_exists(
+                            x=this_room.x, y=this_room.y, wall_pair=rwd.wall_id
+                        ),
+                        rwd.wall_id,
+                    )
+                )
         return rooms
 
     def create_door(self, room_id=None):
@@ -519,41 +524,35 @@ class DB:
         with Session(engine) as session:
             rwd = session.execute(stmt).first()
         return rwd
-    
+
     def get_door_from_rwd(self, room_id, wall_pair):
         stmt = select(RoomWallDoor).where(
-            (RoomWallDoor.room_id == room_id) &
-            (RoomWallDoor.wall_id == wall_pair)
-            )
+            (RoomWallDoor.room_id == room_id) & (RoomWallDoor.wall_id == wall_pair)
+        )
         with Session(engine) as session:
             door = session.execute(stmt).first()
         return door
-    
+
     def get_room_from_door(self, door_id):
-        stmt = select(RoomWallDoor.room_id).where(
-            RoomWallDoor.door_id == door_id
-        )
+        stmt = select(RoomWallDoor.room_id).where(RoomWallDoor.door_id == door_id)
         with Session(engine) as session:
             room = session.execute(stmt).first()
             print(room)
         return room[0]
-    
+
     def get_wall_from_door(self, door_id):
-        stmt = select(RoomWallDoor.wall_id).where(
-            RoomWallDoor.door_id == door_id
-        )
+        stmt = select(RoomWallDoor.wall_id).where(RoomWallDoor.door_id == door_id)
         with Session(engine) as session:
             wall = session.execute(stmt).first()
         return wall[0]
-    
+
     def add_rwd_door_from_room(self, room_id, wall, door_id):
-        print_gaps(f"adding door to rwd with room_id={room_id}, wall={wall}, door_id={door_id}")
+        print_gaps(
+            f"adding door to rwd with room_id={room_id}, wall={wall}, door_id={door_id}"
+        )
         stmt = (
             update(RoomWallDoor)
-            .where(
-                (RoomWallDoor.room_id == room_id) &
-                (RoomWallDoor.wall_id == wall)
-            )
+            .where((RoomWallDoor.room_id == room_id) & (RoomWallDoor.wall_id == wall))
             .values(door_id=door_id)
             # .returning(RoomWallDoor.id)
         )
@@ -564,31 +563,25 @@ class DB:
     def get_room_count(self):
         stmt = select(func.count()).select_from(Room)
         with Session(engine) as session:
-            room_count:int = session.execute(stmt).scalar()
+            room_count: int = session.execute(stmt).scalar()
         return room_count
-        
+
     def update_door(self, door_id, room_id):
-        stmt = (
-            update(Door).where(
-                (Door.id == door_id)
-            )
-            .values(room_id=room_id)
-        )
+        stmt = update(Door).where((Door.id == door_id)).values(room_id=room_id)
         with Session(engine) as session:
             door = session.execute(stmt)
         return door
-    
+
     def get_rwds(self):
         stmt = select(RoomWallDoor)
         rooms = []
         with Session(engine) as session:
             for row in session.scalars(stmt).all():
-                #print(row)
+                # print(row)
                 rooms.append(row)
         return rooms
 
     # TODO: rewrite read operations to return dictionaries
-
 
     def room_exists(self, x, y):
         stmt = select(Room).where((Room.x == x) & (Room.y == y))
@@ -598,7 +591,7 @@ class DB:
         exists = len(result) > 0
         print_gaps(f"room exists = {exists}")
         return exists
-    
+
     def create_tile(self, id, room_id):
         """Insert new tile with arguments"""
         with Session(engine) as session:
@@ -607,31 +600,25 @@ class DB:
         session.commit()
 
     def get_room_map(self, room_id):
-        room_stmt = select(Room.room_map_id).where(
-            Room.id == room_id
-            )
+        room_stmt = select(Room.room_map_id).where(Room.id == room_id)
         with Session(engine) as session:
             map_id = session.scalars(room_stmt).one()
 
-            map_stmt = select(RoomMap.map_string).where(
-                RoomMap.id == map_id
-                )
+            map_stmt = select(RoomMap.map_string).where(RoomMap.id == map_id)
             result = session.scalars(map_stmt).one()
-        return result.split('|')
-    
+        return result.split("|")
+
     def add_room_map_to_room(self, room_id, room_map_id):
-        stmt = (
-            update(Room)
-            .where(Room.id == room_id)
-            .values(room_map_id = room_map_id)
-        )
+        stmt = update(Room).where(Room.id == room_id).values(room_map_id=room_map_id)
         with Session(engine) as session:
             session.execute(stmt)
             session.commit()
 
+
 # Testing stuff
 def print_gaps(str):
-    print (f"\n - {str} - \n")
+    print(f"\n - {str} - \n")
+
 
 def main() -> None:
     Base.metadata.create_all(engine)
@@ -641,17 +628,18 @@ def main() -> None:
     test_room_id = test_db.create_room(1, 2)
     test_room_id = test_db.create_room(2, 1)
     test_room_id = test_db.create_room(2, 2)
-    #test_room_id = test_db.create_room(1, 2) # should throw unique constraint error
-    #test_db.get_xy_from_room(0)
-    #print(test_db.read_room(test_room_id))
-    #print(test_db.create_door(1))
-    #print(test_db.create_room_wall_door(0, 0, None))
-    #print(test_db.add_rwd_door_from_room(0, 0, 1))
-    #print_gaps(test_db.room_exists(1,2))
-    #print_gaps(test_db.room_exists(1,0))
+    # test_room_id = test_db.create_room(1, 2) # should throw unique constraint error
+    # test_db.get_xy_from_room(0)
+    # print(test_db.read_room(test_room_id))
+    # print(test_db.create_door(1))
+    # print(test_db.create_room_wall_door(0, 0, None))
+    # print(test_db.add_rwd_door_from_room(0, 0, 1))
+    # print_gaps(test_db.room_exists(1,2))
+    # print_gaps(test_db.room_exists(1,0))
     room_map_id = test_db.create_room_map(map_string="0,1|1,0")
     test_db.add_room_map_to_room(room_id=1, room_map_id=room_map_id)
     print(test_db.get_room_map(room_id=1))
+
 
 if __name__ == "__main__":
     main()
