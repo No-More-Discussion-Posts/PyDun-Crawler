@@ -38,7 +38,6 @@ def test_parry(game):
     assert parried == True
 
     assert monster_hp > game.monster.hp
-    # TODO: Add check for parry
 
 
 def test_player_death(game):

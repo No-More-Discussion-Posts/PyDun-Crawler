@@ -80,16 +80,7 @@ class Entity(pg.sprite.Sprite):
     def update(self):  # def update(self)
         # updates sprite x and y coords
         if self.moving:
-            if self.x_dest % 16 != 0:
-                print("not on tile")
-                self.x_dest = round(self.x_dest / 16) * 16
-            if self.y_dest % 16 != 0:
-                print("not on tile")
-                self.y_dest = round(self.y_dest / 16) * 16
             self.rect.move_ip(*self.animate())
-            print(self)
-            print(f"{self.rect.x},{self.rect.y}")
-            print(f"{self.x_dest},{self.y_dest}")
 
     def animate(self):
         dx = 0
@@ -101,7 +92,7 @@ class Entity(pg.sprite.Sprite):
             dy = y_distance
 
         else:
-            print(f"animating...{self.x_dest},{self.y_dest}")
+            # print(f"animating...{self.x_dest},{self.y_dest}")
             if self.x_dest != self.x:
                 dx = ANIMATION_SPEED * (x_distance) / abs(x_distance)
             if self.y_dest != self.y:
