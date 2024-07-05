@@ -42,13 +42,12 @@ def test_parry(game):
 
 
 def test_player_death(game):
-    with pytest.raises(SystemExit) as game_status:
-        game.state = GameStates.BATTLE
-        # Setup monster for a quick death
-        game.player.hp = 1
-        game.Combat.setup()
-        game.Combat.update()
-    assert game_status.type == SystemExit
+    game.state = GameStates.BATTLE
+    # Setup monster for a quick death
+    game.player.hp = 1
+    game.Combat.setup()
+    game.Combat.update()
+    assert game.running == False
 
 
 def test_monster_death(game):
