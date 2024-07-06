@@ -631,7 +631,8 @@ class DB:
 
 # Testing stuff
 def print_gaps(str):
-    print (f"\n - {str} - \n")
+    # print (f"\n - {str} - \n")
+    pass
 
 def main() -> None:
     Base.metadata.create_all(engine)

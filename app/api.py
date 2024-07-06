@@ -12,8 +12,8 @@ from sqlalchemy.orm import *
 from yaml import CLoader
 from pathlib import Path
 
-MAP_X = 10
-MAP_Y = 10
+MAP_X = 20
+MAP_Y = 20
 ROOM_LIMIT = 20
 ROOM_MINIMUM = 10
 
@@ -65,7 +65,7 @@ class DungeonDB(API):
         # These can be loaded in bulk
         for room_map in room_maps:
             filename = room_maps[room_map]
-            print(filename)
+            # print(filename)
             map_string = ""
             with open(filename) as map_file:
                 map_reader = csv.reader(map_file)
@@ -76,7 +76,7 @@ class DungeonDB(API):
             #print(map_string)
             #print(f"length = {len(map_string)}\n")
             map_id = self.database.create_room_map(map_string=map_string)
-            print(self.database.read_room_map(id=map_id))
+            # print(self.database.read_room_map(id=map_id))
 
     # basic level generation sequence:
     def generate_new_level(
@@ -101,7 +101,7 @@ class DungeonDB(API):
         seed_y = y//2
         # map_array[seed_y][seed_x] = 1
         #print(map_array)
-        print(f"seed room = {seed_x},{seed_y}")
+        # print(f"seed room = {seed_x},{seed_y}")
 
         self.walls = self.generate_walls()
 
@@ -129,8 +129,8 @@ class DungeonDB(API):
         #print_gaps("rooms: ")
         #print_gaps(f"first room: {first_room}")
         for room in all_rooms:
-            print(room)
-            print(self.database.get_room_map(room.id))
+            # print(room)
+            # print(self.database.get_room_map(room.id))
             # map_array[room.y][room.x] = 1
             map_array[room.y][room.x] = room.id
             # print_gaps(self.database.get_room_neighbors(room_id=room.id))
@@ -138,7 +138,8 @@ class DungeonDB(API):
 
         all_rwds = self.database.get_rwds()
         for rwd in all_rwds:
-            print(rwd)
+            # print(rwd)
+            pass
 
         # print("\nMAP:")
         # for row in map_array:
@@ -258,8 +259,8 @@ class DungeonDB(API):
         #print_gaps("rooms: ")
         #print_gaps(f"first room: {first_room}")
         for room in all_rooms:
-            print(room)
-            print(self.database.get_room_map(room.id))
+            # print(room)
+            # print(self.database.get_room_map(room.id))
             # map_array[room.y][room.x] = 1
             map_array[room.y][room.x] = room.id
             # print_gaps(self.database.get_room_neighbors(room_id=room.id))
@@ -267,7 +268,8 @@ class DungeonDB(API):
         return map_array
 
 def print_gaps(str):
-    print (f"\n -- {str} -- \n")
+    # print (f"\n -- {str} -- \n")
+    pass
 
 def main():
     test_dungeon = DungeonDB()

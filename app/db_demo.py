@@ -39,7 +39,7 @@ def main() -> None:
     game.Test_Grid()
     game.run()
     '''
-    # db = DungeonDB()
+    db = DungeonDB()
     # map = db.generate_new_level()
     # print(map)
 
@@ -63,7 +63,7 @@ def main() -> None:
             if event.type == pygame.MOUSEBUTTONUP:
                 click_pos = pygame.mouse.get_pos()
                 print(f"clicking {selection}")
-                menu_state = get_state(selection)
+                menu_state = get_state(db=db, selection=selection)
                 print(menu_state)
                 sprite_group.empty()
                 sprite_group.update()
@@ -124,8 +124,9 @@ def get_mouse_target(layers, m_x, m_y):
         pass
 
 
-def get_map_grid():
-    pass
+def get_map_grid(db:DungeonDB):
+    map = db.generate_new_level()
+    print(map)
 
 def get_menu_items(state):
     menu_items = ['COPD: DB DEMO']
@@ -186,13 +187,15 @@ def get_cursor(selected=None):
         case _:
             return None
 
-def get_state(selection=None):
+def get_state(db:DungeonDB, selection=None):
     match (selection):
         case 'BACK', 'COPD: DB DEMO':
             return State.MAIN
         case 'BROWSE TABLES':
             return State.TABLES
         case 'NEW MAP':
+            map = db.generate_new_level()
+            print(map)
             return State.MAP
         case 'roommap' | 'rwd' | 'room' | 'door' | 'treasure' | 'wall':
             run_query(selection)
