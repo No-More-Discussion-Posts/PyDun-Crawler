@@ -52,10 +52,13 @@ def main() -> None:
     tmx_data = load_pygame('menu.tmx')
     sprite_group = pygame.sprite.Group()
     cursor_group = pygame.sprite.Group()
+    map_group = pygame.sprite.Group()
 
     print(dir(tmx_data))
-    # print(tmx_data)
+    print(tmx_data)
 
+    map_grid = None
+    map_exists = False
     while True:
 
         for event in pygame.event.get():
@@ -64,7 +67,15 @@ def main() -> None:
                 click_pos = pygame.mouse.get_pos()
                 print(f"clicking {selection}")
                 menu_state = get_state(db=db, selection=selection)
+                if menu_state == State.MAP:
+                    # map_grid = get_map_grid(db=db)
+                    print('getting new map')
+                else:
+                    map_grid = None
+                    map_exists = False
                 print(menu_state)
+                cursor_group.empty()
+                map_group.empty()
                 sprite_group.empty()
                 sprite_group.update()
 
@@ -92,6 +103,7 @@ def main() -> None:
                     #print(dir(layer))
                     # print(layer)
                     pos = (x * 16, y * 16)
+
                     # print(f"pos[0]={pos[0]}, pos[1]={pos[1]}, m_pos[0]={m_pos[0]}, m_pos[1]={m_pos[1]}")
                     if (pos[0] <= m_pos[0] <= pos[0]+16) & (pos[1] <= m_pos[1] <= pos[1]+16):
                     #     print(pos)
@@ -110,9 +122,25 @@ def main() -> None:
                 Tile(pos = pos, surf = surf, groups = cursor_group)
         else:
             cursor_group.empty()
-            
+
+
+        if (menu_state == State.MAP) & (map_exists == False):
+            map_grid = get_map_grid(db=db)
+            map_layer = tmx_data.get_layer_by_name('MAP GRID')
+            for x, y, surf in map_layer.tiles():
+                    #print(dir(layer))
+                    # print(layer)
+                    pos = (x * 16, y * 16)
+                    print(map_grid)
+                    print(f"x={x}, y={y}")
+                    if map_grid[y][x-10] != 0: # This is assuming a 20x20 grid, centered
+                        print('map tile found')
+                        Tile(pos = pos, surf = surf, groups = map_group)
+            map_exists = True
+
             
         # cursor = get_cursor(selection)
+        map_group.draw(screen)
         sprite_group.draw(screen)
         cursor_group.draw(screen)
         pygame.display.update()
@@ -127,6 +155,7 @@ def get_mouse_target(layers, m_x, m_y):
 def get_map_grid(db:DungeonDB):
     map = db.generate_new_level()
     print(map)
+    return map
 
 def get_menu_items(state):
     menu_items = ['COPD: DB DEMO']
@@ -155,6 +184,7 @@ def get_menu_items(state):
         case State.MAP:
             add_items = (
                 'BACK',
+                # 'MAP GRID'
             )
         case _:
             add_items = ()
@@ -194,8 +224,9 @@ def get_state(db:DungeonDB, selection=None):
         case 'BROWSE TABLES':
             return State.TABLES
         case 'NEW MAP':
-            map = db.generate_new_level()
-            print(map)
+            # get_map_grid(db=db)
+            # map = db.generate_new_level()
+            # print(map)
             return State.MAP
         case 'roommap' | 'rwd' | 'room' | 'door' | 'treasure' | 'wall':
             run_query(selection)

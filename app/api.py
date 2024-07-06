@@ -12,8 +12,8 @@ from sqlalchemy.orm import *
 from yaml import CLoader
 from pathlib import Path
 
-MAP_X = 20
-MAP_Y = 20
+MAP_X = 20 # columns
+MAP_Y = 20 # rows
 ROOM_LIMIT = 20
 ROOM_MINIMUM = 10
 
@@ -108,19 +108,24 @@ class DungeonDB(API):
         # while self.room_count < ROOM_MINIMUM:        
         #     self.generate_map(x=seed_x, y=seed_y)
         #     self.room_count = len(self.database.get_rooms())
+
+        self.reset_dungeon()
             
         self.generate_map(x=seed_x, y=seed_y)
 
 
         ### If the count comes up short, try again up to three times ###
+
         #TODO: This isn't doing anything any more. To fix it,
         # the tables need to be dropped before trying again.
 
-        # if self.room_count < ROOM_MINIMUM:
-        #     self.generate_map(x=seed_x, y=seed_y)
+        if self.room_count < ROOM_MINIMUM:
+            self.reset_dungeon()
+            self.generate_map(x=seed_x, y=seed_y)
 
-        # if self.room_count < ROOM_MINIMUM:
-        #     self.generate_map(x=seed_x, y=seed_y)
+        if self.room_count < ROOM_MINIMUM:
+            self.reset_dungeon()
+            self.generate_map(x=seed_x, y=seed_y)
 
         # if self.room_count < ROOM_MINIMUM:
         #     self.generate_map(x=seed_x, y=seed_y)
@@ -148,6 +153,8 @@ class DungeonDB(API):
 
         # TODO: pick a random room to declare as exit?
 
+        # TODO: insert level into db
+
         return map_array
 
 
@@ -167,7 +174,7 @@ class DungeonDB(API):
 
     # map grid generation sequence
     # do it recursively this time
-    def generate_map(self, x, y):
+    def generate_map(self, x, y, level=None):
         self.room_count = len(self.database.get_rooms())
         print_gaps(self.room_count)
         if self.room_count >= self.max_rooms:
@@ -267,6 +274,12 @@ class DungeonDB(API):
             #self.generate_doors(room.id)
         return map_array
 
+    def reset_dungeon(self):
+        # self.database.
+        self.database.delete_all_doors()
+        self.database.delete_all_rwds()
+        self.database.delete_all_rooms()
+
 def print_gaps(str):
     # print (f"\n -- {str} -- \n")
     pass
@@ -277,7 +290,9 @@ def main():
     test_dungeon.generate_new_level()
     #test_dungeon.generate_new_level(x=10,y=10)
     #test_dungeon.generate_room(x=0, y=1)
-    print(test_dungeon.get_level_grid())
+    # print(test_dungeon.get_level_grid())
+    for row in test_dungeon.get_level_grid():
+        print(row)
 
 if __name__ == "__main__":
     main()

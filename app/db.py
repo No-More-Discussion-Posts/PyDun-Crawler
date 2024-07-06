@@ -47,9 +47,9 @@ def create_game_entity(id, name):
     session.commit()
 
 
+
 def read_game_entity():
     pass
-
 
 def update_game_entity():
     pass
@@ -251,6 +251,7 @@ class Level(Base):
     __tablename__ = "level"
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     dungeon_id: Mapped[int] = mapped_column(ForeignKey("dungeon.id"))
+    # level_map: Mapped[str]
 
     def __repr__(self) -> str:
         return f"Dungeon(id={self.id!r}, dungeon_id={self.dungeon_id!r})"
@@ -484,6 +485,10 @@ class DB:
                 rooms.append(room)
         return rooms
     
+    def get_rooms_by_level(self, level_id):
+        stmt = select(Room).where()
+
+    
     def get_room_neighbors(self, room_id):
         """ Returns a list of tuples: (neighbor, wall)"""
         rooms = []
@@ -628,6 +633,25 @@ class DB:
         with Session(engine) as session:
             session.execute(stmt)
             session.commit()
+
+
+    def delete_all_rooms(self):
+        with Session(engine) as session:
+            session.query(Room).delete()
+            session.commit()
+            
+    def delete_all_doors(self):
+        with Session(engine) as session:
+            session.query(Door).delete()
+            session.commit()
+
+    def delete_all_rwds(self):
+        with Session(engine) as session:
+            session.query(RoomWallDoor).delete()
+            session.commit()
+
+    # def delete_all_(self):
+    # def delete_all_(self):
 
 # Testing stuff
 def print_gaps(str):
