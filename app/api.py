@@ -229,6 +229,7 @@ class DungeonDB(API):
             if neighbor[0] > 0:
                 print_gaps(neighbor)
                 new_door = self.database.create_door(room_id=neighbor[0])
+                # print(f"new door = {new_door}")
                 self.database.add_rwd_door_from_room(
                     room_id=room_id,
                     wall=neighbor[1],

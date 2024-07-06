@@ -54,8 +54,8 @@ def main() -> None:
     cursor_group = pygame.sprite.Group()
     map_group = pygame.sprite.Group()
 
-    print(dir(tmx_data))
-    print(tmx_data)
+    # print(dir(tmx_data))
+    # print(tmx_data)
 
     map_grid = None
     map_exists = False
@@ -65,15 +65,16 @@ def main() -> None:
 
             if event.type == pygame.MOUSEBUTTONUP:
                 click_pos = pygame.mouse.get_pos()
-                print(f"clicking {selection}")
-                menu_state = get_state(db=db, selection=selection)
+                # print(f"clicking {selection}")
+                menu_state = get_state(db=db, state=menu_state, selection=selection)
                 if menu_state == State.MAP:
                     # map_grid = get_map_grid(db=db)
-                    print('getting new map')
+                    # print('getting new map')
+                    pass
                 else:
                     map_grid = None
                     map_exists = False
-                print(menu_state)
+                # print(menu_state)
                 cursor_group.empty()
                 map_group.empty()
                 sprite_group.empty()
@@ -131,10 +132,10 @@ def main() -> None:
                     #print(dir(layer))
                     # print(layer)
                     pos = (x * 16, y * 16)
-                    print(map_grid)
-                    print(f"x={x}, y={y}")
+                    # print(map_grid)
+                    # print(f"x={x}, y={y}")
                     if map_grid[y][x-10] != 0: # This is assuming a 20x20 grid, centered
-                        print('map tile found')
+                        # print('map tile found')
                         Tile(pos = pos, surf = surf, groups = map_group)
             map_exists = True
 
@@ -154,7 +155,7 @@ def get_mouse_target(layers, m_x, m_y):
 
 def get_map_grid(db:DungeonDB):
     map = db.generate_new_level()
-    print(map)
+    # print(map)
     return map
 
 def get_menu_items(state):
@@ -217,9 +218,13 @@ def get_cursor(selected=None):
         case _:
             return None
 
-def get_state(db:DungeonDB, selection=None):
+def get_state(db:DungeonDB, state, selection=None):
     match (selection):
-        case 'BACK', 'COPD: DB DEMO':
+        case 'COPD: DB DEMO':
+            return State.MAIN
+        case 'BACK':
+            if state == State.OUTPUT:
+                return State.TABLES
             return State.MAIN
         case 'BROWSE TABLES':
             return State.TABLES
@@ -229,13 +234,35 @@ def get_state(db:DungeonDB, selection=None):
             # print(map)
             return State.MAP
         case 'roommap' | 'rwd' | 'room' | 'door' | 'treasure' | 'wall':
-            run_query(selection)
+            run_query(selection=selection, db=db)
             return State.OUTPUT
         case _:
             return State.MAIN
 
-def run_query(selection):
-    pass    
+def run_query(selection, db:DungeonDB):
+    try:
+        match (selection):
+            case 'roommap':
+                results = db.database.get_room_maps()
+            case 'rwd':
+                results = db.database.get_rwds()
+            case 'room':
+                results = db.database.get_rooms()
+            case 'door':
+                results = db.database.get_doors()
+            case 'treasure':
+                results = db.database.get_treasures()
+            case 'wall':
+                results = db.database.get_walls()
+            case _:
+                results = ['Table Not Found']
+    except AttributeError as error:
+        print(error)
+        results = [str(error), f'{selection} table may be empty']
+    if len(results) == 0:
+        print(f'{selection} table is empty')
+    for result in results:
+        print(result)
 
 class Tile(pygame.sprite.WeakSprite):
     def __init__(self, pos, surf, groups):
