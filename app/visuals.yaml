@@ -1,14 +1,334 @@
+# visuals.yaml
+about:
+  who: NMDP
+  what: "config file for copd visuals"
+  when: 2024-07-07
+  with: UMGC
+  why: CMSC495
+
+# This entire section is for maintainability
+# It sets up *refs based on the inital .tmx file(s),
+# in case these file names ever need to change
 layer_names:
+  Doors:
+    No_Door:
+      n_no_door: &n_no_door
+        n_no_door 
+      e_no_door: &e_no_door
+        e_no_door 
+      s_no_door: &s_no_door
+        s_no_door 
+      w_no_door: &w_no_door
+        w_no_door 
+      all_no_door: &all_no_door
+        all_no_door 
+    Basic_Doors:
+      n_door: &n_door
+        n_door
+      e_door: &e_door
+        e_door
+      s_door: &s_door
+        s_door
+      w_door: &w_door
+        w_door
+      all_doors: &all_doors
+        all_doors
+    Frames:
+      n_frame: &n_frame
+        n_frame
+      e_frame: &e_frame
+        e_frame
+      s_frame: &s_frame
+        s_frame
+      w_frame: &w_frame
+        w_frame
+      all_frames: &all_frames
+        all_frames
+    Door_Lights:
+      n_id: &n_id
+        n_id 
+      e_id: &e_id
+        e_id 
+      s_id: &s_id
+        s_id 
+      w_id: &w_id
+        w_id 
+      all_inner_dls: &all_inner_dls
+        all_inner_dls 
+      n_od: &n_od
+        n_od 
+      e_od: &e_od
+        e_od 
+      s_od: &s_od
+        s_od 
+      w_od: &w_od
+        w_od 
+      all_outer_dls: &all_outer_dls
+        all_outer_dls 
+  Walls:
+    basic_walls: &basic_walls
+      basic_walls
+    edge_doors: &edge_doors
+      edge_doors
+  Obstacles:
+    Hole:
+      trap_door: &trap_door
+        trap_door
+      hole: &hole
+        hole
+      trap_opened: &trap_opened
+        trap_opened
+    Tutorial_Rooms:
+      tr9: &tr9
+        tr9
+      tr8: &tr8
+        tr8
+      tr7: &tr7
+        tr7
+      tr6: &tr6
+        tr6
+      tr5: &tr5
+        tr5
+      tr4: &tr4
+        tr4
+      tr3: &tr3
+        tr3
+      tr2: &tr2
+        tr2
+  Hints:
+    hint_text: &hint_text
+      hint_text
+    hint_floor: &hint_floor
+      hint_floor
+  Floors:
+    obstacle: &obstacle
+      obstacle 
+    title_solid: &title_solid
+      title_solid 
+    title_floor: &title_floor
+      title_floor
+    Tutorial_Titles:
+      tt8: &tt8
+        tt8
+      tt7: &tt7
+        tt7
+      tt6: &tt6
+        tt6
+      tt5: &tt5
+        tt5
+      tt4: &tt4
+        tt4
+      tt3: &tt3
+        tt3
+      tt2: &tt2
+        tt2
+    title_text: &title_text
+      title_text 
+    title_dirt: &title_dirt
+      title_dirt 
+    basic_floor: &basic_floor
+      basic_floor 
+    basic_edges: &basic_edges
+      basic_edges 
+  Intro:
+    Frame:
+      border: &border
+        border
+      grass: &grass
+        grass
+    Title:
+      i_title_solid: &i_title_solid
+        i_i_title_solid
+      i_title_text: &i_title_text
+        i_title_text
+      i_title_blue: &i_title_blue
+        i_title_blue
+      i_title_border_dirt: &i_title_border_dirt
+        i_title_border_dirt
+    Prompts:
+      press_space: &press_space
+        press_space
+      press_space_dirt: &press_space_dirt
+        press_space_dirt
+      press_space_grass: &press_space_grass
+        press_space_grass
+      prompt_grass: &prompt_grass
+        prompt_grass
+
+# This is for composing scenes, intended for use
+# (ideally side-by-side) with the Tiled editor
+# Tip: try using the layer window's visibility
+# icons to quickly identify desired layers
+# Use the above references, not file/layer names
 scenes:
- title: 
- outside: 
- room1:
- room2:
- room3:
- room4:
- room5:
- room6:
- room7:
- room8:
- room9:
- 
+  title: &title
+    - *obstacle
+    - *border
+    - *grass
+    - *i_title_solid
+    - *i_title_text
+    #- *i_title_red
+    - *i_title_blue
+    #- *i_title_yellow
+    - *i_title_border_dirt
+  #outside: &outside  
+  room1: &room1
+   - *all_frames
+   - *all_inner_dls
+   - *all_outer_dls
+   - *basic_walls
+   - *hint_text
+   - *hint_floor
+   - *obstacle
+   - *title_solid
+   - *title_floor
+   - *title_text
+   - *title_dirt
+   - *basic_dirt
+   - *basic_floor
+   - *basic_edges
+  room2: &room2
+   - *w_no_door
+   - *n_door
+   - *s_door
+   - *n_frame
+   - *e_frame
+   - *s_frame
+   - *e_id
+   - *n_od
+   - *e_od
+   - *s_od
+   - *basic_walls
+   - *tr2
+   - *obstacle
+   - *title_floor
+   - *tt2
+   - *title_dirt
+   - *basic_floor
+   - *basic_edges
+  room3: &room3
+   - *e_no_door
+   - *n_door
+   - *s_door
+   - *n_frame
+   - *w_frame
+   - *s_frame
+   - *w_id
+   - *n_od
+   - *w_od
+   - *s_od
+   - *basic_walls
+   - *tr3
+   - *obstacle
+   - *title_floor
+   - *tt3
+   - *title_dirt
+   - *basic_floor
+   - *basic_edges
+  room4: &room4
+   - *s_no_door
+   - *w_no_door
+   - *e_door
+   - *n_frame
+   - *e_frame
+   - *n_id
+   - *n_od
+   - *e_od
+   - *basic_walls
+   - *tr4
+   - *obstacle
+   - *title_floor
+   - *tt4   
+   - *title_dirt
+   - *basic_floor
+   - *basic_edges
+  room5: &room5
+   - *s_no_door
+   - *e_no_door
+   - *w_door
+   - *n_frame
+   - *w_frame
+   - *n_id
+   - *n_od
+   - *w_od
+   - *basic_walls
+   - *tr5
+   - *obstacle
+   - *title_floor
+   - *tt5
+   - *title_dirt
+   - *basic_floor
+   - *basic_edges
+  room6: &room6
+   - *n_no_door
+   - *w_no_door
+   - *e_door
+   - *s_frame
+   - *e_frame
+   - *s_id
+   - *e_od
+   - *s_od
+   - *basic_walls
+   - *tr6
+   - *obstacle
+   - *title_floor
+   - *tt6
+   - *title_dirt
+   - *basic_floor
+   - *basic_edges
+  room7: &room7
+   - *n_no_door
+   - *e_no_door
+   - *w_door
+   - *s_frame
+   - *w_frame
+   - *s_id
+   - *s_od
+   - *w_od
+   - *basic_walls
+   - *tr7
+   - *obstacle
+   - *title_floor
+   - *tt7
+   - *title_dirt
+   - *basic_floor
+   - *basic_edges
+  room8: &room8
+   - *s_no_door
+   - *n_frame
+   - *e_frame
+   - *w_frame
+   - *n_id
+   - *e_id
+   - *w_id
+   - *n_od
+   - *e_od
+   - *w_od
+   - *basic_walls
+   - *tr8
+   - *obstacle
+   - *title_floor
+   - *tt8
+   - *title_dirt
+   - *basic_floor
+   - *basic_edges
+  room9: &room9
+   - *n_no_door
+   - *s_frame
+   - *e_frame
+   - *w_frame
+   - *s_id
+   - *e_id
+   - *w_id
+   - *ss_od
+   - *e_od
+   - *w_od
+   - *basic_walls
+   - *tr9
+   - *trap_door
+   - *hole
+   #- *trap_opened
+   - *obstacle
+   - *basic_floor
+   - *basic_edges
+  
