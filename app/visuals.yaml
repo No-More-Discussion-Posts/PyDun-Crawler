@@ -139,7 +139,7 @@ layer_names:
         grass
     Title:
       i_title_solid: &i_title_solid
-        i_i_title_solid
+        i_title_solid
       i_title_text: &i_title_text
         i_title_text
       i_title_blue: &i_title_blue
@@ -172,6 +172,10 @@ scenes:
     - *i_title_blue
     #- *i_title_yellow
     - *i_title_border_dirt
+    - *press_space
+    - *press_space_dirt
+    - *press_space_grass
+    - *prompt_grass
   #outside: &outside  
   room1: &room1
    - *all_frames

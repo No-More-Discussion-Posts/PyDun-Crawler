@@ -40,6 +40,7 @@ def main() -> None:
     game.run()
     '''
     db = DungeonDB()
+    db.load_files()
     # map = db.generate_new_level()
     # print(map)
 
@@ -47,9 +48,9 @@ def main() -> None:
 
     ### Starting over with a fresh pygame window while testing pytmx ###
     pygame.init()
-    demo_state = State.MAIN
+    demo_state = State.INTRO
     screen = pygame.display.set_mode((MAP_X*16,MAP_Y*16))
-    tmx_data = load_pygame('menu.tmx')
+    tmx_data = load_pygame('basic_room.tmx')
     sprite_group = pygame.sprite.Group()
 
     # print(dir(tmx_data))
@@ -64,14 +65,18 @@ def main() -> None:
             
         screen.fill('black')
 
-        selection = None
-
-        display_items = get_display_items(state=demo_state)
+        # selection = None
+        print(demo_state)
+        display_items = get_display_items(state=demo_state, db=db)
         # m_pos = pygame.mouse.get_pos()
         # print(m_pos)
 
         for layer in tmx_data.layers:
+            '''
+            '''
+            # [print(display_items)]
             if layer.name in display_items:
+                # print('Found!')
 
                 # cursor = get_cursor(selection)
             #  if hasattr(layer, 'data'):
@@ -79,7 +84,7 @@ def main() -> None:
                     #print(dir(layer))
                     # print(layer)
                     pos = (x * 16, y * 16)
-                    selection = layer.name
+                    # selection = layer.name
                     Tile(pos = pos, surf = surf, groups = sprite_group)
         
         sprite_group.draw(screen)
@@ -97,10 +102,13 @@ def get_map_grid(db:DungeonDB):
     # return map
     pass
 
-def get_display_items(state):
-    match(state):
-        case State.INTRO:
-            pass
+def get_display_items(state, db:DungeonDB):
+    # match(state):
+    #     case State.INTRO:
+    #         scene = db.get_scene('title')
+    #         # print(scene)
+    #         return scene
+    return db.get_scene('title')
 
 def get_cursor(selected=None):
     pass
@@ -138,6 +146,7 @@ class DungeonState(Enum):
     SEVEN = 7,
     EIGHT = 8,
     NINE = 9,
+
 
 class demo_engine:
     #TODO hook this into the ecs and create a simple map engine

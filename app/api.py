@@ -56,11 +56,11 @@ class DungeonDB(API):
     def load_files(self):
         FILES_PATH = "files.yaml"
         VISUALS_PATH = "visuals.yaml"
-        files_yaml = Path(FILES_PATH)
-        visuals_yaml = Path(VISUALS_PATH)
-        self.files = yaml.load(files_yaml.read_text(), CLoader)
+        files_yaml_path = Path(FILES_PATH)
+        visuals_yaml_path = Path(VISUALS_PATH)
+        self.files = yaml.load(files_yaml_path.read_text(), CLoader)
         # self.visuals = yaml.load(visuals_yaml.read_text(), CLoader)
-        self.visuals = yaml.full_load(visuals_yaml.read_text())
+        self.visuals = yaml.full_load(visuals_yaml_path.read_text())
         print_gaps(self.files)
         # print(self.visuals)
         room_maps = self.files['room_map']
@@ -85,7 +85,27 @@ class DungeonDB(API):
             map_id = self.database.create_room_map(map_string=map_string)
             # print(self.database.read_room_map(id=map_id))
 
+
+        for tmx_filename in tmx_files:
+            print(tmx_filename)
+            # print(tmx_files[tmx_filename])
+            # print(dir(tmx_thing))
+
+        room_tmx_file_path = Path(tmx_files['basic_room'])
+        # self.basic_room = yaml.full_load(room_file_path.read_text())
         
+        # TODO: get the list of layers from yaml
+        self.scenes = self.visuals['scenes']
+        for scene in self.scenes:
+            print(self.scenes[scene])
+            
+            # TODO: pull the map info from basic_room.tmx
+
+            # TODO: store layer data in db (maybe new tmx_layer table?)
+
+    def get_scene(self, key): # TODO refactor this after isolating State Enums 
+        return self.scenes[key]
+
     # basic level generation sequence:
     def generate_new_level(
             self,

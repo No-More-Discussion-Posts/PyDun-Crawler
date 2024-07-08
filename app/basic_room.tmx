@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="106" nextobjectid="1">
  <tileset firstgid="1" source="tilemap.tsx"/>
- <group id="32" name="Intro" visible="0">
+ <group id="32" name="Intro">
   <group id="30" name="Prompts">
-   <layer id="39" name="prompt grass" width="40" height="20">
+   <layer id="39" name="prompt_grass" width="40" height="20">
     <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1073741832,8,1610612744,3221225480,1610612744,2684354567,1610612744,1610612744,8,3221225480,7,3221225480,0,
@@ -346,7 +346,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
   </layer>
-  <layer id="7" name="basic_floor" width="40" height="20">
+  <layer id="7" name="basic_floor" width="40" height="20" visible="0">
    <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,3221225474,3221225474,1073741826,3221225474,2,3221225474,3221225474,2,3221225474,3221225474,3221225474,2147483650,2,2,1073741826,2147483650,3221225474,2147483650,1073741826,2,1073741826,1073741826,2,2147483650,2147483650,2,3,2147483650,2,3221225474,3221225474,2147483650,2147483650,2,2147483650,2147483650,1073741827,3221225474,0,
@@ -660,7 +660,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
   </layer>
-  <layer id="17" name="obstacle" width="40" height="20" visible="0" locked="1">
+  <layer id="17" name="obstacle" width="40" height="20" locked="1">
    <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -735,8 +735,8 @@
 </data>
   </layer>
  </group>
- <group id="16" name="Obstacles">
-  <group id="64" name="Tutorial_Rooms">
+ <group id="16" name="Obstacles" visible="0">
+  <group id="64" name="Tutorial_Rooms" visible="0">
    <layer id="44" name="tr2" width="40" height="20" visible="0">
     <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -1005,7 +1005,7 @@
    </layer>
   </group>
  </group>
- <group id="3" name="Walls">
+ <group id="3" name="Walls" visible="0">
   <layer id="1" name="basic_walls" width="40" height="20">
    <data encoding="csv">
 785,786,786,786,786,786,786,786,786,786,786,786,786,786,786,786,786,786,786,0,0,786,786,786,786,786,786,786,786,786,786,786,786,786,786,786,786,786,786,787,
@@ -1103,7 +1103,7 @@
 </data>
   </layer>
  </group>
- <group id="69" name="Doors">
+ <group id="69" name="Doors" visible="0">
   <group id="84" name="Door_Lights">
    <layer id="83" name="all_outer_dls" width="40" height="20" visible="0">
     <data encoding="csv">
