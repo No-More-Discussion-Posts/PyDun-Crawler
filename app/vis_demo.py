@@ -47,7 +47,7 @@ def main() -> None:
 
     ### Starting over with a fresh pygame window while testing pytmx ###
     pygame.init()
-    menu_state = State.MAIN
+    demo_state = State.MAIN
     screen = pygame.display.set_mode((MAP_X*16,MAP_Y*16))
     tmx_data = load_pygame('menu.tmx')
     sprite_group = pygame.sprite.Group()
@@ -66,12 +66,12 @@ def main() -> None:
 
         selection = None
 
-        menu_items = get_menu_items(state=menu_state)
+        display_items = get_menu_items(state=demo_state)
         # m_pos = pygame.mouse.get_pos()
         # print(m_pos)
 
         for layer in tmx_data.layers:
-            if layer.name in menu_items:
+            if layer.name in display_items:
 
                 # cursor = get_cursor(selection)
             #  if hasattr(layer, 'data'):
@@ -90,7 +90,6 @@ def get_mouse_target(layers, m_x, m_y):
     target = None
     for layer in layers:
         pass
-
 
 def get_map_grid(db:DungeonDB):
     # map = db.generate_new_level()
@@ -118,11 +117,14 @@ class Tile(pygame.sprite.WeakSprite):
 
 class State(Enum):
     MAIN = 1,
-    TABLES = 2,
-    OUTPUT = 3,
+    INTRO = 2,
+    DUNGEON = 3,
     MAP = 4,
-
-
+    PAUSE = 5,
+    COMBAT = 6,
+    WIN = 7,
+    GAMEOVER = 8,
+    SETTINGS = 9
 
 
 class demo_engine:
