@@ -1,4 +1,3 @@
-# visuals.yaml
 about:
   who: NMDP
   what: "config file for copd visuals"
@@ -130,6 +129,8 @@ layer_names:
       basic_floor 
     basic_edges: &basic_edges
       basic_edges 
+    basic_dirt: &basic_dirt
+      basic_dirt
   Intro:
     Frame:
       border: &border
@@ -320,7 +321,7 @@ scenes:
    - *s_id
    - *e_id
    - *w_id
-   - *ss_od
+   - *s_od
    - *e_od
    - *w_od
    - *basic_walls

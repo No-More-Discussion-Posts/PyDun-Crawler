@@ -66,7 +66,7 @@ def main() -> None:
 
         selection = None
 
-        display_items = get_menu_items(state=demo_state)
+        display_items = get_display_items(state=demo_state)
         # m_pos = pygame.mouse.get_pos()
         # print(m_pos)
 
@@ -97,8 +97,10 @@ def get_map_grid(db:DungeonDB):
     # return map
     pass
 
-def get_menu_items(state):
-    pass
+def get_display_items(state):
+    match(state):
+        case State.INTRO:
+            pass
 
 def get_cursor(selected=None):
     pass
@@ -126,6 +128,16 @@ class State(Enum):
     GAMEOVER = 8,
     SETTINGS = 9
 
+class DungeonState(Enum):
+    ONE = 1,
+    TWO = 2,
+    THREE = 3,
+    FOUR = 4,
+    FIVE = 5,
+    SIX = 6,
+    SEVEN = 7,
+    EIGHT = 8,
+    NINE = 9,
 
 class demo_engine:
     #TODO hook this into the ecs and create a simple map engine

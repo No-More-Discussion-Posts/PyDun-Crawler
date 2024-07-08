@@ -54,13 +54,20 @@ class DungeonDB(API):
 
 
     def load_files(self):
-        FILE_PATH = "files.yaml"
-
-        yaml_file = Path(FILE_PATH)
-        self.files = yaml.load(yaml_file.read_text(), CLoader)
+        FILES_PATH = "files.yaml"
+        VISUALS_PATH = "visuals.yaml"
+        files_yaml = Path(FILES_PATH)
+        visuals_yaml = Path(VISUALS_PATH)
+        self.files = yaml.load(files_yaml.read_text(), CLoader)
+        # self.visuals = yaml.load(visuals_yaml.read_text(), CLoader)
+        self.visuals = yaml.full_load(visuals_yaml.read_text())
         print_gaps(self.files)
+        # print(self.visuals)
         room_maps = self.files['room_map']
+        tmx_files = self.files['tmx']
         #print_gaps(room_maps)
+
+        # TODO: add scene loading
 
         # These can be loaded in bulk
         for room_map in room_maps:
@@ -71,13 +78,14 @@ class DungeonDB(API):
                 map_reader = csv.reader(map_file)
                 for line in map_reader:
                     row = ",".join(line)
-                    print(row)
+                    # print(row)
                     map_string += f"{row}|"
             #print(map_string)
             #print(f"length = {len(map_string)}\n")
             map_id = self.database.create_room_map(map_string=map_string)
             # print(self.database.read_room_map(id=map_id))
 
+        
     # basic level generation sequence:
     def generate_new_level(
             self,
@@ -288,12 +296,12 @@ def print_gaps(str):
 def main():
     test_dungeon = DungeonDB()
     test_dungeon.load_files()
-    test_dungeon.generate_new_level()
+    # test_dungeon.generate_new_level()
     #test_dungeon.generate_new_level(x=10,y=10)
     #test_dungeon.generate_room(x=0, y=1)
     # print(test_dungeon.get_level_grid())
-    for row in test_dungeon.get_level_grid():
-        print(row)
+    # for row in test_dungeon.get_level_grid():
+    #     print(row)
 
 if __name__ == "__main__":
     main()
