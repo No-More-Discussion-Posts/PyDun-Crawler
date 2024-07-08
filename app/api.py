@@ -87,7 +87,8 @@ class DungeonDB(API):
 
 
         for tmx_filename in tmx_files:
-            print(tmx_filename)
+            # print(tmx_filename)
+            pass
             # print(tmx_files[tmx_filename])
             # print(dir(tmx_thing))
 
@@ -97,7 +98,8 @@ class DungeonDB(API):
         # TODO: get the list of layers from yaml
         self.scenes = self.visuals['scenes']
         for scene in self.scenes:
-            print(self.scenes[scene])
+            # print(self.scenes[scene])
+            pass
             
             # TODO: pull the map info from basic_room.tmx
 
