@@ -9,6 +9,44 @@ about:
 # It sets up *refs based on the inital .tmx file(s),
 # in case these file names ever need to change
 layer_names:
+  Menus:
+    Combat:
+      Buttons:
+        cb_frame: &cb_frame
+          cb_frame
+        cc_0: &cc_0
+          cc_0
+        cc_1: &cc_1
+          cc_1
+        cc_2: &cc_2
+          cc_2
+        cc_3: &cc_3
+          cc_3
+        cc_4: &cc_4
+          cc_4
+        c_run: &c_run
+          c_run
+        c_parry: &c_parry
+          c_parry
+        c_item: &c_item
+          c_item
+        c_attack: &c_attack
+          c_attack
+        c_blobi: &c_blobi
+          c_blobi
+        c_monster: &c_monster
+          c_monster
+      alphabet: &alphabet
+       alphabet
+      numbers: &numbers
+       numbers
+  Sprite_Sets:
+    blobi: &blobi
+      blobi
+    hobgoblin: &hobgoblin
+      hobgoblin
+    goblin: &goblin
+      goblin
   Doors:
     No_Door:
       n_no_door: &n_no_door
@@ -179,6 +217,10 @@ scenes:
   #outside: &outside  
   room1: &room1
    - *all_frames
+  #  - *all_doors
+   - *n_door
+   - *e_door
+   - *s_door
    - *all_inner_dls
    - *all_outer_dls
    - *basic_walls
@@ -336,4 +378,30 @@ scenes:
    - *obstacle
    - *basic_floor
    - *basic_edges
-  
+  combat: &combat
+   - *cb_frame
+   - *cc_0
+   - *cc_1
+   - *cc_2
+   - *cc_3
+   - *cc_4
+   - *c_run
+   - *c_parry
+   - *c_item
+   - *c_attack
+   - *c_blobi
+   - *c_blobi_hp
+   - *c_goblin
+   - *c_goblin_hp
+   - *c_hobgoblin
+   - *c_hobgoblin_hp
+   - *c_ogre
+   - *c_ogre_hp
+
+
+sprite_sets:
+  ui:
+     - *alphabet
+     - *numbers    
+  character:
+  item:
