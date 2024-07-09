@@ -1,10 +1,12 @@
 import pygame
 from .ecs import Component
 
+
 class Flag(Component):
-    def __init__(self,state = False):
+    def __init__(self, state=False):
         super().__init__()
         self.state = state
+
 
 class Position(Component):
     def __init__(self, x: int, y: int):
@@ -14,17 +16,14 @@ class Position(Component):
 
     def __add__(self, obj):
         if isinstance(obj, Velocity):
-            self.x += obj.dx
-            self.y += obj.dy
+            x = self.x + obj.dx
+            y = self.y + obj.dy
+            return Position(x, y)
         else:
             raise TypeError("Position must be incremented with a Velocity object")
-        return self
 
     def __str__(self):
         return f"Position - x:{self.x}, y:{self.y}"
-
-    # def __repr__(self):
-    #     return (self.x,self.y)
 
 
 class Velocity(Component):
@@ -32,6 +31,8 @@ class Velocity(Component):
     def __init__(self, dx: int = 0, dy: int = 0):
         self.dx = dx
         self.dy = dy
+        self.p_dx = 0
+        self.p_dy = 0
 
     def set_from_key(self, key):
         if key == pygame.K_w:

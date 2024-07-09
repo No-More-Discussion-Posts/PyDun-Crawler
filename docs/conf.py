@@ -6,26 +6,29 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Crawl of PyDun'
-copyright = '2024, Colby Geris, Tyler Barr, Roland Brown, Justin Fergeson, Dusten Kenward'
-author = 'Colby Geris, Tyler Barr, Roland Brown, Justin Fergeson, Dusten Kenward'
-release = '0.1'
+project = "Crawl of PyDun"
+copyright = (
+    "2024, Colby Geris, Tyler Barr, Roland Brown, Justin Fergeson, Dusten Kenward"
+)
+author = "Colby Geris, Tyler Barr, Roland Brown, Justin Fergeson, Dusten Kenward"
+release = "0.1"
 # import copd
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [ 'sphinx.ext.autodoc',
-               'sphinx.ext.viewcode',
-               'sphinx.ext.napoleon',
-               'sphinx.ext.githubpages']
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.githubpages",
+]
 
-templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
+templates_path = ["_templates"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'alabaster'
-html_static_path = ['_static']
+html_theme = "alabaster"
+html_static_path = ["_static"]

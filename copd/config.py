@@ -1,52 +1,25 @@
-from enum import Enum,IntEnum
+from enum import Enum, IntEnum
 from dataclasses import dataclass
 from typing import Dict
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 360
-TILE_SIZE = 20
 
+X_TILES = 40
+Y_TILES = 20
+TILE_SIZE = 16
+SCREEN_WIDTH = X_TILES * TILE_SIZE
+SCREEN_HEIGHT = Y_TILES * TILE_SIZE
+ANIMATION_SPEED = 2  # Pixels per tick
+FPS = 60
 OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
-
-DEFAULT_MAP = [
-    [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        28,
-        29,
-        30,
-        31,
-    ],
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
-]
+OVERWORLD_WIDTH = 2
+OVERWORLD_HEIGHT = 2
+DEFAULT_MAP = "copd/ui/assets/crawlofpydun.csv"
+MAZE = "copd/ui/assets/maze.csv"
+MAP1 = "copd/ui/assets/closequarters.csv"
+MAP2 = "copd/ui/assets/map.csv"
+MAPS = [DEFAULT_MAP, MAZE, MAP1, MAP2]
 
 GAME_CAPTION = "Crawl of PyDun"
+
 
 class Layers(IntEnum):
     BG_Layer = 0
@@ -54,8 +27,9 @@ class Layers(IntEnum):
     Door_Layer = 2
     Player_Layer = 3
 
+
 @dataclass
-class Colors():
+class Colors:
     NachoCheese = (255, 208, 108)
     DaytonaPeach = (253, 221, 200)
     DeadSalmon = (170, 148, 135)
@@ -77,6 +51,7 @@ class Colors():
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
     GREY = (128, 128, 128)
+
 
 class MenuOption(Enum):
     CAPTION = 1
