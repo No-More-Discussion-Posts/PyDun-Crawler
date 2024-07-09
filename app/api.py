@@ -304,7 +304,7 @@ class DungeonDB(API):
         self.database.delete_all_rwds()
         self.database.delete_all_rooms()
         
-    def print_gaps(str):
+def print_gaps(str):
     # print (f"\n -- {str} -- \n")
       pass
 

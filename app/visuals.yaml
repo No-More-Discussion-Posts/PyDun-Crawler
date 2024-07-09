@@ -34,8 +34,20 @@ layer_names:
           c_attack
         c_blobi: &c_blobi
           c_blobi
-        c_monster: &c_monster
-          c_monster
+        c_blobi_hp: &c_blobi_hp
+          c_blobi_hp
+        cm_ogre: &cm_ogre
+          cm_ogre
+        cm_ogre_hp: &cm_ogre_hp
+          cm_ogre_hp
+        cm_goblin: &cm_goblin
+          cm_goblin
+        cm_goblin_hp: &cm_goblin_hp
+          cm_goblin_hp
+        cm_hobgoblin: &cm_hobgoblin
+          cm_hobgoblin
+        cm_hobgoblin_hp: &cm_hobgoblin_hp
+          cm_hobgoblin_hp
       alphabet: &alphabet
        alphabet
       numbers: &numbers
@@ -374,8 +386,8 @@ scenes:
    - *tr9
    - *trap_door
    - *hole
-   #- *trap_opened
-   - *obstacle
+  #  - *trap_opened
+  #  - *obstacle
    - *basic_floor
    - *basic_edges
   combat: &combat
@@ -391,12 +403,14 @@ scenes:
    - *c_attack
    - *c_blobi
    - *c_blobi_hp
-   - *c_goblin
-   - *c_goblin_hp
-   - *c_hobgoblin
-   - *c_hobgoblin_hp
-   - *c_ogre
-   - *c_ogre_hp
+   - *cm_goblin
+   - *cm_goblin_hp
+   - *cm_hobgoblin
+   - *cm_hobgoblin_hp
+   - *cm_ogre
+   - *cm_ogre_hp
+   - *blobi
+   - *goblin
 
 
 sprite_sets:
