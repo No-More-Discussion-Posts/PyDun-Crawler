@@ -12,8 +12,8 @@ from sqlalchemy.orm import *
 from yaml import CLoader
 from pathlib import Path
 
-MAP_X = 10
-MAP_Y = 10
+MAP_X = 20 # columns
+MAP_Y = 20 # rows
 ROOM_LIMIT = 20
 ROOM_MINIMUM = 10
 
@@ -54,29 +54,60 @@ class DungeonDB(API):
         # TODO: write method to load csv files into db
 
     def load_files(self):
-        FILE_PATH = "files.yaml"
-
-        yaml_file = Path(FILE_PATH)
-        self.files = yaml.load(yaml_file.read_text(), CLoader)
+        FILES_PATH = "files.yaml"
+        VISUALS_PATH = "visuals.yaml"
+        files_yaml_path = Path(FILES_PATH)
+        visuals_yaml_path = Path(VISUALS_PATH)
+        self.files = yaml.load(files_yaml_path.read_text(), CLoader)
+        # self.visuals = yaml.load(visuals_yaml.read_text(), CLoader)
+        self.visuals = yaml.full_load(visuals_yaml_path.read_text())
         print_gaps(self.files)
-        room_maps = self.files["room_map"]
-        # print_gaps(room_maps)
+
+        # print(self.visuals)
+        room_maps = self.files['room_map']
+        tmx_files = self.files['tmx']
+        #print_gaps(room_maps)
+        
+        # TODO: add scene loading
 
         # These can be loaded in bulk
         for room_map in room_maps:
             filename = room_maps[room_map]
-            print(filename)
+            # print(filename)
             map_string = ""
             with open(filename) as map_file:
                 map_reader = csv.reader(map_file)
                 for line in map_reader:
                     row = ",".join(line)
-                    print(row)
+                    # print(row)
                     map_string += f"{row}|"
             # print(map_string)
             # print(f"length = {len(map_string)}\n")
             map_id = self.database.create_room_map(map_string=map_string)
-            print(self.database.read_room_map(id=map_id))
+            # print(self.database.read_room_map(id=map_id))
+
+
+        for tmx_filename in tmx_files:
+            # print(tmx_filename)
+            pass
+            # print(tmx_files[tmx_filename])
+            # print(dir(tmx_thing))
+
+        room_tmx_file_path = Path(tmx_files['basic_room'])
+        # self.basic_room = yaml.full_load(room_file_path.read_text())
+        
+        # TODO: get the list of layers from yaml
+        self.scenes = self.visuals['scenes']
+        for scene in self.scenes:
+            # print(self.scenes[scene])
+            pass
+            
+            # TODO: pull the map info from basic_room.tmx
+
+            # TODO: store layer data in db (maybe new tmx_layer table?)
+
+    def get_scene(self, key): # TODO refactor this after isolating State Enums 
+        return self.scenes[key]
 
     # basic level generation sequence:
     def generate_new_level(
@@ -97,8 +128,8 @@ class DungeonDB(API):
         seed_x = x // 2
         seed_y = y // 2
         # map_array[seed_y][seed_x] = 1
-        # print(map_array)
-        print(f"seed room = {seed_x},{seed_y}")
+        #print(map_array)
+        # print(f"seed room = {seed_x},{seed_y}")
 
         self.walls = self.generate_walls()
 
@@ -106,17 +137,24 @@ class DungeonDB(API):
         #     self.generate_map(x=seed_x, y=seed_y)
         #     self.room_count = len(self.database.get_rooms())
 
+        self.reset_dungeon()
+            
+        self.generate_map(x=seed_x, y=seed_y)
+
         self.generate_map(x=seed_x, y=seed_y)
 
         ### If the count comes up short, try again up to three times ###
+
         # TODO: This isn't doing anything any more. To fix it,
         # the tables need to be dropped before trying again.
 
-        # if self.room_count < ROOM_MINIMUM:
-        #     self.generate_map(x=seed_x, y=seed_y)
+        if self.room_count < ROOM_MINIMUM:
+            self.reset_dungeon()
+            self.generate_map(x=seed_x, y=seed_y)
 
-        # if self.room_count < ROOM_MINIMUM:
-        #     self.generate_map(x=seed_x, y=seed_y)
+        if self.room_count < ROOM_MINIMUM:
+            self.reset_dungeon()
+            self.generate_map(x=seed_x, y=seed_y)
 
         # if self.room_count < ROOM_MINIMUM:
         #     self.generate_map(x=seed_x, y=seed_y)
@@ -125,8 +163,8 @@ class DungeonDB(API):
         # print_gaps("rooms: ")
         # print_gaps(f"first room: {first_room}")
         for room in all_rooms:
-            print(room)
-            print(self.database.get_room_map(room.id))
+            # print(room)
+            # print(self.database.get_room_map(room.id))
             # map_array[room.y][room.x] = 1
             map_array[room.y][room.x] = room.id
             # print_gaps(self.database.get_room_neighbors(room_id=room.id))
@@ -134,7 +172,8 @@ class DungeonDB(API):
 
         all_rwds = self.database.get_rwds()
         for rwd in all_rwds:
-            print(rwd)
+            # print(rwd)
+            pass
 
         # print("\nMAP:")
         # for row in map_array:
@@ -142,6 +181,8 @@ class DungeonDB(API):
         # print()
 
         # TODO: pick a random room to declare as exit?
+
+        # TODO: insert level into db
 
         return map_array
 
@@ -160,7 +201,7 @@ class DungeonDB(API):
 
     # map grid generation sequence
     # do it recursively this time
-    def generate_map(self, x, y):
+    def generate_map(self, x, y, level=None):
         self.room_count = len(self.database.get_rooms())
         print_gaps(self.room_count)
         if self.room_count >= self.max_rooms:
@@ -214,6 +255,7 @@ class DungeonDB(API):
             if neighbor[0] > 0:
                 print_gaps(neighbor)
                 new_door = self.database.create_door(room_id=neighbor[0])
+                # print(f"new door = {new_door}")
                 self.database.add_rwd_door_from_room(
                     room_id=room_id, wall=neighbor[1], door_id=new_door
                 )
@@ -247,27 +289,36 @@ class DungeonDB(API):
         # print_gaps("rooms: ")
         # print_gaps(f"first room: {first_room}")
         for room in all_rooms:
-            print(room)
-            print(self.database.get_room_map(room.id))
+            # print(room)
+            # print(self.database.get_room_map(room.id))
             # map_array[room.y][room.x] = 1
             map_array[room.y][room.x] = room.id
             # print_gaps(self.database.get_room_neighbors(room_id=room.id))
             # self.generate_doors(room.id)
         return map_array
 
-
-def print_gaps(str):
-    print(f"\n -- {str} -- \n")
+      
+    def reset_dungeon(self):
+        # self.database.
+        self.database.delete_all_doors()
+        self.database.delete_all_rwds()
+        self.database.delete_all_rooms()
+        
+    def print_gaps(str):
+    # print (f"\n -- {str} -- \n")
+      pass
 
 
 def main():
     test_dungeon = DungeonDB()
     test_dungeon.load_files()
-    test_dungeon.generate_new_level()
-    # test_dungeon.generate_new_level(x=10,y=10)
-    # test_dungeon.generate_room(x=0, y=1)
-    print(test_dungeon.get_level_grid())
-
+    # test_dungeon.generate_new_level()
+    #test_dungeon.generate_new_level(x=10,y=10)
+    #test_dungeon.generate_room(x=0, y=1)
+    # print(test_dungeon.get_level_grid())
+    # for row in test_dungeon.get_level_grid():
+    #     print(row)
+    
 
 if __name__ == "__main__":
     main()

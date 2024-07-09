@@ -2,6 +2,9 @@ room_map:
   1: demomap1.csv
   2: demomap2.csv
 
+tmx:
+  menu: menu.tmx
+  basic_room: basic_room.tmx
 
 tile_type:
   0: "wall"

@@ -75,7 +75,7 @@ class Engine:
         to game, only called on game start
         """
         if player is None:
-            self.player = Player("Bilbo", self, 15, 9, "player")
+            self.player = Player("Blobi", self, 15, 9, "player")
             self.player.draw()
         else:
             self.player = player
