@@ -30,13 +30,13 @@ class Movement(System):
                 entity.x_dest = entity.rect.x + dx
                 entity.y_dest = entity.rect.y + dy
 
-                # # Check for collision before moving
-                # if not self.check_collision(entity, dx, dy):
-                #     entity.rect.move_ip(dx, dy)  # Move entity by tile size
-                #     entity.prev_dx = dx
-                #     entity.prev_dy = dy
-                # else:
-                #     entity.moving = False
+                #Check for collision before moving
+                if not self.check_collision(entity, dx, dy):
+                     entity.rect.move_ip(dx, dy)  # Move entity by tile size
+                     entity.prev_dx = dx
+                     entity.prev_dy = dy
+                else:
+                     entity.moving = False
 
             entity.update()
             entity.get(Velocity).set(0, 0)

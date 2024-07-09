@@ -1,5 +1,6 @@
 import pygame
 import random
+from random import randrange
 import sys
 from pathlib import Path
 
@@ -51,6 +52,9 @@ class Engine:
         self.tile_map = TileMap(Path("copd/ui/assets/tilemap.png"))
         self.room_states = {}
         self.enemies_killed = 0
+        self.rooms = {} 
+        # {"room_id": None ,
+                    #   "mapname": None}}
 
     def add_component(self, component: Component):
         """_summary_
@@ -76,7 +80,7 @@ class Engine:
         else:
             self.player = player
 
-    def load_map(self, map=DEFAULT_MAP) -> None:
+    def load_map(self) -> None:
         """
         Kills all sprite groups and loads a new map
         when the player collides with a door
@@ -86,6 +90,25 @@ class Engine:
         color: Type: List, RGB value of wall color
         map: Type: Array, x and y coordinates of map tiles
         """
+        if self.rooms.get(self.get_room_id()) == None:
+            mapchoice = randrange(3)
+            match mapchoice:
+                case 0:
+                    map = DEFAULT_MAP
+                    self.rooms[self.get_room_id()] = DEFAULT_MAP
+                case 1:
+                    map = MAZE
+                    self.rooms[self.get_room_id()] = MAZE
+                case 2:
+                    map = MAP1
+                    self.rooms[self.get_room_id()] = MAP1
+                case 3:
+                    map = MAP2
+                    self.rooms[self.get_room_id()] = MAP2
+        map = self.rooms[self.get_room_id()]
+        #else:
+            #map = DEFAULT_MAP
+            #self.room_type[self.get_room_id]["mapname"] = DEFAULT_MAP
         # kills all non-player sprites
         self.monsters.empty()
         self.treasures.empty()
@@ -96,11 +119,11 @@ class Engine:
         room_id = self.get_room_id()
 
         # Retrieve the room state if it exists, otherwise initialize it
-        room_state = self.room_states.get(room_id, {"treasures": [], "enemies": []})
+        room_state = self.room_states.get(room_id, {"treasures": [], "enemies": [], "roomtype": []})
 
-        # Load the map
-        self.current_room = Map(self, map)
-        self.current_room.load_tiles()
+
+
+
 
         # Load treasures from the room state
         for treasure_info in room_state["treasures"]:
@@ -119,6 +142,9 @@ class Engine:
                 self.Collision.add_entity(enemy)
                 self.Movement.add_entity(enemy)
                 enemy.draw()
+        
+        self.current_room = Map(self, map)
+        self.current_room.load_tiles()
 
         # Add new monsters and treasures if they do not already exist in the room state
         if not room_state["enemies"]:
@@ -167,7 +193,7 @@ class Engine:
         MainMenu(self).run()
 
         self.add_player()
-        self.load_map(DEFAULT_MAP)
+        self.load_map()
         while self.running:
             for event in pygame.event.get():
                 self.handle_event(event)

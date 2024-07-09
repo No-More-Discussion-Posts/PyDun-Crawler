@@ -13,6 +13,10 @@ OVERWORLD_MAP = [[0, 1, 2], [0, 1, 2]]
 OVERWORLD_WIDTH = 2
 OVERWORLD_HEIGHT = 2
 DEFAULT_MAP = "copd/ui/assets/crawlofpydun.csv"
+MAZE = "copd/ui/assets/maze.csv"
+MAP1 = "copd/ui/assets/closequarters.csv"
+MAP2 = "copd/ui/assets/map.csv"
+
 
 GAME_CAPTION = "Crawl of PyDun"
 
