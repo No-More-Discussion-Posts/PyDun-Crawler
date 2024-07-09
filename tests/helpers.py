@@ -72,7 +72,7 @@ def reset_monster():
         def wrapper(game):
             game.monster.kill()
             game.monster = None
-            game.add_monster()  # should be brand new
+            game.add_monster(game.get_room_id())  # should be brand new
             func(game)
 
         return wrapper

@@ -108,7 +108,6 @@ class Engine:
         if self.monster.alive:
             self.monsters.add(self.monster)
             self.monster.draw()
-        # print(self.monster)
         # Load treasures from the room state
         for treasure_info in room_state["treasures"]:
             x, y, collected = treasure_info
@@ -130,10 +129,8 @@ class Engine:
             map = MAPS[randrange(3)]
             room_state["map"] = Map(self,map)
             self.room_states[room_id] = room_state
-            print(self.room_states.get(room_id))
             # Create monsters for each room
             self.add_monster(room_id)
-            print(self.room_states.get(room_id))
             # self.add_treasure(room_id)
         
 

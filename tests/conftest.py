@@ -20,7 +20,8 @@ def game():
     pygame.init()
     mygame = Engine()
     mygame.add_player()
-    mygame.load_map(DEFAULT_MAP)
+    mygame.build_level()
+    mygame.load_map()
     # game.run()
 
     mygame.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
