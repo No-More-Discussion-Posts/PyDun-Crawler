@@ -306,6 +306,9 @@ class BattleMenu:
                 f"{self.player.hp}/{self.player.max_hp}", Colors.BLUE, (10, 35)
             )
             player_info.draw()
+
+            # place monster sprite
+            self.game.screen.blit(pygame.transform.scale(self.monster.image,(16*6,16*6)), (40, 200))
             # Button Testing
             fight = Button("Fight", self.game, 340, 170)
             fight.show()
