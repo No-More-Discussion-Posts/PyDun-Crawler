@@ -83,16 +83,16 @@ class Collision(System):
                     entity.game.minimap.visit(entity.overworldcoords)
                     self.undo_movement(entity)
                     if door.rect.x == 0:
-                        entity.get(Velocity).dx = X_TILES - 3
+                        entity.get(Velocity).dx = (X_TILES - 2) 
                         entity.overworldcoords[0] -= 1
                     elif door.rect.x == (X_TILES - 1) * TILE_SIZE:
-                        entity.get(Velocity).dx = -(X_TILES - 3)
+                        entity.get(Velocity).dx = -(X_TILES - 2)
                         entity.overworldcoords[0] += 1
                     elif door.rect.y == 0:
-                        entity.get(Velocity).dy = Y_TILES - 3
+                        entity.get(Velocity).dy = (Y_TILES - 2) 
                         entity.overworldcoords[1] -= 1
                     elif door.rect.y == (Y_TILES - 1) * TILE_SIZE:
-                        entity.get(Velocity).dy = -(Y_TILES - 3)
+                        entity.get(Velocity).dy = -(Y_TILES - 2)
                         entity.overworldcoords[1] += 1
                     entity.game.Movement.update()
                     self.entities[0].game.Turn.undo()
