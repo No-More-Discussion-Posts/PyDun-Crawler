@@ -132,9 +132,12 @@ class Monster(Entity):
         self.prev_dy = 0  # Initialize prev_dy
         self.alive = alive
 
+    def draw(self):
+        if self.alive:
+            super().draw()
     def die(self):
         self.alive = False
-        # self.kill()
+        self.kill()
 
     def ai(self):
         # enemy to player vector math here

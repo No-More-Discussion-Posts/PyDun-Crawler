@@ -217,21 +217,6 @@ class Combat(System):
             elif game.monster.item == "Health Pot":
                 game.player.inventory.update_item(game.monster.item, 1)
 
-            # Update room state
-            room_id = game.get_room_id()
-            room_state = game.room_states.get(room_id, {"treasures": [], "enemies": []})
-            enemy_type = (
-                game.monster.type
-            )  # Ensure your monster has a number attribute for type
-
-            # Remove the monster from the room state
-            for idx, (type, x, y, alive) in enumerate(room_state["enemies"]):
-                if (
-                    x == game.monster.rect.x // TILE_SIZE
-                    and y == game.monster.rect.y // TILE_SIZE
-                ):
-                    room_state["enemies"][idx] = (type, x, y, False)
-            game.room_states[room_id] = room_state
 
             game.monster.die()
 

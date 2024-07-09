@@ -25,8 +25,8 @@ class Map:
     def valid_positions(self):
         if self._valid_positions is None:
             self._valid_positions = []
-            for x,row in enumerate(self.array):
-                for y,tile in enumerate(row):
+            for y,row in enumerate(self.array):
+                for x,tile in enumerate(row):
                     if tile == "1":
                         self._valid_positions.append((x,y))
         return self._valid_positions

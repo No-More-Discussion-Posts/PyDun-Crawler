@@ -104,8 +104,11 @@ class Engine:
         self.current_room.load_tiles()
         # Get the unique identifier for the current room
         
-
         self.monster = room_state['enemies'][0] 
+        if self.monster.alive:
+            self.monsters.add(self.monster)
+            self.monster.draw()
+        # print(self.monster)
         # Load treasures from the room state
         for treasure_info in room_state["treasures"]:
             x, y, collected = treasure_info
