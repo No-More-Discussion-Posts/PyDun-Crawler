@@ -16,7 +16,7 @@ DEFAULT_MAP = "copd/ui/assets/crawlofpydun.csv"
 MAZE = "copd/ui/assets/maze.csv"
 MAP1 = "copd/ui/assets/closequarters.csv"
 MAP2 = "copd/ui/assets/map.csv"
-
+MAPS = [DEFAULT_MAP, MAZE, MAP1, MAP2]
 
 GAME_CAPTION = "Crawl of PyDun"
 

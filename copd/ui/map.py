@@ -10,7 +10,8 @@ class Map:
         self.start_x = 0
         self.start_y = 0
         self.filename = filename
-        self.valid_positions = []
+        self.array = self.read_csv()
+        self._valid_positions = None
 
     def read_csv(self):
         map = []
@@ -20,6 +21,16 @@ class Map:
                 map.append(list(row))
         return map
 
+    @property
+    def valid_positions(self):
+        if self._valid_positions is None:
+            self._valid_positions = []
+            for x,row in enumerate(self.array):
+                for y,tile in enumerate(row):
+                    if tile == "1":
+                        self._valid_positions.append((x,y))
+        return self._valid_positions
+    
     def load_tiles(self):
         map = self.read_csv()
         x, y = 0, 0
@@ -32,7 +43,7 @@ class Map:
                 elif tile == "1":  # Floor
                     group = self.game.blocks
                     name = "floor"
-                    self.valid_positions.append((x, y))
+                    # self.valid_positions.append((x, y))
                 elif tile == "2":  # Door
                     group, name = self.door_or_wall(x, y)
 

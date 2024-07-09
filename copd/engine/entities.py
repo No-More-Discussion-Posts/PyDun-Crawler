@@ -134,7 +134,7 @@ class Monster(Entity):
 
     def die(self):
         self.alive = False
-        self.kill()
+        # self.kill()
 
     def ai(self):
         # enemy to player vector math here

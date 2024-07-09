@@ -76,7 +76,7 @@ class Engine:
         """
         if player is None:
             self.player = Player("Blobi", self, 15, 9, "player")
-            self.player.draw()
+            # self.player.draw()
         else:
             self.player = player
 
@@ -90,41 +90,22 @@ class Engine:
         color: Type: List, RGB value of wall color
         map: Type: Array, x and y coordinates of map tiles
         """
-        if self.rooms.get(self.get_room_id()) == None:
-            mapchoice = randrange(3)
-            match mapchoice:
-                case 0:
-                    map = DEFAULT_MAP
-                    self.rooms[self.get_room_id()] = DEFAULT_MAP
-                case 1:
-                    map = MAZE
-                    self.rooms[self.get_room_id()] = MAZE
-                case 2:
-                    map = MAP1
-                    self.rooms[self.get_room_id()] = MAP1
-                case 3:
-                    map = MAP2
-                    self.rooms[self.get_room_id()] = MAP2
-        map = self.rooms[self.get_room_id()]
-        #else:
-            #map = DEFAULT_MAP
-            #self.room_type[self.get_room_id]["mapname"] = DEFAULT_MAP
+       
+        room_id = self.get_room_id()
+        # Get the room state for the current room
+        room_state = self.room_states.get(room_id)
         # kills all non-player sprites
         self.monsters.empty()
         self.treasures.empty()
         self.doors.empty()
         self.solid_blocks.empty()
-
+        # Reload for new room
+        self.current_room = room_state['map']
+        self.current_room.load_tiles()
         # Get the unique identifier for the current room
-        room_id = self.get_room_id()
+        
 
-        # Retrieve the room state if it exists, otherwise initialize it
-        room_state = self.room_states.get(room_id, {"treasures": [], "enemies": [], "roomtype": []})
-
-
-
-
-
+        self.monster = room_state['enemies'][0] 
         # Load treasures from the room state
         for treasure_info in room_state["treasures"]:
             x, y, collected = treasure_info
@@ -132,26 +113,28 @@ class Engine:
                 treasure = Treasure(self, x, y, collected=collected)
                 self.treasures.add(treasure)
                 treasure.draw()
-
-        # Load enemies from the room state
-        for enemy_info in room_state["enemies"]:
-            enemy_type, x, y, alive = enemy_info
-            if alive:
-                enemy = create_monster(self, x, y, number=enemy_type)
-                self.monsters.add(enemy)
-                self.Collision.add_entity(enemy)
-                self.Movement.add_entity(enemy)
-                enemy.draw()
         
-        self.current_room = Map(self, map)
-        self.current_room.load_tiles()
-
-        # Add new monsters and treasures if they do not already exist in the room state
-        if not room_state["enemies"]:
-            self.add_monster()
-
+        # Add a new treasure to the room if there are no treasures
         if not room_state["treasures"]:
             self.add_treasure()
+
+
+    def build_level(self):
+        
+        for room_id in [(a,b) for a in range(3) for b in range(3)]:
+            room_state = self.room_states.get(room_id, {"treasures": [], "enemies": [], "map": None})
+            # Randomly choose a map for each room
+            map = MAPS[randrange(3)]
+            room_state["map"] = Map(self,map)
+            self.room_states[room_id] = room_state
+            print(self.room_states.get(room_id))
+            # Create monsters for each room
+            self.add_monster(room_id)
+            print(self.room_states.get(room_id))
+            # self.add_treasure(room_id)
+        
+
+       
 
     def get_room_id(self):
         """Returns a unique identifier for the current room."""
@@ -176,24 +159,19 @@ class Engine:
         self.players.draw(self.screen)
         self.doors.draw(self.screen)
         self.treasures.draw(self.screen)
-        self.show_turn()
         self.minimap.draw()
         self.clock.tick(FPS)
         pygame.display.update()
 
-    def show_turn(self):
-        # displays turn counter
-        font = pygame.font.get_default_font()
-        FONT = pygame.font.Font(font, TILE_SIZE)
-        turn = FONT.render(str(self.get(TurnCounter).turn), False, "yellow")
-        self.screen.blit(turn, (TILE_SIZE, 0))
 
     def run(self):
         self.running = True
         MainMenu(self).run()
 
         self.add_player()
+        self.build_level()
         self.load_map()
+
         while self.running:
             for event in pygame.event.get():
                 self.handle_event(event)
@@ -207,24 +185,19 @@ class Engine:
         pygame.quit()
         sys.exit()
 
-    def add_monster(self, monster=None):
+    def add_monster(self, room_id):
         """
         Creates a random, or specific
         entity monster sprite
         """
-        room_id = self.get_room_id()
-        room_state = self.room_states.get(room_id, {"treasures": [], "enemies": []})
+        room_state = self.room_states.get(room_id)
+        valid_positions = room_state['map'].valid_positions
+        if not valid_positions:
+            print("No valid positions available to spawn monsters.")
+            return
 
-        if monster is not None:
-            self.monster = monster
-        else:
-            valid_positions = self.current_room.valid_positions
-            if not valid_positions:
-                print("No valid positions available to spawn monsters.")
-                return
-
-            x, y = random.choice(valid_positions)
-            self.monster = create_monster(self, x, y)
+        x, y = random.choice(valid_positions)
+        self.monster = create_monster(self, x, y)
 
         if self.monster is None:
             print("Failed to create a monster.")
@@ -232,26 +205,9 @@ class Engine:
 
         self.Collision.add_entity(self.monster)
         self.Movement.add_entity(self.monster)
-
-        # Add the monster to the room state if it doesn't already exist
-        if not any(
-            enemy
-            for enemy in room_state["enemies"]
-            if enemy[1] == self.monster.rect.x // TILE_SIZE
-            and enemy[2] == self.monster.rect.y // TILE_SIZE
-        ):
-            room_state["enemies"].append(
-                (
-                    self.monster.type,
-                    self.monster.rect.x // TILE_SIZE,
-                    self.monster.rect.y // TILE_SIZE,
-                    True,
-                )
-            )
-            self.room_states[room_id] = room_state
-
-        self.monsters.add(self.monster)
-        self.monster.draw()
+         # Add the monster to the room state if it doesn't already exist
+        
+        room_state["enemies"].append(self.monster)
 
     def add_treasure(self):
         """
