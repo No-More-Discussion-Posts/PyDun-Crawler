@@ -285,7 +285,7 @@ class BattleMenu:
 
         # self.start_combat()  #commented out for testing random enemy generation on overworld. -Roland
 
-        while self.running:
+        while self.running and self.game.running:
             self.game.screen.fill(Colors.Snugglepuss)
 
             height = self.game.screen.get_height()
@@ -306,6 +306,9 @@ class BattleMenu:
                 f"{self.player.hp}/{self.player.max_hp}", Colors.BLUE, (10, 35)
             )
             player_info.draw()
+
+            # place monster sprite
+            self.game.screen.blit(pygame.transform.scale(self.monster.image,(16*6,16*6)), (40, 200))
             # Button Testing
             fight = Button("Fight", self.game, 340, 170)
             fight.show()
@@ -422,3 +425,35 @@ class BattleMenu:
         if input.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
+
+class GameOver(Menu):
+    def __init__(self, game, options=[]):
+        super().__init__(game,options)
+        self.options.append(
+            Option(
+                MenuOption.HANDLER,
+                dict(
+                    event_type=pygame.KEYDOWN,
+                    key=pygame.K_p,
+                    result=lambda: self.stop(),
+                ),
+            )
+        )
+    
+    def run(self) -> None:
+        running = True
+        while running:
+            self.game.screen.fill((20, 20, 20))
+            if self.game.enemies_killed >=5:
+                game_over_text = render_text("DunGEON CLEARED",24)
+            else:
+                game_over_text = render_text("GAME OVER",24)
+            self.game.screen.blit(game_over_text, ((SCREEN_WIDTH/2)-(game_over_text.get_width()/2), 100))
+            enemy_text = render_text( f"Enemies killed: {self.game.enemies_killed}",24)                
+            self.game.screen.blit(enemy_text, ((SCREEN_WIDTH/2)-(enemy_text.get_width()/2), 200))
+            pygame.display.update()
+            for e in pygame.event.get():
+                if e.type == pygame.KEYDOWN:
+                    running = False
+                self.handle_input(e)

@@ -20,7 +20,7 @@ pygame.init()
 def main() -> None:
     """Main game loop"""
     game = Engine()
-    
+
     game.run()
 
 

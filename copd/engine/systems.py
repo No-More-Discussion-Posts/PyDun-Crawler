@@ -30,13 +30,13 @@ class Movement(System):
                 entity.x_dest = entity.rect.x + dx
                 entity.y_dest = entity.rect.y + dy
 
-                # # Check for collision before moving
-                # if not self.check_collision(entity, dx, dy):
-                #     entity.rect.move_ip(dx, dy)  # Move entity by tile size
-                #     entity.prev_dx = dx
-                #     entity.prev_dy = dy
-                # else:
-                #     entity.moving = False
+                #Check for collision before moving
+                if not self.check_collision(entity, dx, dy):
+                     entity.rect.move_ip(dx, dy)  # Move entity by tile size
+                     entity.prev_dx = dx
+                     entity.prev_dy = dy
+                else:
+                     entity.moving = False
 
             entity.update()
             entity.get(Velocity).set(0, 0)
@@ -83,16 +83,16 @@ class Collision(System):
                     entity.game.minimap.visit(entity.overworldcoords)
                     self.undo_movement(entity)
                     if door.rect.x == 0:
-                        entity.get(Velocity).dx = X_TILES - 3
+                        entity.get(Velocity).dx = (X_TILES - 2) 
                         entity.overworldcoords[0] -= 1
                     elif door.rect.x == (X_TILES - 1) * TILE_SIZE:
-                        entity.get(Velocity).dx = -(X_TILES - 3)
+                        entity.get(Velocity).dx = -(X_TILES - 2)
                         entity.overworldcoords[0] += 1
                     elif door.rect.y == 0:
-                        entity.get(Velocity).dy = Y_TILES - 3
+                        entity.get(Velocity).dy = (Y_TILES - 2) 
                         entity.overworldcoords[1] -= 1
                     elif door.rect.y == (Y_TILES - 1) * TILE_SIZE:
-                        entity.get(Velocity).dy = -(Y_TILES - 3)
+                        entity.get(Velocity).dy = -(Y_TILES - 2)
                         entity.overworldcoords[1] += 1
                     entity.game.Movement.update()
                     self.entities[0].game.Turn.undo()
@@ -100,26 +100,38 @@ class Collision(System):
 
                 # If player overlaps with treasure, TRUE = delete treasure after collision
                 elif pygame.sprite.spritecollide(entity, entity.game.treasures, False):
-                    treasures = pygame.sprite.spritecollide(entity, entity.game.treasures, False)
+                    treasures = pygame.sprite.spritecollide(
+                        entity, entity.game.treasures, False
+                    )
                     for treasure in treasures:
                         if not treasure.collected:
                             treasure.collect()
                             room_id = entity.game.get_room_id()
-                            room_state = entity.game.room_states.get(room_id, {'treasures': [], 'enemies': []})
-                            for idx, (x, y, collected) in enumerate(room_state['treasures']):
-                                if x == treasure.rect.x // TILE_SIZE and y == treasure.rect.y // TILE_SIZE:
-                                    room_state['treasures'][idx] = (x, y, True)
+                            room_state = entity.game.room_states.get(
+                                room_id, {"treasures": [], "enemies": []}
+                            )
+                            for idx, (x, y, collected) in enumerate(
+                                room_state["treasures"]
+                            ):
+                                if (
+                                    x == treasure.rect.x // TILE_SIZE
+                                    and y == treasure.rect.y // TILE_SIZE
+                                ):
+                                    room_state["treasures"][idx] = (x, y, True)
                             entity.game.room_states[room_id] = room_state
 
                             # Add item to player's inventory
                             if treasure.item != "Health Pot":
                                 item_type = list(treasure.item.keys())[0]
-                                entity.equipped.equip_item(item_type, treasure.item[item_type])
+                                entity.equipped.equip_item(
+                                    item_type, treasure.item[item_type]
+                                )
                             elif treasure.item == "Health Pot":
                                 entity.inventory.update_item(treasure.item, 1)
 
-
-                monsters = pygame.sprite.spritecollide(entity, entity.game.monsters, False)
+                monsters = pygame.sprite.spritecollide(
+                    entity, entity.game.monsters, False
+                )
                 if len(monsters) > 0:
                     monster = monsters[0]
                     self.undo_movement(entity)
@@ -133,6 +145,8 @@ class Collision(System):
         entity.prev_dx = 0
         entity.prev_dy = 0
         entity.game.update()
+
+
 class Combat(System):
 
     def __init__(self, game):
@@ -184,11 +198,15 @@ class Combat(System):
             print(f"Monster HP: {game.monster.hp}")
 
         if game.player.hp <= 0:
-            pygame.quit()
-            sys.exit()
+            # pygame.quit()
+            # sys.exit()
+            self.game.running = False
+            self.complete = True
+
         elif game.monster.hp <= 0:
             self.handle_monster_defeat(game)
             self.complete = True
+            self.game.enemies_killed += 1
 
     def handle_monster_defeat(self, game):
         """Handle logic for when a monster is defeated."""
@@ -201,13 +219,18 @@ class Combat(System):
 
             # Update room state
             room_id = game.get_room_id()
-            room_state = game.room_states.get(room_id, {'treasures': [], 'enemies': []})
-            enemy_type = game.monster.type  # Ensure your monster has a number attribute for type
+            room_state = game.room_states.get(room_id, {"treasures": [], "enemies": []})
+            enemy_type = (
+                game.monster.type
+            )  # Ensure your monster has a number attribute for type
 
             # Remove the monster from the room state
-            for idx, (type, x, y, alive) in enumerate(room_state['enemies']):
-                if x == game.monster.rect.x // TILE_SIZE and y == game.monster.rect.y // TILE_SIZE:
-                    room_state['enemies'][idx] = (type, x, y, False)
+            for idx, (type, x, y, alive) in enumerate(room_state["enemies"]):
+                if (
+                    x == game.monster.rect.x // TILE_SIZE
+                    and y == game.monster.rect.y // TILE_SIZE
+                ):
+                    room_state["enemies"][idx] = (type, x, y, False)
             game.room_states[room_id] = room_state
 
             game.monster.die()
@@ -227,7 +250,7 @@ class Combat(System):
         # Parry Chance is calculated by miss_hit function in entities
         parry_chance = self.miss_hit(game.player.dex)
         if parry_chance:
-            game.monster.hp -= (game.player.atk + game.monster.atk)
+            game.monster.hp -= game.player.atk + game.monster.atk
         else:
             game.monster.hp -= game.player.atk
             game.player.hp -= game.monster.atk

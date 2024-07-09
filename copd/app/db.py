@@ -48,9 +48,9 @@ def create_game_entity(id, name):
     session.commit()
 
 
-
 def read_game_entity():
     pass
+
 
 def update_game_entity():
     pass
@@ -253,7 +253,6 @@ class Level(Base):
     __tablename__ = "level"
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     dungeon_id: Mapped[int] = mapped_column(ForeignKey("dungeon.id"))
-    # level_map: Mapped[str]
 
     def __repr__(self) -> str:
         return f"Dungeon(id={self.id!r}, dungeon_id={self.dungeon_id!r})"
@@ -388,7 +387,13 @@ class DB:
             west = Wall(id=4, side="west", pair=2)
         session.add_all([north, east, south, west])
         session.commit()
-        
+
+    def read_wall(self, id):
+        stmt = select(Wall).where(Wall.id == id)
+        with Session(engine) as session:
+            wall = session.scalars(stmt).first()
+        return {"id": wall.id, "side": wall.side, "pair": wall.pair}
+
     def create_room(self, x, y):
         print_gaps(f"Creating room with id={id}, x={x}, y={y}")
         with Session(engine) as session:
@@ -421,16 +426,6 @@ class DB:
             session.add(rwd)
             session.commit()
 
-            
-    def create_door(self, room_id=None):
-        with Session(engine) as session:
-            door = Door(room_id=room_id)
-        session.add(door)
-        session.commit()
-        return door.id
-            
-
-
     def read_room(self, id=0):
         stmt = select(Room).where(Room.id == id)
         with Session(engine) as session:
@@ -455,82 +450,13 @@ class DB:
             "id": result.id,
             "map_string": result.map_string,
         }
-    
-    def read_wall(self, id):
-        stmt = select(Wall).where(Wall.id == id)
-        with Session(engine) as session:
-            wall = session.scalars(stmt).first()
-        return {
-            "id":wall.id,
-            "side":wall.side,
-            "pair":wall.pair
-        }
-    
-    def read_door(self, id):
-        stmt = select(Door).where(Door.id == id)
-        with Session(engine) as session:
-            door = session.scalars(stmt).first()
-        return door
 
-    def read_room_wall_door(self, id=0):
-        stmt = select(RoomWallDoor).where(RoomWallDoor.id == id)
-        with Session(engine) as session:
-            rwd = session.execute(stmt).first()
-        return rwd
-
-    # get functions, for reading multiple
     def get_walls(self):
         walls = []
         with Session(engine) as session:
             for wall in session.scalars(select(Wall)).all():
                 walls.append(wall)
         return walls
-
-    def get_rooms(self):
-        stmt = select(Room)
-        rooms = []
-        with Session(engine) as session:
-            for room in session.scalars(stmt).all():
-                #print(row)    
-                rooms.append(room)
-        return rooms
-    
-    def get_rooms_by_level(self, level_id):
-        stmt = select(Room).where()
-        pass
-
-    def get_rwds(self):
-        stmt = select(RoomWallDoor)
-        rooms = []
-        with Session(engine) as session:
-            for row in session.scalars(stmt).all():
-                #print(row)
-                rooms.append(row)
-        return rooms
-    
-    def get_doors(self):
-        stmt = select(Door)
-        doors = []
-        with Session(engine) as session:
-            for row in session.scalars(stmt).all():
-                doors.append(row)
-        return doors
-    
-    def get_room_maps(self):
-        stmt = select(RoomMap)
-        room_maps = []
-        with Session(engine) as session:
-            for row in session.scalars(stmt).all():
-                room_maps.append(row)
-        return room_maps
-    
-    def get_treasures(self):
-        stmt = select(Treasure)
-        treasures = []
-        with Session(engine) as session:
-            for row in session.scalars(stmt).all():
-                treasures.append(row)
-        return treasures
 
     def get_room_if_exists(self, x, y, wall_pair):
         match (wall_pair):  # same switch exists on api.py (but 0 indexed)
@@ -551,7 +477,15 @@ class DB:
         else:
             return room[0]
 
-          
+    def get_rooms(self):
+        stmt = select(Room)
+        rooms = []
+        with Session(engine) as session:
+            for room in session.scalars(stmt).all():
+                # print(row)
+                rooms.append(room)
+        return rooms
+
     def get_room_neighbors(self, room_id):
         """Returns a list of tuples: (neighbor, wall)"""
         rooms = []
@@ -572,6 +506,24 @@ class DB:
                 )
         return rooms
 
+    def create_door(self, room_id=None):
+        with Session(engine) as session:
+            door = Door(room_id=room_id)
+        session.add(door)
+        session.commit()
+        return door.id
+
+    def read_door(self, id):
+        stmt = select(Door).where(Door.id == id)
+        with Session(engine) as session:
+            door = session.scalars(stmt).first()
+        return door
+
+    def read_room_wall_door(self, id=0):
+        stmt = select(RoomWallDoor).where(RoomWallDoor.id == id)
+        with Session(engine) as session:
+            rwd = session.execute(stmt).first()
+        return rwd
 
     def get_door_from_rwd(self, room_id, wall_pair):
         stmt = select(RoomWallDoor).where(
@@ -620,6 +572,14 @@ class DB:
             door = session.execute(stmt)
         return door
 
+    def get_rwds(self):
+        stmt = select(RoomWallDoor)
+        rooms = []
+        with Session(engine) as session:
+            for row in session.scalars(stmt).all():
+                # print(row)
+                rooms.append(row)
+        return rooms
 
     # TODO: rewrite read operations to return dictionaries
 
@@ -655,28 +615,9 @@ class DB:
             session.commit()
 
 
-    def delete_all_rooms(self):
-        with Session(engine) as session:
-            session.query(Room).delete()
-            session.commit()
-            
-    def delete_all_doors(self):
-        with Session(engine) as session:
-            session.query(Door).delete()
-            session.commit()
-
-    def delete_all_rwds(self):
-        with Session(engine) as session:
-            session.query(RoomWallDoor).delete()
-            session.commit()
-
-    # def delete_all_(self):
-    # def delete_all_(self):
-
 # Testing stuff
 def print_gaps(str):
-    # print (f"\n - {str} - \n")
-    pass
+    print(f"\n - {str} - \n")
 
 
 def main() -> None:

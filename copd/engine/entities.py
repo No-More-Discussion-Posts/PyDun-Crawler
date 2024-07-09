@@ -46,7 +46,6 @@ class Entity(pg.sprite.Sprite):
 
         if group is not None:
             pg.sprite.Sprite.__init__(self, group)
-        
 
     @property
     def x(self):
@@ -81,45 +80,45 @@ class Entity(pg.sprite.Sprite):
     def update(self):  # def update(self)
         # updates sprite x and y coords
         if self.moving:
-            if self.x_dest % 16 != 0:
-                print('not on tile')
-                self.x_dest = round(self.x_dest / 16) * 16
-            if self.y_dest % 16 != 0:
-                print('not on tile')
-                self.y_dest = round(self.y_dest / 16) * 16
             self.rect.move_ip(*self.animate())
-            print(self)
-            print(f"{self.rect.x},{self.rect.y}")
-            print(f"{self.x_dest},{self.y_dest}")
-    
+
     def animate(self):
         dx = 0
         dy = 0
         x_distance = self.x_dest - self.x
         y_distance = self.y_dest - self.y
         if abs(x_distance) > TILE_SIZE or abs(y_distance) > TILE_SIZE:
-                dx = x_distance
-                dy = y_distance
-            
+            dx = x_distance
+            dy = y_distance
+
         else:
-            print(f"animating...{self.x_dest},{self.y_dest}")
+            # print(f"animating...{self.x_dest},{self.y_dest}")
             if self.x_dest != self.x:
-                dx = ANIMATION_SPEED * (x_distance)/abs(x_distance)
+                dx = ANIMATION_SPEED * (x_distance) / abs(x_distance)
             if self.y_dest != self.y:
-                dy = ANIMATION_SPEED * (y_distance)/abs(y_distance)
+                dy = ANIMATION_SPEED * (y_distance) / abs(y_distance)
             if self.x == self.x_dest and self.y == self.y_dest:
                 self.moving = False
-            
+
         self.prev_dx = dx
         self.prev_dy = dy
-        return (dx,dy)
-     
-        
-    
+        return (dx, dy)
 
 
 class Monster(Entity):
-    def __init__(self, game, name, x, y, max_hp=10, atk=2, dex=2, item=None, type=None, alive=True):
+    def __init__(
+        self,
+        game,
+        name,
+        x,
+        y,
+        max_hp=10,
+        atk=2,
+        dex=2,
+        item=None,
+        type=None,
+        alive=True,
+    ):
         super().__init__(game, x, y, game.monsters, name=name)
         self.in_combat = Flag(False)
         self.stun = 0
@@ -168,6 +167,8 @@ class Monster(Entity):
         self.get(Velocity).set(dx, dy)  # Set velocity in terms of tiles
         self.prev_dx = dx  # Update prev_dx
         self.prev_dy = dy
+
+
 class Player(Entity):
     def __init__(self, name, game, x, y, filename=None):
         super().__init__(game, x, y, game.players, filename)
@@ -216,7 +217,7 @@ def create_monster(game, x, y, number=None):
             atk=4,
             dex=0,
             item=items[random.randint(1, 4)],
-            type=number  # Set the monster type here
+            type=number,  # Set the monster type here
         )
     elif number == 1:
         return Monster(
@@ -228,7 +229,7 @@ def create_monster(game, x, y, number=None):
             atk=2,
             dex=2,
             item=items[random.randint(1, 4)],
-            type=number  # Set the monster type here
+            type=number,  # Set the monster type here
         )
     elif number == 2:
         return Monster(
@@ -240,7 +241,7 @@ def create_monster(game, x, y, number=None):
             atk=1,
             dex=2,
             item=items[random.randint(1, 4)],
-            type=number  # Set the monster type here
+            type=number,  # Set the monster type here
         )
     else:
         raise ValueError(f"Unknown monster type: {number}")
